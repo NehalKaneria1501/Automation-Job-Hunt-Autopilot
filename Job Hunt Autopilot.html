@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Hunt Autopilot — Executive Career Cockpit (Google Stitch)</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans / Manrope / JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            body: ['Manrope', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cockpit: {
+              surface: '#F8F9FF',
+              container: '#E5EEFF',
+              low: '#EFF4FF',
+              lowest: '#FFFFFF',
+              high: '#DCE9FF',
+              highest: '#D3E4FE',
+              primary: '#4648D4',
+              primaryHover: '#3739B8',
+              primaryContainer: '#6063EE',
+              onSurface: '#0B1C30',
+              onSurfaceVariant: '#464554',
+              success: '#00885D',
+              successBg: '#ECFDF5',
+              successBorder: '#A7F3D0',
+              error: '#BA1A1A',
+              errorBg: '#FEF2F2',
+              errorBorder: '#FECACA',
+              warning: '#F59E0B',
+              warningBg: '#FFFBEB',
+              warningBorder: '#FDE68A'
+            }
+          },
+          boxShadow: {
+            'cockpit-card': '0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05)',
+            'cockpit-hover': '0 10px 25px -5px rgba(70, 72, 212, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.04)',
+            'scam-glow': '0 0 20px rgba(239, 68, 68, 0.25)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #F8F9FF; font-family: 'Manrope', sans-serif; }
+    h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</head>
+<body class="bg-cockpit-surface text-cockpit-onSurface antialiased min-h-screen flex flex-col">
+
+  <!-- TOP COCKPIT HEADER -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+    <!-- Primary App Header -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+          <i data-lucide="compass" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display font-extrabold text-base tracking-tight text-slate-900">Job Hunt Autopilot</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Google Stitch</span>
+          </div>
+          <p class="text-[11px] text-slate-500 font-medium">Executive Career Cockpit • Autonomous Inbound Triage</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex items-center gap-3">
+        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+          </span>
+          <span>Zero-Trust Shield Active</span>
+        </div>
+
+        <button id="btn-run-autopilot" type="button" onclick="triggerAutopilotIngestion()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all active:scale-95">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>Re-Scan Inbox</span>
+          <span class="bg-indigo-500/40 text-indigo-100 text-[10px] px-1.5 py-0.5 rounded font-mono">20 Emails</span>
+        </button>
+
+        <button type="button" onclick="switchView('interview-studio')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-xs font-bold transition-all">
+          <i data-lucide="graduation-cap" class="w-4 h-4 text-purple-600"></i>
+          <span>Interview Prep Studio</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Telemetry Badges Strip -->
+    <div class="bg-slate-50 border-t border-slate-200/80 px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto">
+      <div class="max-w-7xl mx-auto flex items-center justify-between gap-6 whitespace-nowrap text-xs font-medium text-slate-600">
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400 uppercase text-[10px] font-bold">Tracked:</span>
+            <span class="font-bold text-slate-800">124 Applications</span>
+          </div>
+          <span class="text-slate-300">•</span>
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400 uppercase text-[10px] font-bold">Processed:</span>
+            <span class="font-bold text-indigo-600">20 Inbound Emails</span>
+          </div>
+          <span class="text-slate-300">•</span>
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400 uppercase text-[10px] font-bold">Upcoming:</span>
+            <span class="font-bold text-indigo-700" id="telemetry-interviews">4 Interviews Scheduled</span>
+          </div>
+          <span class="text-slate-300">•</span>
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400 uppercase text-[10px] font-bold">Quarantined:</span>
+            <span class="font-bold text-red-600" id="telemetry-scams">4 Fake Offers Blocked</span>
+          </div>
+          <span class="text-slate-300">•</span>
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400 uppercase text-[10px] font-bold">Financial Loss:</span>
+            <span class="font-bold text-emerald-600">$0 Lost (100% Shielded)</span>
+          </div>
+        </div>
+
+        <div class="hidden lg:flex items-center gap-2 text-[11px] text-slate-500 font-mono">
+          <span>AI-Era Layoff Recovery Engine v2.4</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN BODY LAYOUT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+    <!-- KPI CARDS BANNER -->
+    <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-cockpit-card flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold">
+          <i data-lucide="mail-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-slate-800" id="kpi-total">20</div>
+          <div class="text-[11px] font-semibold text-slate-500">Emails Parsed</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-indigo-100 shadow-cockpit-card flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+          <i data-lucide="send" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-indigo-600" id="kpi-applied">7</div>
+          <div class="text-[11px] font-semibold text-slate-500">Awaiting Reply</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-indigo-200 shadow-cockpit-card flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
+          <i data-lucide="calendar" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-indigo-700" id="kpi-interview">4</div>
+          <div class="text-[11px] font-semibold text-slate-500">Active Interviews</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-emerald-200 shadow-cockpit-card flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+          <i data-lucide="award" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-emerald-600" id="kpi-offer">1</div>
+          <div class="text-[11px] font-semibold text-slate-500">Legit Offers</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-cockpit-card flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold">
+          <i data-lucide="archive" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-slate-700" id="kpi-rejected">4</div>
+          <div class="text-[11px] font-semibold text-slate-500">Rejections Logged</div>
+        </div>
+      </div>
+
+      <div class="bg-red-50/80 rounded-2xl p-4 border-2 border-red-400 shadow-cockpit-card flex items-center gap-3 col-span-2 sm:col-span-1 cursor-pointer hover:bg-red-100/80 transition-all" onclick="switchView('scam-radar')">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold shadow-md shadow-red-500/30">
+          <i data-lucide="shield-alert" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-red-600" id="kpi-scams">4</div>
+          <div class="text-[11px] font-bold text-red-800">Scams Blocked</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION TABS & SEARCH BAR -->
+    <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="tab-kanban" type="button" onclick="switchView('kanban')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition-all">
+          <i data-lucide="kanban-square" class="w-4 h-4"></i>
+          <span>Autopilot Tracker Board</span>
+        </button>
+
+        <button id="tab-scam-radar" type="button" onclick="switchView('scam-radar')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-red-700 hover:bg-red-50 transition-all">
+          <i data-lucide="shield-x" class="w-4 h-4 text-red-600"></i>
+          <span>Scam Quarantine Radar</span>
+          <span id="sidebar-scam-badge" class="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full font-mono font-bold">4 Blocked</span>
+        </button>
+
+        <button id="tab-follow-up" type="button" onclick="switchView('follow-up')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-amber-800 hover:bg-amber-50 transition-all">
+          <i data-lucide="clock-alert" class="w-4 h-4 text-amber-600"></i>
+          <span>Follow-up Queue</span>
+          <span id="sidebar-followup-badge" class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded-full font-mono font-bold">4 Due</span>
+        </button>
+
+        <button id="tab-interview-studio" type="button" onclick="switchView('interview-studio')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-purple-800 hover:bg-purple-50 transition-all">
+          <i data-lucide="mic" class="w-4 h-4 text-purple-600"></i>
+          <span>Interview Studio (Stretch)</span>
+        </button>
+
+        <button id="tab-inbox" type="button" onclick="switchView('inbox')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="inbox" class="w-4 h-4"></i>
+          <span>Synced Inbox (20)</span>
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative w-full md:w-72">
+        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+        <input type="text" id="filter-input" onkeyup="filterContent()" placeholder="Search role, company or sender..." class="w-full pl-9 pr-4 py-2 bg-white text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm">
+      </div>
+    </div>
+
+    <!-- VIEW 1: KANBAN TRACKER BOARD -->
+    <div id="view-kanban" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <!-- Column: APPLIED & IN REVIEW -->
+      <div class="flex flex-col bg-slate-100/70 rounded-2xl p-4 border border-slate-200 min-h-[500px]">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+            <h3 class="font-display font-bold text-slate-800 text-xs uppercase tracking-wider">Applied &amp; In Review</h3>
+          </div>
+          <span id="badge-count-applied" class="px-2 py-0.5 text-xs font-bold rounded-full bg-white text-slate-700 border border-slate-200">0</span>
+        </div>
+        <div id="col-applied" class="flex flex-col gap-3 flex-1 custom-scrollbar overflow-y-auto"></div>
+      </div>
+
+      <!-- Column: INTERVIEWS ACTIVE -->
+      <div class="flex flex-col bg-indigo-50/40 rounded-2xl p-4 border border-indigo-200 min-h-[500px]">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span>
+            <h3 class="font-display font-bold text-indigo-900 text-xs uppercase tracking-wider">Interviews Active</h3>
+          </div>
+          <span id="badge-count-interview" class="px-2 py-0.5 text-xs font-bold rounded-full bg-white text-indigo-700 border border-indigo-200">0</span>
+        </div>
+        <div id="col-interview" class="flex flex-col gap-3 flex-1 custom-scrollbar overflow-y-auto"></div>
+      </div>
+
+      <!-- Column: LEGITIMATE OFFERS -->
+      <div class="flex flex-col bg-emerald-50/40 rounded-2xl p-4 border border-emerald-200 min-h-[500px]">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+            <h3 class="font-display font-bold text-emerald-900 text-xs uppercase tracking-wider">Legit Offers</h3>
+          </div>
+          <span id="badge-count-offer" class="px-2 py-0.5 text-xs font-bold rounded-full bg-white text-emerald-700 border border-emerald-200">0</span>
+        </div>
+        <div id="col-offer" class="flex flex-col gap-3 flex-1 custom-scrollbar overflow-y-auto"></div>
+      </div>
+
+      <!-- Column: REJECTED -->
+      <div class="flex flex-col bg-slate-100/70 rounded-2xl p-4 border border-slate-200 min-h-[500px]">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+            <h3 class="font-display font-bold text-slate-700 text-xs uppercase tracking-wider">Rejected</h3>
+          </div>
+          <span id="badge-count-rejected" class="px-2 py-0.5 text-xs font-bold rounded-full bg-white text-slate-600 border border-slate-200">0</span>
+        </div>
+        <div id="col-rejected" class="flex flex-col gap-3 flex-1 custom-scrollbar overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: SCAM QUARANTINE RADAR -->
+    <div id="view-scam-radar" class="hidden flex-col gap-4">
+      <div class="bg-red-600 text-white rounded-3xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-scam-glow">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
+            <i data-lucide="shield-alert" class="w-7 h-7 text-white"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="font-display font-extrabold text-lg tracking-tight">Active Scam Interceptor: Zero Compromise</h2>
+              <span class="text-[10px] bg-red-900/60 uppercase tracking-wider px-2 py-0.5 rounded font-mono font-bold">4 Flagged</span>
+            </div>
+            <p class="text-xs text-red-100 mt-0.5">Automated heuristics flag advance fee scams, free-mail corporate imposters, and premature Aadhaar/PAN extortion.</p>
+          </div>
+        </div>
+        <div class="px-3.5 py-1.5 rounded-xl bg-black/20 text-xs font-mono font-semibold whitespace-nowrap">
+          Candidate Identity Shielded
+        </div>
+      </div>
+
+      <div id="scam-radar-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </div>
+
+    <!-- VIEW 3: FOLLOW-UP QUEUE -->
+    <div id="view-follow-up" class="hidden flex-col gap-4">
+      <div class="bg-amber-500 text-white rounded-3xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-md">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
+            <i data-lucide="clock" class="w-7 h-7 text-white"></i>
+          </div>
+          <div>
+            <h2 class="font-display font-extrabold text-lg tracking-tight">Autonomous Follow-Up Nudge Queue</h2>
+            <p class="text-xs text-amber-100 mt-0.5">Recruiter replies drop significantly after 7 days of silence. 1-click professional follow-up nudges boost response rates by 34%.</p>
+          </div>
+        </div>
+        <span class="text-xs bg-amber-600/70 px-3 py-1.5 rounded-xl font-mono font-semibold">Threshold: &gt;= 7 Days</span>
+      </div>
+
+      <div id="followup-queue-list" class="flex flex-col gap-4"></div>
+    </div>
+
+    <!-- VIEW 4: INTERVIEW PREP STUDIO (STRETCH GOAL) -->
+    <div id="view-interview-studio" class="hidden flex-col gap-6">
+      <div class="bg-gradient-to-r from-purple-800 to-indigo-700 text-white rounded-3xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
+            <i data-lucide="graduation-cap" class="w-7 h-7 text-white"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="font-display font-black text-lg tracking-tight">Interview Prep Studio: Stripe</h2>
+              <span class="text-[10px] font-bold uppercase tracking-wider bg-purple-900/60 px-2 py-0.5 rounded border border-purple-400/30">Upcoming Round 2</span>
+            </div>
+            <p class="text-xs text-purple-200 mt-0.5">Staff Full-Stack Engineer — Billing &amp; Payment Architecture</p>
+          </div>
+        </div>
+        <div class="text-xs bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-xl font-semibold">
+          Tomorrow @ 2:00 PM PST • Google Meet (45 mins)
+        </div>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-[11px] font-bold uppercase text-slate-400">Panel Profile</span>
+          <h4 class="font-bold text-slate-900 text-sm mt-0.5">VP Platform + Lead Architect</h4>
+          <p class="text-xs text-slate-500 mt-1">Focus on scale, distributed data consistency, and trade-offs.</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-[11px] font-bold uppercase text-slate-400">Target Level Benchmark</span>
+          <h4 class="font-bold text-slate-900 text-sm mt-0.5">Staff / Principal (L6+)</h4>
+          <p class="text-xs text-slate-500 mt-1">Requires system-wide impact, cross-org leadership, and resilience.</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-[11px] font-bold uppercase text-slate-400">Compensation Target</span>
+          <h4 class="font-bold text-emerald-700 text-sm mt-0.5">$250k - $290k Base + Equity</h4>
+          <p class="text-xs text-slate-500 mt-1">San Francisco / Remote verified tier.</p>
+        </div>
+      </div>
+
+      <!-- Technical Architecture Review -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display font-bold text-sm uppercase tracking-wider text-slate-900 flex items-center gap-2">
+          <i data-lucide="cpu" class="w-4 h-4 text-indigo-600"></i>
+          <span>Core System Architecture Topics to Ace</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-1.5">
+            <span class="text-xs font-bold text-indigo-700">1. Idempotency Keys in Payment APIs</span>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Explain distributed locking via Redis with TTLs, request hashing to prevent double charging, and the Transactional Outbox pattern for publishing events after database commits.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-1.5">
+            <span class="text-xs font-bold text-indigo-700">2. Event-Driven Webhooks &amp; Retries</span>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Discuss truncated exponential backoff with decorrelated jitter to prevent thundering herds on merchant endpoints, along with Dead-Letter Queues (DLQ) and replay tools.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-1.5">
+            <span class="text-xs font-bold text-indigo-700">3. Zero-Downtime Schema Migrations</span>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Walk through the Expand/Contract (Parallel Run) strategy for live database tables undergoing high transactional throughput without acquiring exclusive table locks.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anticipated STAR Stories -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display font-bold text-sm uppercase tracking-wider text-slate-900 flex items-center gap-2">
+          <i data-lucide="message-square" class="w-4 h-4 text-indigo-600"></i>
+          <span>Anticipated Behavioral &amp; Leadership Prompts</span>
+        </h3>
+        <div class="space-y-3">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <h4 class="text-xs font-bold text-slate-900">"Tell me about a high-severity production outage you triaged."</h4>
+            <p class="text-xs text-slate-600 mt-1">
+              <strong>Hook:</strong> Lead with your 2025 Black Friday DB connection pool exhaustion (50,000 req/s). Walk through blameless RCA, immediate circuit-breaker mitigation, and long-term PgBouncer partition rollout.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <h4 class="text-xs font-bold text-slate-900">"How do you resolve deep architectural disagreements among staff engineers?"</h4>
+            <p class="text-xs text-slate-600 mt-1">
+              <strong>Hook:</strong> Highlight your RFC-driven decision matrix where competing options are evaluated against quantitative SLA, latency, and operational cost metrics rather than subjective dogma.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Questions to Ask -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col gap-3">
+        <h3 class="font-display font-bold text-sm uppercase tracking-wider text-slate-900 flex items-center gap-2">
+          <i data-lucide="help-circle" class="w-4 h-4 text-indigo-600"></i>
+          <span>High-Impact Questions to Ask at the End</span>
+        </h3>
+        <ul class="list-disc pl-5 text-xs text-slate-600 space-y-1.5">
+          <li>"How does Stripe's platform engineering org balance 99.999% availability SLAs with weekly continuous zero-downtime deployment cadences?"</li>
+          <li>"What is the single highest-leverage infrastructure challenge your billing platform needs solved over the next two quarters?"</li>
+          <li>"How does the team evaluate trade-offs between managed cloud services and in-house distributed primitives at Stripe's current scale?"</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- VIEW 5: SYNCED INBOX TABLE -->
+    <div id="view-inbox" class="hidden flex-col bg-white rounded-3xl p-6 border border-slate-200 shadow-cockpit-card">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="font-display font-bold text-base text-slate-900">Raw Ingested Stream (20 Emails)</h2>
+          <p class="text-xs text-slate-500">Autonomous email classification &amp; threat inspection ledger</p>
+        </div>
+        <span class="text-xs font-mono text-slate-400">Chronological Stream</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-200">
+            <tr>
+              <th class="py-3 px-4">Status / Threat</th>
+              <th class="py-3 px-4">Company</th>
+              <th class="py-3 px-4">Sender Email</th>
+              <th class="py-3 px-4">Subject</th>
+              <th class="py-3 px-4">Date</th>
+              <th class="py-3 px-4">Action</th>
+            </tr>
+          </thead>
+          <tbody id="inbox-table-body" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- EMAIL DETAIL & THREAT INSPECTION MODAL -->
+  <div id="email-detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between" id="modal-header-bg">
+        <div class="flex items-center gap-3">
+          <div id="modal-badge-icon" class="p-2.5 rounded-xl bg-slate-100 text-slate-700"></div>
+          <div>
+            <h3 id="modal-subject" class="font-display font-bold text-slate-900 text-base">Subject Line</h3>
+            <p id="modal-meta" class="text-xs text-slate-500 font-mono">From &amp; Date</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeEmailModal()" aria-label="Close details modal" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-6 flex flex-col gap-4 max-h-[60vh] overflow-y-auto">
+        <!-- Threat Alert Box in Modal (if scam) -->
+        <div id="modal-scam-alert" class="hidden p-4 rounded-2xl bg-red-50 border-2 border-red-500 flex flex-col gap-2">
+          <div class="flex items-center gap-2 text-red-700 font-bold text-xs uppercase tracking-wider">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            <span>Threat Intelligence Breakdown &amp; Red Flags</span>
+          </div>
+          <div id="modal-scam-reasons" class="text-xs text-red-900 flex flex-col gap-1 font-semibold pl-2"></div>
+        </div>
+
+        <div class="text-xs text-slate-700 font-sans leading-relaxed whitespace-pre-line bg-slate-50 p-4 rounded-2xl border border-slate-200" id="modal-body"></div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <span class="text-[11px] text-slate-400 font-mono">Zero-Trust Inspection Hash: #8F29A</span>
+        <button type="button" onclick="closeEmailModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm">
+          Close Dossier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="global-toast" class="fixed bottom-6 right-6 z-50 hidden items-center gap-2 px-4 py-3 bg-slate-900 text-white text-xs font-bold rounded-2xl shadow-2xl border border-slate-800 transition-all">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="global-toast-message">Action successful!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="Job Hunt Autopilot.js"></script>
+</body>
+</html>
