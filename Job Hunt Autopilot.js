@@ -247,6 +247,16 @@ const EMBEDDED_EMAILS = [
   }
 ];
 
+function safeCreateIcons() {
+  if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
+    try {
+      lucide.createIcons();
+    } catch (e) {
+      console.warn("Lucide icon rendering skipped:", e);
+    }
+  }
+}
+
 const FREE_MAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'rediffmail.com', 'mail.com', 'proton.me'];
 
 /**
@@ -354,7 +364,7 @@ async function initAutopilot() {
   }
   filteredEmails = [...allEmails];
   renderAll();
-  lucide.createIcons();
+  safeCreateIcons();
 }
 
 /**
@@ -530,7 +540,7 @@ function renderKanban() {
       colRejected.appendChild(card);
     }
   });
-  lucide.createIcons();
+  safeCreateIcons();
 }
 
 /**
@@ -593,7 +603,7 @@ function renderScamRadar() {
     `;
     container.appendChild(card);
   });
-  lucide.createIcons();
+  safeCreateIcons();
 }
 
 /**
@@ -644,7 +654,7 @@ ${draft.body}
     `;
     container.appendChild(card);
   });
-  lucide.createIcons();
+  safeCreateIcons();
 }
 
 /**
@@ -687,7 +697,7 @@ function renderInboxTable() {
     `;
     tbody.appendChild(tr);
   });
-  lucide.createIcons();
+  safeCreateIcons();
 }
 
 /**
@@ -716,7 +726,7 @@ function switchView(viewName) {
       activeTab.className = "flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition-all";
     }
   }
-  lucide.createIcons();
+  safeCreateIcons();
 }
 
 /**
@@ -773,7 +783,7 @@ function openEmailModal(id) {
   const modal = document.getElementById('email-detail-modal');
   modal.classList.remove('hidden');
   modal.classList.add('flex');
-  lucide.createIcons();
+  safeCreateIcons();
 }
 
 function closeEmailModal() {
@@ -820,7 +830,7 @@ async function triggerAutopilotIngestion() {
   const btn = document.getElementById('btn-run-autopilot');
   const originalText = btn.innerHTML;
   btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Ingesting &amp; Auditing 20 Emails...`;
-  lucide.createIcons();
+  safeCreateIcons();
 
   try {
     const res = await fetch('/api/rescan', { method: 'POST' });
@@ -839,10 +849,10 @@ async function triggerAutopilotIngestion() {
     renderAll();
     showToast("Inbox sync complete: 20 emails audited, 4 scams quarantined!");
     btn.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-300"></i> Sync Complete!`;
-    lucide.createIcons();
+    safeCreateIcons();
     setTimeout(() => {
       btn.innerHTML = originalText;
-      lucide.createIcons();
+      safeCreateIcons();
     }, 2000);
   }, 600);
 }
