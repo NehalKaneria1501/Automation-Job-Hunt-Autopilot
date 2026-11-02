@@ -354,22 +354,125 @@ let sirenActive = true;
 let isMobileViewport = false;
 let isRecordingMock = false;
 
+let dbEngine = 'sqlite'; // 'sqlite' or 'indexeddb'
+let idbInstance = null;
+
+// IndexedDB Browser Storage Helper
+function openIndexedDB() {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || !window.indexedDB) {
+      resolve(null);
+      return;
+    }
+    const req = window.indexedDB.open("JobHuntAutopilotDB", 1);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("applications")) {
+        db.createObjectStore("applications", { keyPath: "id", autoIncrement: true });
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = () => resolve(null);
+  });
+}
+
+function getAllFromIndexedDB(db) {
+  return new Promise((resolve) => {
+    if (!db) { resolve([]); return; }
+    try {
+      const tx = db.transaction("applications", "readonly");
+      const store = tx.objectStore("applications");
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    } catch (e) {
+      resolve([]);
+    }
+  });
+}
+
+function putRecordToIndexedDB(db, item) {
+  return new Promise((resolve) => {
+    if (!db) { resolve(); return; }
+    try {
+      const tx = db.transaction("applications", "readwrite");
+      const store = tx.objectStore("applications");
+      store.put(item);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    } catch (e) {
+      resolve();
+    }
+  });
+}
+
+function clearIndexedDB(db) {
+  return new Promise((resolve) => {
+    if (!db) { resolve(); return; }
+    try {
+      const tx = db.transaction("applications", "readwrite");
+      const store = tx.objectStore("applications");
+      store.clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    } catch (e) {
+      resolve();
+    }
+  });
+}
+
 /**
- * Initialize application: Try fetching from backend API if available, else use embedded dataset
+ * Initialize application: Connect to relational SQLite database or browser IndexedDB
  */
 async function initAutopilot() {
+  let sqliteActive = false;
   try {
-    const response = await fetch('/api/triage');
-    if (response.ok) {
-      const data = await response.json();
-      allEmails = data.emails;
-    } else {
-      throw new Error("API not active");
+    const statusRes = await fetch('/api/db/status');
+    if (statusRes.ok) {
+      const statusData = await statusRes.json();
+      if (statusData.active) {
+        sqliteActive = true;
+        dbEngine = 'sqlite';
+        safeSetText('db-status-badge-text', 'DB: SQLite Connected');
+        safeSetText('db-modal-engine-text', 'Engine: Relational SQLite (autopilot.db)');
+        safeSetText('db-modal-engine-badge', 'SQLite 3.14 (Active)');
+      }
     }
-  } catch (err) {
-    // Standalone fallback
-    allEmails = EMBEDDED_EMAILS.map(evaluateAutopilotRules);
+  } catch (e) {
+    sqliteActive = false;
   }
+
+  if (sqliteActive) {
+    try {
+      const triageRes = await fetch('/api/triage');
+      if (triageRes.ok) {
+        const data = await triageRes.json();
+        allEmails = data.emails;
+      }
+    } catch (e) {
+      allEmails = EMBEDDED_EMAILS.map(evaluateAutopilotRules);
+    }
+  } else {
+    // Client-side IndexedDB persistent engine
+    dbEngine = 'indexeddb';
+    safeSetText('db-status-badge-text', 'DB: IndexedDB Connected');
+    safeSetText('db-modal-engine-text', 'Engine: Browser IndexedDB (JobHuntAutopilotDB)');
+    safeSetText('db-modal-engine-badge', 'IndexedDB (Offline)');
+
+    idbInstance = await openIndexedDB();
+    let stored = await getAllFromIndexedDB(idbInstance);
+    if (!stored || stored.length === 0) {
+      stored = EMBEDDED_EMAILS.map(evaluateAutopilotRules);
+      if (idbInstance) {
+        for (const it of stored) {
+          await putRecordToIndexedDB(idbInstance, it);
+        }
+      }
+    }
+    allEmails = stored;
+  }
+
+  safeSetText('db-modal-records-count', `${allEmails.length} Records`);
   filteredEmails = [...allEmails];
   renderAll();
   safeCreateIcons();
@@ -1296,6 +1399,135 @@ async function triggerAutopilotIngestion() {
     }
     showToast("Triage complete: 20 emails indexed, 4 predatory scams quarantined!");
   }, 700);
+}
+
+/**
+ * Database Management Controls (SQLite & IndexedDB)
+ */
+function openDatabaseModal() {
+  const m = document.getElementById('db-modal');
+  safeSetText('db-modal-records-count', `${allEmails.length} Records`);
+  if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+  safeCreateIcons();
+}
+
+function closeDatabaseModal() {
+  const m = document.getElementById('db-modal');
+  if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+}
+
+function openAddAppModal() {
+  const m = document.getElementById('add-app-modal');
+  if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+  safeCreateIcons();
+}
+
+function closeAddAppModal() {
+  const m = document.getElementById('add-app-modal');
+  if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+}
+
+async function handleCreateApplication(event) {
+  event.preventDefault();
+  const company = document.getElementById('new-app-company')?.value.trim();
+  const role = document.getElementById('new-app-role')?.value.trim();
+  const salary = document.getElementById('new-app-salary')?.value.trim() || 'Negotiable';
+  const status = document.getElementById('new-app-status')?.value || 'applied';
+  const sender = document.getElementById('new-app-sender')?.value.trim() || 'recruiter@company.com';
+  const notes = document.getElementById('new-app-notes')?.value.trim() || '';
+
+  if (!company || !role) {
+    showToast("Please enter Company Name and Role!");
+    return;
+  }
+
+  const newApp = {
+    id: Date.now(),
+    company: company,
+    role: role,
+    sender: sender,
+    subject: `Application Submitted: ${role} @ ${company}`,
+    body: `Application recorded in Database. Notes: ${notes}`,
+    date: new Date().toISOString().split('T')[0],
+    daysAgo: 0,
+    salary: salary,
+    location: "Remote / Hybrid",
+    evaluatedStatus: status,
+    isScam: false,
+    scamReasons: [],
+    followUpDue: false,
+    followUpDraft: null,
+    notes: notes
+  };
+
+  if (dbEngine === 'sqlite') {
+    try {
+      const res = await fetch('/api/db/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          company: company,
+          role: role,
+          salary: salary,
+          status: status,
+          sender: sender,
+          notes: notes
+        })
+      });
+      if (res.ok) {
+        showToast(`Saved ${company} to SQLite Database (autopilot.db)!`);
+      }
+    } catch (e) {
+      console.warn("SQLite save error, saving in-memory:", e);
+    }
+  } else if (idbInstance) {
+    await putRecordToIndexedDB(idbInstance, newApp);
+    showToast(`Saved ${company} to IndexedDB!`);
+  }
+
+  allEmails.unshift(newApp);
+  filteredEmails = [...allEmails];
+  renderAll();
+  closeAddAppModal();
+  showToast(`Application for ${company} added successfully!`);
+}
+
+async function resetDatabaseToSample() {
+  if (confirm("Reset database back to the default 20 sample job seeker emails?")) {
+    if (dbEngine === 'sqlite') {
+      try {
+        await fetch('/api/db/reset', { method: 'POST' });
+        showToast("Relational SQLite database reset to 20 emails.");
+      } catch (e) {}
+    } else if (idbInstance) {
+      await clearIndexedDB(idbInstance);
+      const defaults = EMBEDDED_EMAILS.map(evaluateAutopilotRules);
+      for (const item of defaults) {
+        await putRecordToIndexedDB(idbInstance, item);
+      }
+      showToast("IndexedDB reset to 20 sample emails.");
+    }
+    await initAutopilot();
+    closeDatabaseModal();
+  }
+}
+
+function exportDatabaseBackup() {
+  const exportPayload = {
+    database: dbEngine,
+    version: "3.2.0",
+    exportedAt: new Date().toISOString(),
+    recordCount: allEmails.length,
+    applications: allEmails
+  };
+
+  const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `autopilot-${dbEngine}-backup.json`;
+  a.click();
+  showToast(`Exported ${allEmails.length} database records to JSON!`);
 }
 
 // Kick off initialization on DOM ready

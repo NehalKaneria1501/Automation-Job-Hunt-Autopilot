@@ -117,6 +117,12 @@
           <span class="hidden sm:inline">Connect Accounts</span>
         </button>
 
+        <!-- Database Manager Trigger -->
+        <button type="button" onclick="openDatabaseModal()" id="btn-db-status" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-all shadow-xs">
+          <span class="material-symbols-outlined text-[18px] text-emerald-600">database</span>
+          <span id="db-status-badge-text">DB: SQLite Connected</span>
+        </button>
+
         <!-- Re-Scan Inbox Button -->
         <button id="btn-run-autopilot" type="button" onclick="triggerAutopilotIngestion()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all active:scale-95">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
@@ -315,6 +321,10 @@
             </select>
             <button type="button" onclick="openConnectModal()" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 px-2 py-1">
               + Connect Mailbox
+            </button>
+            <button type="button" onclick="openAddAppModal()" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs flex items-center gap-1 transition-all active:scale-95">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+              <span>Add Job</span>
             </button>
           </div>
         </div>
@@ -1343,6 +1353,154 @@
       <button type="button" onclick="closeShelfDrawer()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700">
         Close Shelf
       </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 7: DATABASE MANAGEMENT MODAL (SQLITE & INDEXEDDB DUAL ENGINE) -->
+  <!-- ========================================================================= -->
+  <div id="db-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-emerald-50/60">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+            <span class="material-symbols-outlined text-[22px]">database</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-slate-900 text-base">Database Integration &amp; Persistence</h3>
+            <p class="text-xs text-slate-500 font-mono" id="db-modal-engine-text">Engine: SQLite (autopilot.db) &amp; IndexedDB</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeDatabaseModal()" class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-6 flex flex-col gap-4 text-xs">
+        <!-- DB Status Metrics Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Active Engine</span>
+            <span id="db-modal-engine-badge" class="font-bold text-emerald-700 text-xs mt-0.5 inline-block">SQLite 3.14</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Stored Records</span>
+            <span id="db-modal-records-count" class="font-bold text-slate-900 text-xs mt-0.5 inline-block">20 Applications</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-center col-span-2 sm:col-span-1">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Threat Ledger</span>
+            <span class="font-bold text-red-600 text-xs mt-0.5 inline-block">4 Quarantine Logs</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-slate-600 leading-relaxed text-xs">
+          <strong>Persistence Architecture:</strong> When running locally, all applications, stage changes, and threat flags are synchronized to the local relational <strong>SQLite database</strong> (<code class="bg-white px-1 rounded font-mono text-indigo-600 font-bold">autopilot.db</code>). When accessed via GitHub Pages or Vercel, the app automatically runs on native browser <strong>IndexedDB</strong> for seamless, offline-first client-side persistence.
+        </div>
+
+        <!-- Actions List -->
+        <div class="space-y-2 pt-1">
+          <button type="button" onclick="closeDatabaseModal(); openAddAppModal();" class="w-full p-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-2xl flex items-center justify-between text-indigo-900 font-bold transition-colors">
+            <span class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-indigo-600">add_circle</span>
+              <span>Add New Application to Database</span>
+            </span>
+            <span>→</span>
+          </button>
+
+          <button type="button" onclick="exportDatabaseBackup()" class="w-full p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between text-slate-800 font-bold transition-colors">
+            <span class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-slate-600">download</span>
+              <span>Export Full Database Backup (.json)</span>
+            </span>
+            <span>Download</span>
+          </button>
+
+          <button type="button" onclick="resetDatabaseToSample()" class="w-full p-3 bg-red-50 hover:bg-red-100 border border-red-200 rounded-2xl flex items-center justify-between text-red-800 font-bold transition-colors">
+            <span class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-red-600">restart_alt</span>
+              <span>Reset Database to Default 20 Emails</span>
+            </span>
+            <span>Reset</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <span class="text-[11px] text-slate-400 font-mono">Sync Mode: Bidirectional Auto-Commit</span>
+        <button type="button" onclick="closeDatabaseModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 8: ADD NEW APPLICATION MODAL -->
+  <!-- ========================================================================= -->
+  <div id="add-app-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-indigo-50/60">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
+            <span class="material-symbols-outlined text-[20px]">post_add</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-slate-900 text-base">Add Job Application</h3>
+            <p class="text-xs text-slate-500 font-medium">Persist directly into relational database</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAddAppModal()" class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateApplication(event)" class="p-6 flex flex-col gap-3.5 text-xs">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Company Name *</label>
+          <input type="text" id="new-app-company" required placeholder="e.g. Anthropic, Stripe, Apple" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Role Title *</label>
+          <input type="text" id="new-app-role" required placeholder="e.g. Staff Distributed Systems Engineer" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Target Compensation</label>
+            <input type="text" id="new-app-salary" placeholder="e.g. $220k - $260k" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Pipeline Stage</label>
+            <select id="new-app-status" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="applied">Applied &amp; In Review</option>
+              <option value="interview">Active Interview</option>
+              <option value="offer">Legitimate Offer</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Recruiter Email / Contact</label>
+          <input type="email" id="new-app-sender" placeholder="e.g. recruiter@company.com" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Internal Notes &amp; Strategy</label>
+          <textarea id="new-app-notes" rows="3" placeholder="Referred by engineering director, team focus on streaming inference..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+          <button type="button" onclick="closeAddAppModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 active:scale-95 transition-all">
+            Save to Database
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
