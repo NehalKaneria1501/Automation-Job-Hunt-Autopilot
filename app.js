@@ -8189,3 +8189,620 @@ function scrollNavTabs(direction) {
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   }
 }
+
+
+// =============================================================================
+// PREMIER ED-TECH ECOSYSTEM: SCALER, APNA COLLEGE, EDUREKA, INTELLIPAAT,
+// CODEWITHHARRY, WSCUBE TECH, IN-PAGE PAYMENT, INTERVIEW NOTES & GOOGLE MAPS
+// =============================================================================
+
+const expandedCoursesData = [
+  {
+    id: "scaler-fullstack",
+    platform: "scaler",
+    platformBadge: "Scaler Academy Inspired",
+    badgeColor: "bg-red-50 text-red-700 border-red-200",
+    title: "Scaler Software Academy: Full-Stack & System Design Masterclass",
+    desc: "Comprehensive 9-month industry cohort covering Low-Level Design (LLD), High-Level Design (HLD), Distributed Microservices, Redis, Kafka, and 1:1 Live Mock Interviews with FAANG Staff.",
+    rating: 4.95,
+    students: 4850,
+    duration: "9 Months Cohort",
+    priceInr: "₹24,999",
+    priceUsd: "$299",
+    rawPrice: 24999,
+    emiText: "₹2,083 / month",
+    tags: ["System Design", "LLD / HLD", "Microservices", "1:1 Mentorship"],
+    freeBadge: "Free 1:1 Evaluation"
+  },
+  {
+    id: "apna-alpha-dsa",
+    platform: "apna",
+    platformBadge: "Apna College Inspired",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+    title: "Alpha DSA & Placement Batch: Complete Java & C++ Masterclass",
+    desc: "From Zero to FAANG Placement with 375+ curated LeetCode problems. Comprehensive coverage of Recursion, Backtracking, BSTs, Dynamic Programming, and Graph Traversals.",
+    rating: 4.9,
+    students: 12400,
+    duration: "120 Hours On-Demand",
+    priceInr: "₹4,999",
+    priceUsd: "$59",
+    rawPrice: 4999,
+    emiText: "₹833 / month",
+    tags: ["DSA Sheet", "Java", "C++", "LeetCode 375"],
+    freeBadge: "Modules 1-3 Free"
+  },
+  {
+    id: "edureka-cloud-devops",
+    platform: "edureka",
+    platformBadge: "Edureka Inspired",
+    badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+    title: "Cloud DevOps & Production Kubernetes Architect Certification",
+    desc: "Hands-on multi-cloud engineering spanning AWS, Azure, Docker, Kubernetes Helm charts, Terraform Infrastructure-as-Code, CI/CD pipelines, and Prometheus SRE observability.",
+    rating: 4.85,
+    students: 6200,
+    duration: "60 Hours Live Labs",
+    priceInr: "₹14,999",
+    priceUsd: "$179",
+    rawPrice: 14999,
+    emiText: "₹1,250 / month",
+    tags: ["Kubernetes", "Docker", "AWS / Azure", "Terraform", "SRE"],
+    freeBadge: "Lab Preview Free"
+  },
+  {
+    id: "intellipaat-genai",
+    platform: "intellipaat",
+    platformBadge: "Intellipaat Inspired",
+    badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    title: "Executive Post-Graduate in AI & Generative AI Systems",
+    desc: "Master LLM application engineering, RAG pipelines with Vector DBs (Pinecone/Milvus), Agentic Workflows via Model Context Protocol (MCP), and fine-tuning open weights like Llama-3.",
+    rating: 4.9,
+    students: 3400,
+    duration: "6 Months Weekend Live",
+    priceInr: "₹29,999",
+    priceUsd: "$349",
+    rawPrice: 29999,
+    emiText: "₹2,500 / month",
+    tags: ["GenAI", "LLMs", "MCP Agents", "RAG", "PyTorch"],
+    freeBadge: "Job Assistance"
+  },
+  {
+    id: "harry-webdev",
+    platform: "harry",
+    platformBadge: "CodeWithHarry Inspired",
+    badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
+    title: "Complete Modern Full-Stack Web Development & Next.js 15 Sprint",
+    desc: "Practical hands-on web development building 10 production-ready projects with React 19, Next.js, Node.js, Express, MongoDB, TailwindCSS, and cloud deployment on Vercel.",
+    rating: 4.95,
+    students: 18500,
+    duration: "80 Hours Video",
+    priceInr: "₹1,999",
+    priceUsd: "$25",
+    rawPrice: 1999,
+    emiText: "₹333 / month",
+    tags: ["Next.js", "React 19", "MERN", "10 Projects"],
+    freeBadge: "Source Code Free"
+  },
+  {
+    id: "wscube-flutter",
+    platform: "harry",
+    platformBadge: "WsCube Tech Inspired",
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    title: "Cross-Platform Mobile App Development with Flutter & Dart",
+    desc: "Step-by-step mobile app development with Dart, Flutter 3.x, Riverpod state management, Firebase authentication, Firestore, REST APIs, and Google Play Store deployment.",
+    rating: 4.8,
+    students: 5100,
+    duration: "50 Hours Project Sprint",
+    priceInr: "₹3,499",
+    priceUsd: "$45",
+    rawPrice: 3499,
+    emiText: "₹583 / month",
+    tags: ["Flutter", "Dart", "Firebase", "App Store"],
+    freeBadge: "Interview Q&A"
+  }
+];
+
+const interviewNotesData = [
+  {
+    id: "note-dsa-75",
+    tag: "FAANG DSA 75",
+    pages: "28 Pages • High-Yield",
+    title: "FAANG Essential 75 DSA Patterns & Pitfalls Sheet",
+    summary: "The highest frequency patterns asked at Google, Meta, and Amazon: Two Pointers, Fast & Slow, Sliding Window, Monotonic Stack, Top-K Elements, and DP State Reductions.",
+    snippets: "Python, C++, Java code templates included for all 75 problems.",
+    content: `
+      <h4 class="font-bold text-slate-900 text-sm">1. Two Pointers &amp; Sliding Window Cheat Sheet</h4>
+      <p class="text-xs text-slate-600">Whenever searching for contiguous subarrays or pairs in sorted arrays, use two pointers to achieve O(N) time with O(1) space.</p>
+      <pre class="bg-slate-900 text-emerald-400 p-3 rounded-xl font-mono text-xs mt-2"><code>// Sliding Window Template (Dynamic Size)
+def minSubArrayLen(target: int, nums: list[int]) -> int:
+    l, total, min_len = 0, 0, float('inf')
+    for r in range(len(nums)):
+        total += nums[r]
+        while total >= target:
+            min_len = min(min_len, r - l + 1)
+            total -= nums[l]
+            l += 1
+    return 0 if min_len == float('inf') else min_len</code></pre>
+      
+      <h4 class="font-bold text-slate-900 text-sm mt-4">2. Monotonic Stack Strategy</h4>
+      <p class="text-xs text-slate-600">Used for 'Next Greater Element' or 'Largest Rectangle in Histogram'. Keep stack monotonically decreasing.</p>
+    `
+  },
+  {
+    id: "note-system-design",
+    tag: "System Design HLD",
+    pages: "36 Pages • Architecture",
+    title: "High-Level & Low-Level System Design Primer",
+    summary: "Comprehensive trade-off matrix: CAP theorem in modern databases, Distributed Caching (Redis), Event-driven streaming (Kafka vs RabbitMQ), and Sharding architectures.",
+    snippets: "C4 model diagrams, API specs, and capacity estimation math.",
+    content: `
+      <h4 class="font-bold text-slate-900 text-sm">System Design Interview Math Cheatsheet</h4>
+      <ul class="list-disc pl-5 space-y-1 text-xs text-slate-700">
+        <li><strong>RPS to Daily Queries:</strong> 1,000 RPS ≈ 86.4M requests/day.</li>
+        <li><strong>Storage Math:</strong> 1KB per user record * 100M users = 100 GB storage.</li>
+        <li><strong>Latency Numbers Everyone Should Know:</strong> L1 cache ~ 0.5ns, RAM ~ 100ns, SSD read ~ 16μs, Data center roundtrip ~ 500μs, Intercontinental roundtrip ~ 150ms.</li>
+      </ul>
+    `
+  },
+  {
+    id: "note-behavioral-star",
+    tag: "Leadership & STAR",
+    pages: "20 Pages • Executive",
+    title: "Behavioral STAR & Amazon Leadership Principles Bank",
+    summary: "Word-for-word executive scripts for 'Tell me about a time you had a conflict with an engineering lead', 'Dealing with project delays', and 'Driving consensus across teams'.",
+    snippets: "50+ verified STAR frameworks tailored for Senior, Staff, and Director loops.",
+    content: `
+      <h4 class="font-bold text-slate-900 text-sm">The Google / Amazon STAR Formula</h4>
+      <p class="text-xs text-slate-600">Spend 15% on Situation, 15% on Task, 50% on Action (what YOU specifically did), and 20% on Measurable Business Result.</p>
+    `
+  },
+  {
+    id: "note-salary-negotiation",
+    tag: "Offer Negotiation",
+    pages: "16 Pages • Tactical",
+    title: "Executive Compensation & Offer Negotiation Playbook",
+    summary: "How to negotiate a 25-40% increase on initial FAANG offers. Scripts for leveraging competing offers, sign-on bonus escalations, and equity refresher terms.",
+    snippets: "Exact email templates and live phone negotiation counter-scripts.",
+    content: `
+      <h4 class="font-bold text-slate-900 text-sm">Rule #1: Never Give the First Number</h4>
+      <p class="text-xs text-slate-600">"I am confident that your team pays competitively for top talent at this level. Once we establish mutual fit, I'm certain we will arrive at a mutually agreeable package."</p>
+    `
+  },
+  {
+    id: "note-genai-mcp",
+    tag: "GenAI & MCP",
+    pages: "32 Pages • 2026 AI",
+    title: "Generative AI, Agentic Workflows & Model Context Protocol (MCP)",
+    summary: "Technical deep-dive on agent tool discovery, RAG retrieval strategies (dense vs sparse hybrid search), context window management, and zero-trust tool security.",
+    snippets: "Python & TypeScript code for custom MCP server implementations.",
+    content: `
+      <h4 class="font-bold text-slate-900 text-sm">Model Context Protocol Architecture</h4>
+      <p class="text-xs text-slate-600">MCP decouples LLMs from data sources using standard JSON-RPC 2.0 messages over stdio or Streamable HTTP.</p>
+    `
+  }
+];
+
+// Offline Tech Hubs & Walk-in Center Data
+const mapsCentersData = {
+  bangalore: {
+    city: "Bengaluru, Karnataka",
+    centerName: "Scaler & Autopilot Tech Hub (Koramangala)",
+    address: "80 Feet Road, 5th Block, Koramangala, Bengaluru, Karnataka 560095",
+    mapQuery: "Koramangala+5th+Block+Bengaluru+Karnataka",
+    phone: "+91 80 4718 2026",
+    hours: "Monday - Sunday: 9:00 AM - 9:00 PM IST",
+    facilities: ["10 Private Mock Interview Suites", "High-Speed Multi-Monitor Coding Lab", "In-Person Resume Review Clinic", "Placement Drives & Hiring Mixers"]
+  },
+  hyderabad: {
+    city: "Hyderabad, Telangana",
+    centerName: "Hitec City Walk-in Tech Center",
+    address: "Cyber Towers, 4th Floor, Hitec City, Madhapur, Hyderabad, Telangana 500081",
+    mapQuery: "Cyber+Towers+Hitec+City+Hyderabad",
+    phone: "+91 40 6820 2026",
+    hours: "Monday - Saturday: 9:30 AM - 8:30 PM IST",
+    facilities: ["System Design Whiteboarding Labs", "Technical Screening Rooms", "Alumni Networking Lounge"]
+  },
+  pune: {
+    city: "Pune, Maharashtra",
+    centerName: "Pune IT Hub & Offline Coding Arena",
+    address: "Cybercity Magarpatta, Tower 4, Hadapsar, Pune, Maharashtra 411028",
+    mapQuery: "Magarpatta+City+Hadapsar+Pune",
+    phone: "+91 20 5912 2026",
+    hours: "Monday - Saturday: 9:00 AM - 8:00 PM IST",
+    facilities: ["Live DSA Speed Programming Desks", "1-on-1 Mentor Chambers", "Cloud Lab Workstations"]
+  },
+  noida: {
+    city: "Delhi NCR (Noida)",
+    centerName: "Delhi NCR Tech Training & Assessment Hub",
+    address: "Sector 62, Electronic City, Noida, Uttar Pradesh 201309",
+    mapQuery: "Sector+62+Noida+Uttar+Pradesh",
+    phone: "+91 120 481 2026",
+    hours: "Monday - Sunday: 9:00 AM - 9:00 PM IST",
+    facilities: ["Full-Stack Project Assessment Center", "HR & Behavioral Mock Studio", "Co-working Learning Pods"]
+  },
+  mumbai: {
+    city: "Mumbai, Maharashtra",
+    centerName: "BKC Executive Leadership & Placement Center",
+    address: "Bandra Kurla Complex (BKC), G Block, Mumbai, Maharashtra 400051",
+    mapQuery: "Bandra+Kurla+Complex+Mumbai",
+    phone: "+91 22 6124 2026",
+    hours: "Monday - Friday: 9:00 AM - 8:00 PM IST",
+    facilities: ["Executive Interview Lounges", "Corporate Talent Acquisition Suites", "Offer Negotiation Strategy Desks"]
+  },
+  siliconvalley: {
+    city: "San Jose / Silicon Valley, USA",
+    centerName: "Silicon Valley FAANG Accelerator Hub",
+    address: "1600 Amphitheatre Pkwy, Mountain View, CA 94043",
+    mapQuery: "Mountain+View+California",
+    phone: "+1 (650) 253-2026",
+    hours: "Monday - Friday: 8:00 AM - 7:00 PM PST",
+    facilities: ["Staff & Principal Level Mock Boards", "Distributed Systems Simulator", "Venture & Tech Switcher Labs"]
+  }
+};
+
+let activeCourseSubTab = 'courses';
+let activeCourseFilter = 'all';
+let currentActivePaymentItem = null;
+let activePayMethod = 'upi';
+let activeSelectedNote = interviewNotesData[0];
+
+function initCoursesMentorsView() {
+  renderExpandedCoursesGrid();
+  renderInterviewNotesGrid();
+  renderMentorsCards();
+  selectMapCenter('bangalore');
+}
+
+function switchCourseSubTab(tab) {
+  activeCourseSubTab = tab;
+  const sections = ['courses', 'notes', 'mentors', 'maps'];
+  sections.forEach(s => {
+    const el = document.getElementById(`section-${s}-content`);
+    const btn = document.getElementById(`tab-btn-${s}`);
+    if (el) {
+      if (s === tab) el.classList.remove('hidden');
+      else el.classList.add('hidden');
+    }
+    if (btn) {
+      if (s === tab) {
+        btn.className = "px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all flex items-center gap-1.5";
+      } else {
+        btn.className = "px-3.5 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
+      }
+    }
+  });
+
+  if (tab === 'notes') renderInterviewNotesGrid();
+  if (tab === 'maps') selectMapCenter('bangalore');
+}
+
+function filterCoursesCategory(cat) {
+  activeCourseFilter = cat;
+  document.querySelectorAll('.course-cat-chip').forEach(c => {
+    c.className = "course-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0";
+  });
+  const target = event?.target;
+  if (target) target.className = "course-cat-chip px-3 py-1.5 rounded-xl bg-blue-600 text-white shrink-0";
+  renderExpandedCoursesGrid();
+}
+
+function searchCourses(query) {
+  const q = (query || '').toLowerCase().trim();
+  renderExpandedCoursesGrid(q);
+}
+
+function renderExpandedCoursesGrid(searchFilter = '') {
+  const grid = document.getElementById('courses-cards-grid');
+  if (!grid) return;
+
+  let courses = expandedCoursesData;
+  if (activeCourseFilter !== 'all') {
+    courses = courses.filter(c => c.platform === activeCourseFilter);
+  }
+  if (searchFilter) {
+    courses = courses.filter(c => c.title.toLowerCase().includes(searchFilter) || c.desc.toLowerCase().includes(searchFilter) || c.tags.some(t => t.toLowerCase().includes(searchFilter)));
+  }
+
+  grid.innerHTML = courses.map(c => `
+    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-4">
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 rounded-full border text-[10px] font-bold ${c.badgeColor}">
+            ${c.platformBadge}
+          </span>
+          <span class="text-xs text-amber-500 font-bold flex items-center gap-1">
+            <span>★ ${c.rating}</span>
+            <span class="text-slate-400 text-[10px] font-normal">(${c.students.toLocaleString()})</span>
+          </span>
+        </div>
+
+        <div>
+          <h4 class="font-display font-black text-slate-900 text-base leading-snug">${c.title}</h4>
+          <p class="text-xs text-slate-500 leading-relaxed mt-1.5 line-clamp-3">${c.desc}</p>
+        </div>
+
+        <div class="flex flex-wrap gap-1 pt-1">
+          ${c.tags.map(t => `<span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-semibold">${t}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-[10px] text-slate-400 font-bold uppercase">${c.duration}</div>
+            <div class="text-lg font-black text-slate-900 font-display">${c.priceInr} <span class="text-xs text-slate-400 font-normal">(${c.priceUsd})</span></div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">EMI from ${c.emiText}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button 
+            type="button" 
+            onclick="openCoursePreview('${c.id}')" 
+            class="py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs text-center transition-colors"
+          >
+            Free Preview
+          </button>
+          <button 
+            type="button" 
+            onclick="openCoursePaymentModal('course', '${c.id}')" 
+            class="py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs text-center shadow-sm transition-all transform active:scale-95"
+          >
+            Enroll / Pay Now
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderInterviewNotesGrid() {
+  const grid = document.getElementById('notes-cards-grid');
+  if (!grid) return;
+
+  grid.innerHTML = interviewNotesData.map(n => `
+    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-4">
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold">
+            ${n.tag}
+          </span>
+          <span class="text-[10px] font-mono text-slate-400">${n.pages}</span>
+        </div>
+        <h4 class="font-display font-black text-slate-900 text-sm leading-snug">${n.title}</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">${n.summary}</p>
+        <div class="text-[11px] text-indigo-700 font-semibold bg-indigo-50/70 p-2 rounded-xl">
+          ✓ ${n.snippets}
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+        <button 
+          type="button" 
+          onclick="openNotesReaderModal('${n.id}')" 
+          class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center gap-1 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[15px]">visibility</span>
+          <span>Read Notes</span>
+        </button>
+        <button 
+          type="button" 
+          onclick="openCoursePaymentModal('notes', '${n.id}')" 
+          class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition-colors"
+        >
+          Unlock Full PDF 📥
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// In-Page Payment Checkout Modal Logic
+function openCoursePaymentModal(itemType, itemId) {
+  const modal = document.getElementById('modal-course-payment');
+  if (!modal) return;
+
+  if (itemType === 'notes') {
+    const note = interviewNotesData.find(x => x.id === itemId) || interviewNotesData[0];
+    currentActivePaymentItem = { title: note.title, tag: "Notes Subscription Pass", price: "₹499 ($6)", rawPrice: 499 };
+  } else {
+    const course = expandedCoursesData.find(x => x.id === itemId) || expandedCoursesData[0];
+    currentActivePaymentItem = { title: course.title, tag: course.platformBadge, price: `${course.priceInr} (${course.priceUsd})`, rawPrice: course.rawPrice };
+  }
+
+  document.getElementById('pay-item-title').textContent = currentActivePaymentItem.title;
+  document.getElementById('pay-item-tag').textContent = currentActivePaymentItem.tag;
+  document.getElementById('pay-item-price').textContent = currentActivePaymentItem.price;
+
+  const emi3 = Math.round(currentActivePaymentItem.rawPrice / 3);
+  const emi6 = Math.round(currentActivePaymentItem.rawPrice / 6);
+  const emi3El = document.getElementById('pay-emi-3');
+  const emi6El = document.getElementById('pay-emi-6');
+  if (emi3El) emi3El.textContent = `₹${emi3.toLocaleString()} / mo`;
+  if (emi6El) emi6El.textContent = `₹${emi6.toLocaleString()} / mo`;
+
+  switchPayTab('upi');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function openNotesSubscriptionModal() {
+  openCoursePaymentModal('notes', 'note-dsa-75');
+}
+
+function closeCoursePaymentModal() {
+  const modal = document.getElementById('modal-course-payment');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function switchPayTab(tab) {
+  activePayMethod = tab;
+  ['upi', 'card', 'netbanking', 'emi'].forEach(t => {
+    const btn = document.getElementById(`pay-tab-${t}`);
+    const content = document.getElementById(`pay-content-${t}`);
+    if (btn) {
+      if (t === tab) btn.className = "py-2 rounded-lg bg-white text-slate-900 shadow-2xs font-bold text-center";
+      else btn.className = "py-2 rounded-lg text-slate-600 hover:text-slate-900 text-center font-medium";
+    }
+    if (content) {
+      if (t === tab) content.classList.remove('hidden');
+      else content.classList.add('hidden');
+    }
+  });
+}
+
+function verifyUpiId() {
+  const input = document.getElementById('pay-upi-id');
+  if (input && input.value) {
+    if (typeof showToast === 'function') {
+      showToast(`Verified UPI VPA: ${input.value} (Candidate Account Verified ✓)`);
+    }
+  }
+}
+
+function processCoursePayment() {
+  const btn = document.getElementById('btn-confirm-course-payment');
+  if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span><span>Processing with Bank...</span>';
+
+  setTimeout(() => {
+    closeCoursePaymentModal();
+    if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">lock</span><span>Complete Payment &amp; Unlock</span>';
+
+    // Store in localStorage
+    const enrolled = JSON.parse(localStorage.getItem('autopilot_enrolled_courses') || '[]');
+    enrolled.push(currentActivePaymentItem?.title || "Masterclass");
+    localStorage.setItem('autopilot_enrolled_courses', JSON.stringify(enrolled));
+
+    if (typeof triggerConfetti === 'function') {
+      try { triggerConfetti(); } catch (e) {}
+    }
+
+    if (typeof showToast === 'function') {
+      showToast(`Payment Successful! Enrolled in ${currentActivePaymentItem?.title} 🎉`);
+    }
+  }, 800);
+}
+
+function openCoursePreview(courseId) {
+  const c = expandedCoursesData.find(x => x.id === courseId) || expandedCoursesData[0];
+  if (typeof showToast === 'function') {
+    showToast(`Opening ${c.platformBadge} Free Preview Module 1-3... 🎥`);
+  }
+}
+
+// Notes Reader Modal
+function openNotesReaderModal(noteId) {
+  const note = interviewNotesData.find(x => x.id === noteId) || interviewNotesData[0];
+  activeSelectedNote = note;
+  const modal = document.getElementById('modal-notes-reader');
+  if (!modal) return;
+
+  document.getElementById('notes-modal-title').textContent = note.title;
+  document.getElementById('notes-modal-tag').textContent = note.tag;
+  document.getElementById('notes-modal-pages').textContent = note.pages;
+  document.getElementById('notes-modal-body').innerHTML = note.content;
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeNotesReaderModal() {
+  const modal = document.getElementById('modal-notes-reader');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function downloadNotesPdf() {
+  if (typeof showToast === 'function') {
+    showToast(`Downloading "${activeSelectedNote.title}.pdf" ✓`);
+  }
+  window.print();
+}
+
+// Google Maps Offline Center Switcher
+function selectMapCenter(cityKey) {
+  const center = mapsCentersData[cityKey] || mapsCentersData.bangalore;
+  
+  // Update city buttons
+  document.querySelectorAll('.map-city-btn').forEach(btn => {
+    btn.className = "map-city-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 flex items-center gap-1.5";
+  });
+  const activeBtn = document.getElementById(`btn-map-${cityKey}`);
+  if (activeBtn) {
+    activeBtn.className = "map-city-btn px-3.5 py-2 rounded-xl bg-indigo-600 text-white shrink-0 flex items-center gap-1.5 shadow-xs";
+  }
+
+  // Update Google Maps Iframe
+  const iframe = document.getElementById('google-maps-iframe');
+  if (iframe) {
+    iframe.src = `https://www.google.com/maps?q=${encodeURIComponent(center.mapQuery)}&output=embed`;
+  }
+
+  // Update Center Info Card
+  const infoCard = document.getElementById('map-center-info-card');
+  if (infoCard) {
+    infoCard.innerHTML = `
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Verified Walk-in Hub</span>
+          <span class="text-xs text-slate-500 font-semibold">${center.city}</span>
+        </div>
+        <div>
+          <h4 class="font-display font-black text-slate-900 text-base">${center.centerName}</h4>
+          <p class="text-xs text-slate-600 mt-1">${center.address}</p>
+        </div>
+
+        <div class="space-y-1 text-xs text-slate-600 pt-1">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-slate-400">schedule</span>
+            <span>${center.hours}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-slate-400">call</span>
+            <span class="font-mono text-indigo-700 font-semibold">${center.phone}</span>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 pt-2 border-t border-slate-200">
+          <div class="text-[10px] font-bold uppercase text-slate-400">On-Premise Facilities</div>
+          <ul class="text-[11px] text-slate-700 space-y-1">
+            ${center.facilities.map(f => `<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span><span>${f}</span></li>`).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-200 space-y-2">
+        <a 
+          href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(center.address)}" 
+          target="_blank" 
+          rel="noopener" 
+          class="w-full py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[16px] text-indigo-600">directions</span>
+          <span>Open in Google Maps ↗</span>
+        </a>
+        <button 
+          type="button" 
+          onclick="bookWalkInMock('${cityKey}')" 
+          class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors text-center"
+        >
+          Book Free Walk-in Mock Slot
+        </button>
+      </div>
+    `;
+  }
+}
+
+function bookWalkInMock(cityKey) {
+  const center = mapsCentersData[cityKey] || mapsCentersData.bangalore;
+  if (typeof showToast === 'function') {
+    showToast(`Walk-in Mock Interview slot reserved at ${center.centerName}! 📍`);
+  }
+}
+

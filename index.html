@@ -3508,55 +3508,140 @@
       <!-- ========================================================================= -->
       <!-- VIEW: COURSES & 1-ON-1 MENTORSHIP HUB -->
       <!-- ========================================================================= -->
+      
+      <!-- ========================================================================= -->
+      <!-- VIEW: ED-TECH COURSES, NOTES SUBSCRIPTION, MENTORS & GOOGLE MAPS HUBS -->
+      <!-- ========================================================================= -->
       <div id="view-courses-mentors" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
         
-        <!-- Header Banner -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800">
-          <div class="space-y-1.5">
-            <div class="flex items-center gap-2">
+        <!-- Header Banner with Scaler / Edureka / Apna College / Intellipaat Badges -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-800">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
               <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold uppercase tracking-wider">
                 <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
-                <span>FAANG &amp; Executive Mentorship • v3.8</span>
+                <span>Premier Ed-Tech Ecosystem • 2026</span>
               </span>
-              <span class="text-[10px] font-mono text-slate-400">100% Verified Industry Staff</span>
+              <span class="text-[10px] font-semibold text-slate-300 bg-white/10 px-2 py-0.5 rounded-md">Scaler • Apna College • Edureka • Intellipaat • Harry • WsCube</span>
             </div>
-            <h1 class="text-xl sm:text-2xl font-black font-display text-white tracking-tight flex items-center gap-2.5">
-              <span class="material-symbols-outlined text-[26px] text-blue-400">school</span>
-              <span>Paid &amp; Free Masterclasses and 1-on-1 Industry Mentorship</span>
+            <h1 class="text-xl sm:text-3xl font-black font-display text-white tracking-tight flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[28px] text-blue-400">school</span>
+              <span>Professional Academy, Interview Notes &amp; Offline Walk-in Centers</span>
             </h1>
-            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
-              Accelerate your hiring velocity with deep-dive courses on DSA, SDLC, RevOps, and Generative AI, or schedule private 1-on-1 mock interviews with Staff Engineers and Talent Directors.
+            <p class="text-xs sm:text-sm text-slate-300 max-w-3xl leading-relaxed">
+              Curated masterclasses, structured DSA &amp; System Design bootcamps, high-yield interview revision notes subscription, 1-on-1 Staff mock interviews, and physical walk-in centers across major tech hubs.
             </p>
           </div>
 
-          <!-- Switcher between Courses and Mentors -->
-          <div class="flex items-center gap-2 p-1 bg-slate-800/90 rounded-2xl border border-slate-700/80 shrink-0">
-            <button type="button" onclick="switchCourseMentorTab('courses')" id="tab-btn-courses" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all flex items-center gap-1.5">
+          <!-- Quick Navigation Pill Switcher (4 Tabs) -->
+          <div class="flex flex-wrap items-center gap-1.5 p-1.5 bg-slate-800/90 rounded-2xl border border-slate-700/80 shrink-0">
+            <button type="button" onclick="switchCourseSubTab('courses')" id="tab-btn-courses" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all flex items-center gap-1.5">
               <span class="material-symbols-outlined text-[16px]">play_lesson</span>
               <span>Masterclasses</span>
             </button>
-            <button type="button" onclick="switchCourseMentorTab('mentors')" id="tab-btn-mentors" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+            <button type="button" onclick="switchCourseSubTab('notes')" id="tab-btn-notes" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">menu_book</span>
+              <span>Interview Notes</span>
+              <span class="px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-black text-[9px]">Pass</span>
+            </button>
+            <button type="button" onclick="switchCourseSubTab('mentors')" id="tab-btn-mentors" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
               <span class="material-symbols-outlined text-[16px]">support_agent</span>
               <span>1-on-1 Mentors</span>
+            </button>
+            <button type="button" onclick="switchCourseSubTab('maps')" id="tab-btn-maps" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">location_on</span>
+              <span>Offline Hubs</span>
+              <span class="px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 font-black text-[9px]">Maps</span>
             </button>
           </div>
         </div>
 
-        <!-- SECTION A: COURSES DIRECTORY -->
+        <!-- ===================================================================== -->
+        <!-- SUB-TAB 1: COURSES & BOOTCAMPS (Scaler / Edureka / Apna / Intellipaat) -->
+        <!-- ===================================================================== -->
         <div id="section-courses-content" class="flex flex-col gap-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="courses-cards-grid">
-            <!-- Rendered via JS -->
+          
+          <!-- Category Filter Bar & Search -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 text-xs font-bold custom-scrollbar" id="courses-filter-chips">
+              <button type="button" onclick="filterCoursesCategory('all')" class="course-cat-chip px-3 py-1.5 rounded-xl bg-blue-600 text-white shrink-0">All Programs (6)</button>
+              <button type="button" onclick="filterCoursesCategory('scaler')" class="course-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Scaler Bootcamps</button>
+              <button type="button" onclick="filterCoursesCategory('apna')" class="course-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Apna College Alpha DSA</button>
+              <button type="button" onclick="filterCoursesCategory('edureka')" class="course-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Edureka Cloud DevOps</button>
+              <button type="button" onclick="filterCoursesCategory('intellipaat')" class="course-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Intellipaat AI &amp; ML</button>
+              <button type="button" onclick="filterCoursesCategory('harry')" class="course-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">CodeWithHarry &amp; WsCube</button>
+            </div>
+
+            <div class="relative w-full md:w-64">
+              <input 
+                type="text" 
+                id="courses-search-input" 
+                oninput="searchCourses(this.value)" 
+                placeholder="Search course or topic..." 
+                class="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+              />
+              <span class="material-symbols-outlined absolute left-2.5 top-2 text-[16px] text-slate-400">search</span>
+            </div>
+          </div>
+
+          <!-- Courses Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="courses-cards-grid">
+            <!-- Rendered dynamically via JS -->
           </div>
         </div>
 
-        <!-- SECTION B: 1-ON-1 MENTORS DIRECTORY -->
+        <!-- ===================================================================== -->
+        <!-- SUB-TAB 2: INTERVIEW PREPARATION NOTES & CHEAT SHEETS SUBSCRIPTION -->
+        <!-- ===================================================================== -->
+        <div id="section-notes-content" class="hidden flex-col gap-6">
+          
+          <!-- Notes Subscription Banner -->
+          <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2 max-w-2xl">
+              <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/20 text-white border border-white/30 text-[10px] font-bold uppercase tracking-wider">
+                <span>⚡ High-Yield Revision Hub</span>
+              </div>
+              <h2 class="text-xl sm:text-2xl font-black font-display text-white">
+                Interview Preparation Notes &amp; FAANG Cheat Sheet Subscription
+              </h2>
+              <p class="text-xs text-amber-50 leading-relaxed">
+                Over 500+ pages of battle-tested, handwritten and structured interview revision notes. Covers DSA 75 Essential patterns, System Design trade-offs, Behavioral STAR leadership answers, and Salary Negotiation playbooks.
+              </p>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl flex flex-col items-center justify-center text-center shrink-0 space-y-2 min-w-[200px]">
+              <div class="text-[10px] uppercase font-bold text-amber-200">All-Access Notes Pass</div>
+              <div class="text-2xl font-black text-white font-display">₹499 <span class="text-xs font-normal text-amber-100">/ mo</span></div>
+              <div class="text-[10px] text-amber-100">or included free with Pro Plan</div>
+              <button 
+                type="button" 
+                onclick="openNotesSubscriptionModal()" 
+                class="w-full px-4 py-2 rounded-xl bg-white text-slate-900 font-bold text-xs shadow-md hover:bg-amber-50 transition-all active:scale-95"
+              >
+                Subscribe to Notes Pass
+              </button>
+            </div>
+          </div>
+
+          <!-- Notes Directory Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="notes-cards-grid">
+            <!-- Rendered dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- SUB-TAB 3: 1-ON-1 INDUSTRY MENTORS -->
+        <!-- ===================================================================== -->
         <div id="section-mentors-content" class="hidden flex-col gap-6">
           <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 class="font-display font-black text-slate-900 text-base">Verified Industry Mentors (Staff Engineers &amp; Talent Directors)</h3>
-              <p class="text-xs text-slate-500">Includes 45-minute technical mock interview, system design breakdown, and offer negotiation strategy.</p>
+              <h3 class="font-display font-black text-slate-900 text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-blue-600">verified</span>
+                <span>Verified Industry Mentors (Staff Engineers, Directors &amp; VP of Sales)</span>
+              </h3>
+              <p class="text-xs text-slate-500">Includes 45-minute technical mock interview, system design critique, and executive salary negotiation coaching.</p>
             </div>
-            <div class="px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-xs">
+            <div class="px-3.5 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 font-bold text-xs shrink-0">
               Pro Members get 1 Free Session / Month
             </div>
           </div>
@@ -3566,10 +3651,82 @@
           </div>
         </div>
 
+        <!-- ===================================================================== -->
+        <!-- SUB-TAB 4: OFFLINE TRAINING HUBS & GOOGLE MAPS INTEGRATION -->
+        <!-- ===================================================================== -->
+        <div id="section-maps-content" class="hidden flex-col gap-6">
+          
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <div>
+                <h3 class="font-display font-black text-slate-900 text-lg flex items-center gap-2">
+                  <span class="material-symbols-outlined text-emerald-600">map</span>
+                  <span>Physical Training Hubs &amp; Walk-in Mock Interview Centers</span>
+                </h3>
+                <p class="text-xs text-slate-500">Visit our partner offline learning spaces across major tech cities for in-person coding labs, mock interview panels, and placement drives.</p>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200 shrink-0">
+                Google Maps Verified Hubs
+              </span>
+            </div>
+
+            <!-- City Location Switcher Buttons -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold custom-scrollbar" id="maps-city-selector">
+              <button type="button" onclick="selectMapCenter('bangalore')" id="btn-map-bangalore" class="map-city-btn px-3.5 py-2 rounded-xl bg-indigo-600 text-white shrink-0 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                <span>Bengaluru (Koramangala)</span>
+              </button>
+              <button type="button" onclick="selectMapCenter('hyderabad')" id="btn-map-hyderabad" class="map-city-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                <span>Hyderabad (Hitec City)</span>
+              </button>
+              <button type="button" onclick="selectMapCenter('pune')" id="btn-map-pune" class="map-city-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                <span>Pune (Hinjawadi)</span>
+              </button>
+              <button type="button" onclick="selectMapCenter('noida')" id="btn-map-noida" class="map-city-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                <span>Delhi NCR (Noida Sector 62)</span>
+              </button>
+              <button type="button" onclick="selectMapCenter('mumbai')" id="btn-map-mumbai" class="map-city-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                <span>Mumbai (BKC Hub)</span>
+              </button>
+              <button type="button" onclick="selectMapCenter('siliconvalley')" id="btn-map-siliconvalley" class="map-city-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                <span>San Jose / Silicon Valley</span>
+              </button>
+            </div>
+
+            <!-- Two Column Layout: Center Info & Embedded Google Map -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+              
+              <!-- Left Column: Active Center Info Card -->
+              <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between space-y-4" id="map-center-info-card">
+                <!-- Dynamically updated via selectMapCenter() -->
+              </div>
+
+              <!-- Right Column: Interactive Embedded Google Map -->
+              <div class="lg:col-span-2 rounded-2xl overflow-hidden border border-slate-200 shadow-xs min-h-[360px] bg-slate-100 relative">
+                <iframe 
+                  id="google-maps-iframe"
+                  width="100%" 
+                  height="100%" 
+                  style="border:0; min-height: 380px;" 
+                  loading="lazy" 
+                  allowfullscreen 
+                  referrerpolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps?q=Koramangala+5th+Block+Bengaluru&output=embed"
+                ></iframe>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
       </div>
-
-
-      <!-- ========================================================================= -->
+<!-- ========================================================================= -->
       <!-- VIEW: SUBSCRIPTION PLANS & PRO TOOLS -->
       <!-- ========================================================================= -->
       <div id="view-pricing" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
@@ -6360,6 +6517,179 @@
           <button type="button" onclick="copyHrOutreachEmail()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-sm">
             <span class="material-symbols-outlined text-[16px]">content_copy</span>
             <span>Copy &amp; Open Mail</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: IN-PAGE SAME-WEBPAGE COURSE & NOTES PAYMENT CHECKOUT -->
+  <!-- ========================================================================= -->
+  <div id="modal-course-payment" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Checkout Header -->
+      <div class="p-5 border-b border-slate-100 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white flex items-center justify-between">
+        <div class="space-y-0.5">
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full bg-blue-500/30 text-blue-200 text-[10px] font-bold uppercase tracking-wider" id="pay-item-tag">Scaler Course</span>
+            <span class="text-[10px] text-emerald-400 font-bold">256-Bit SSL Encrypted</span>
+          </div>
+          <h3 class="font-display font-black text-base text-white" id="pay-item-title">Full-Stack &amp; System Design Bootcamp</h3>
+        </div>
+        <button type="button" onclick="closeCoursePaymentModal()" class="p-1 rounded-lg text-slate-300 hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Price Breakdown -->
+      <div class="p-5 space-y-4">
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+          <div>
+            <div class="text-[10px] font-bold uppercase text-slate-400">Total Investment</div>
+            <div class="text-2xl font-black text-slate-900 font-display" id="pay-item-price">₹4,999</div>
+          </div>
+          <div class="text-right">
+            <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs">Instant Access</span>
+            <div class="text-[10px] text-slate-400 mt-1">Zero Hidden Fees</div>
+          </div>
+        </div>
+
+        <!-- Payment Method Tabs -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-2">Select Payment Method</label>
+          <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-100 rounded-xl text-xs font-semibold">
+            <button type="button" onclick="switchPayTab('upi')" id="pay-tab-upi" class="py-2 rounded-lg bg-white text-slate-900 shadow-2xs font-bold text-center">UPI</button>
+            <button type="button" onclick="switchPayTab('card')" id="pay-tab-card" class="py-2 rounded-lg text-slate-600 hover:text-slate-900 text-center">Card</button>
+            <button type="button" onclick="switchPayTab('netbanking')" id="pay-tab-netbanking" class="py-2 rounded-lg text-slate-600 hover:text-slate-900 text-center">NetBanking</button>
+            <button type="button" onclick="switchPayTab('emi')" id="pay-tab-emi" class="py-2 rounded-lg text-slate-600 hover:text-slate-900 text-center">No-Cost EMI</button>
+          </div>
+        </div>
+
+        <!-- TAB A: UPI -->
+        <div id="pay-content-upi" class="space-y-3 pt-1">
+          <div class="p-3 bg-indigo-50/60 border border-indigo-200 rounded-xl flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-indigo-600">qr_code_scanner</span>
+              <span class="text-xs font-bold text-indigo-900">Scan QR via GPay / PhonePe / Paytm</span>
+            </div>
+            <span class="text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded-md font-mono font-bold">Auto-Verify</span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <!-- Simulated QR Code -->
+            <div class="w-24 h-24 bg-white p-1 rounded-xl border border-slate-300 flex items-center justify-center shrink-0 shadow-2xs">
+              <div class="w-full h-full bg-slate-900 rounded-lg p-1 flex items-center justify-center text-white text-[9px] font-mono text-center">
+                [ UPI QR SIMULATOR ]
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs w-full">
+              <label class="block font-bold text-slate-700">Or Enter Your VPA / UPI ID</label>
+              <div class="flex items-center gap-2">
+                <input type="text" id="pay-upi-id" placeholder="yourname@oksbi / @paytm" value="candidate@okhdfcbank" class="flex-1 p-2 bg-white border border-slate-200 rounded-lg text-xs font-mono" />
+                <button type="button" onclick="verifyUpiId()" class="px-2.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg">Verify</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB B: CREDIT / DEBIT CARD -->
+        <div id="pay-content-card" class="hidden space-y-2.5 pt-1">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Card Number (Visa / MasterCard / RuPay / Amex)</label>
+            <input type="text" value="4532 •••• •••• 8892" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Expiry</label>
+              <input type="text" value="08/29" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">CVV</label>
+              <input type="password" value="789" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono" />
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB C: NETBANKING -->
+        <div id="pay-content-netbanking" class="hidden space-y-2 pt-1">
+          <label class="block text-xs font-bold text-slate-700">Select Bank</label>
+          <select class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800">
+            <option>HDFC Bank (Instant Confirmation)</option>
+            <option>State Bank of India (SBI)</option>
+            <option>ICICI Bank</option>
+            <option>Axis Bank</option>
+            <option>Kotak Mahindra Bank</option>
+          </select>
+        </div>
+
+        <!-- TAB D: NO-COST EMI -->
+        <div id="pay-content-emi" class="hidden space-y-2 pt-1 text-xs">
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <span>3 Months No-Cost EMI</span>
+            <span class="font-bold text-slate-900" id="pay-emi-3">₹1,666 / mo</span>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <span>6 Months No-Cost EMI</span>
+            <span class="font-bold text-slate-900" id="pay-emi-6">₹833 / mo</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Checkout Footer -->
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <button type="button" onclick="closeCoursePaymentModal()" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-200 transition-colors">Cancel</button>
+        <button 
+          type="button" 
+          onclick="processCoursePayment()" 
+          id="btn-confirm-course-payment"
+          class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 flex items-center gap-1.5 transition-all transform active:scale-95"
+        >
+          <span class="material-symbols-outlined text-[16px]">lock</span>
+          <span>Complete Payment &amp; Unlock</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: INTERVIEW PREPARATION NOTES READER (IN-APP VIEWER & PDF DOWNLOAD) -->
+  <!-- ========================================================================= -->
+  <div id="modal-notes-reader" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Notes Reader Header -->
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+        <div class="space-y-0.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold" id="notes-modal-tag">FAANG DSA 75</span>
+            <span class="text-xs text-slate-400 font-mono" id="notes-modal-pages">24 Pages • High-Yield</span>
+          </div>
+          <h3 class="font-display font-black text-lg text-white" id="notes-modal-title">FAANG Essential DSA Revision Sheet</h3>
+        </div>
+        <button type="button" onclick="closeNotesReaderModal()" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Notes Content Body -->
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4 text-slate-800 text-xs leading-relaxed" id="notes-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Notes Reader Footer -->
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <span class="text-xs text-slate-500">Autonomous Job Hunt Autopilot • Interview Revision Series</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeNotesReaderModal()" class="px-3.5 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition-colors">
+            Close
+          </button>
+          <button type="button" onclick="downloadNotesPdf()" class="px-4 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors">
+            <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+            <span>Download Clean PDF</span>
           </button>
         </div>
       </div>
