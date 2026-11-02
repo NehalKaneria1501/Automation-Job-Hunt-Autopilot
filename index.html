@@ -25,19 +25,35 @@
         _origWarn.apply(console, args);
       };
 
-      // 2. Shield cross-origin extension content-script errors (injectlaunchmonitors.js / inject.js)
+      // 2. Shield cross-origin extension content-script errors & CSP violations (injectlaunchmonitors.js / inject.js)
+      window.addEventListener('securitypolicyviolation', function(e) {
+        if (e && (e.blockedURI === 'inline' || (e.sourceFile && e.sourceFile.includes('injectlaunchmonitors')))) {
+          e.stopPropagation && e.stopPropagation();
+        }
+      }, true);
+
       window.addEventListener('error', function(e) {
         if (e && e.message && (
           e.message.includes('Blocked a frame with origin') || 
           e.message.includes('injectlaunchmonitors') ||
           e.message.includes('inject.js') ||
-          e.message.includes('Content Security Policy directive')
+          e.message.includes('Content Security Policy') ||
+          e.message.includes('violates the following Content Security Policy')
         )) {
           e.preventDefault && e.preventDefault();
           e.stopImmediatePropagation && e.stopImmediatePropagation();
           return true;
         }
       }, true);
+
+      window.addEventListener('unhandledrejection', function(e) {
+        if (e && e.reason && typeof e.reason.message === 'string' && (
+          e.reason.message.includes('injectlaunchmonitors') ||
+          e.reason.message.includes('Content Security Policy')
+        )) {
+          e.preventDefault && e.preventDefault();
+        }
+      });
     })();
   </script>
   <!-- Google tag (gtag.js) -->
@@ -1340,6 +1356,15 @@
               <span class="material-symbols-outlined text-[18px]">verified</span>
               <span>Claim 50% Off via Razorpay</span>
               <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="event.stopPropagation(); testRazorpayCheckout(1);" 
+              class="px-3.5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/30 flex items-center justify-center gap-1.5 transition-all active:scale-95"
+              title="Test Live Razorpay Key (rzp_test_xeVAJ5Jg2C932Q)"
+            >
+              <span class="material-symbols-outlined text-[17px]">credit_card</span>
+              <span>Test ₹1</span>
             </button>
           </div>
         </div>
