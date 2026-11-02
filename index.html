@@ -88,9 +88,11 @@
       box-shadow: 0 25px 80px -15px rgba(0, 0, 0, 0.9), 0 0 0 2px rgba(255, 255, 255, 0.1);
       overflow: hidden;
       margin: 20px auto;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .mobile-simulator-chassis::before {
+    /* Portrait Hardware Buttons */
+    .mobile-simulator-chassis.is-portrait::before,
+    .mobile-simulator-chassis:not(.is-landscape)::before {
       content: '';
       position: absolute;
       left: -15px;
@@ -100,7 +102,8 @@
       background: #334155;
       border-radius: 2px 0 0 2px;
     }
-    .mobile-simulator-chassis::after {
+    .mobile-simulator-chassis.is-portrait::after,
+    .mobile-simulator-chassis:not(.is-landscape)::after {
       content: '';
       position: absolute;
       left: -15px;
@@ -110,6 +113,53 @@
       background: #334155;
       border-radius: 2px 0 0 2px;
     }
+    /* Landscape Hardware Orientation Adjustments */
+    .mobile-simulator-chassis.is-landscape {
+      border-radius: 44px;
+      margin: 12px auto;
+    }
+    .mobile-simulator-chassis.is-landscape::before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: 120px;
+      width: 44px;
+      height: 3px;
+      background: #334155;
+      border-radius: 2px 2px 0 0;
+    }
+    .mobile-simulator-chassis.is-landscape::after {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: 175px;
+      width: 58px;
+      height: 3px;
+      background: #334155;
+      border-radius: 2px 2px 0 0;
+    }
+    .mobile-simulator-chassis.is-landscape #phone-bezel-top {
+      padding-top: 6px !important;
+      padding-bottom: 6px !important;
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+    .mobile-simulator-chassis.is-landscape #phone-bezel-top .w-24.h-5 {
+      width: 68px !important;
+      height: 16px !important;
+    }
+    .mobile-simulator-chassis.is-landscape #phone-bottom-nav {
+      padding-top: 3px !important;
+      padding-bottom: 3px !important;
+    }
+    .mobile-simulator-chassis.is-landscape #phone-home-indicator {
+      padding-top: 2px !important;
+      padding-bottom: 3px !important;
+    }
+    .mobile-simulator-chassis.is-landscape #phone-home-indicator div {
+      width: 80px !important;
+    }
+
     /* Universal Mobile Styles & Navigation Dock */
     @media (max-width: 768px) {
       #phone-bottom-nav {
@@ -129,6 +179,42 @@
       bottom: 0 !important;
       left: 0 !important;
       right: 0 !important;
+    }
+
+    /* Physical Device Mobile Landscape Orientation Media Queries */
+    @media screen and (max-height: 520px) and (orientation: landscape), (max-width: 920px) and (orientation: landscape) {
+      header#desktop-app-header {
+        height: 50px !important;
+      }
+      header#desktop-app-header > div {
+        height: 50px !important;
+      }
+      body:not(.mobile-simulator-active) main {
+        padding-top: 10px !important;
+        padding-bottom: 56px !important;
+      }
+      #phone-bottom-nav {
+        padding-top: 2px !important;
+        padding-bottom: 2px !important;
+      }
+      #phone-bottom-nav button {
+        padding-top: 2px !important;
+        padding-bottom: 2px !important;
+      }
+      #phone-bottom-nav button span:first-child {
+        font-size: 16px !important;
+      }
+      #phone-bottom-nav button span:last-child {
+        font-size: 8px !important;
+      }
+      /* Prevent modal overflow on compact landscape mobile viewports */
+      .fixed.inset-0 .max-h-\[90vh\],
+      .fixed.inset-0 .max-h-\[85vh\] {
+        max-height: 94vh !important;
+      }
+      .fixed.inset-0 .overflow-y-auto {
+        max-height: 50vh !important;
+      }
     }
     .scrollbar-none::-webkit-scrollbar {
       display: none;
@@ -174,8 +260,22 @@
 
     <!-- Controls & Exit -->
     <div class="flex items-center gap-2">
+      <!-- Orientation Switcher (Portrait vs Landscape) -->
+      <div class="flex items-center gap-1 bg-slate-800 p-0.5 rounded-lg border border-slate-700">
+        <button type="button" onclick="setSimulatorOrientation('portrait')" id="btn-orient-portrait" title="Portrait Orientation (393 × 852 px)" class="px-2.5 py-1 rounded-md bg-indigo-600 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition-all">
+          <span class="material-symbols-outlined text-[15px]">stay_current_portrait</span>
+          <span class="hidden sm:inline">Portrait</span>
+        </button>
+        <button type="button" onclick="setSimulatorOrientation('landscape')" id="btn-orient-landscape" title="Landscape Orientation (852 × 393 px)" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1 transition-all">
+          <span class="material-symbols-outlined text-[15px]">stay_current_landscape</span>
+          <span class="hidden sm:inline">Landscape</span>
+        </button>
+      </div>
+      <span id="simulator-res-badge" class="hidden sm:inline-flex items-center px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-[10px] text-emerald-400 font-bold">
+        393 × 852 px (Portrait)
+      </span>
       <!-- Rotate Viewport -->
-      <button type="button" onclick="rotateSimulator()" title="Rotate Device (Portrait / Landscape)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+      <button type="button" onclick="rotateSimulator()" title="Quick Flip Orientation" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors">
         <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
         <span class="hidden md:inline">Rotate</span>
       </button>
@@ -439,6 +539,9 @@
             </div>
           </div>
           <div class="flex items-center gap-1">
+            <button type="button" onclick="rotateSimulator()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs" title="Rotate Phone (Portrait / Landscape)">
+              <span class="material-symbols-outlined text-[16px]">screen_rotation</span>
+            </button>
             <button type="button" onclick="triggerAutopilotIngestion()" class="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs" title="Re-scan Inbox">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
             </button>
@@ -1720,6 +1823,10 @@
       <button type="button" onclick="switchView('interview-studio')" id="mob-nav-interview-studio" class="flex flex-col items-center gap-0.5 py-1 px-2.5 text-slate-500 hover:text-indigo-600 transition-colors">
         <span class="material-symbols-outlined text-[20px]">videocam</span>
         <span class="text-[9px] tracking-tight">Interview</span>
+      </button>
+      <button type="button" onclick="switchView('mnc-hub')" id="mob-nav-mnc-hub" class="flex flex-col items-center gap-0.5 py-1 px-2 text-slate-500 hover:text-emerald-600 transition-colors">
+        <span class="material-symbols-outlined text-[20px]">corporate_fare</span>
+        <span class="text-[9px] tracking-tight">MNC Hub</span>
       </button>
       <button type="button" onclick="handleBottomNavAuthClick()" id="mob-nav-auth" class="flex flex-col items-center gap-0.5 py-1 px-2.5 text-slate-500 hover:text-indigo-600 transition-colors">
         <span class="material-symbols-outlined text-[20px]">account_circle</span>

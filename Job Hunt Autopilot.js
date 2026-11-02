@@ -483,6 +483,7 @@ async function initAutopilot() {
   pollSyncStatus();
   initAuthSuite();
   if (typeof initMncHub === 'function') initMncHub();
+  initOrientationListener();
 }
 
 /**
@@ -1511,9 +1512,9 @@ function applyDeviceDimensions() {
   if (!chassis) return;
 
   const devices = {
-    iphone16pro: { width: 393, height: 852 },
-    pixel9: { width: 412, height: 924 },
-    ipadmini: { width: 768, height: 1024 }
+    iphone16pro: { width: 393, height: 852, name: 'Apple iPhone 16 Pro' },
+    pixel9: { width: 412, height: 924, name: 'Google Pixel 9' },
+    ipadmini: { width: 768, height: 1024, name: 'Apple iPad Mini' }
   };
 
   const dev = devices[currentDevicePreset] || devices.iphone16pro;
@@ -1521,15 +1522,64 @@ function applyDeviceDimensions() {
   let h = isSimulatorLandscape ? dev.width : dev.height;
 
   // Max height limit relative to window viewport so it stays comfortably in view
-  const availableScreenHeight = Math.max(640, window.innerHeight - 110);
+  const availableScreenHeight = Math.max(isSimulatorLandscape ? 380 : 640, window.innerHeight - 110);
   const constrainedHeight = Math.min(h, availableScreenHeight);
 
-  chassis.className = "mobile-simulator-chassis flex flex-col shadow-2xl relative select-none transition-all duration-300";
+  if (isSimulatorLandscape) {
+    chassis.className = "mobile-simulator-chassis is-landscape flex flex-col shadow-2xl relative select-none transition-all duration-300";
+  } else {
+    chassis.className = "mobile-simulator-chassis flex flex-col shadow-2xl relative select-none transition-all duration-300";
+  }
+
   chassis.style.width = `${w}px`;
   chassis.style.height = `${constrainedHeight}px`;
   chassis.style.maxWidth = '96vw';
   chassis.style.transform = `scale(${currentSimulatorScale})`;
   chassis.style.transformOrigin = 'top center';
+
+  updateOrientationUI(w, h, dev.name);
+}
+
+function updateOrientationUI(w, h, devName) {
+  const btnPort = document.getElementById('btn-orient-portrait');
+  const btnLand = document.getElementById('btn-orient-landscape');
+  const badge = document.getElementById('simulator-res-badge');
+
+  if (btnPort && btnLand) {
+    if (isSimulatorLandscape) {
+      btnLand.className = "px-2.5 py-1 rounded-md bg-indigo-600 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition-all";
+      btnPort.className = "px-2.5 py-1 rounded-md text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1 transition-all";
+    } else {
+      btnPort.className = "px-2.5 py-1 rounded-md bg-indigo-600 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition-all";
+      btnLand.className = "px-2.5 py-1 rounded-md text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1 transition-all";
+    }
+  }
+
+  if (badge) {
+    const modeText = isSimulatorLandscape ? 'Landscape' : 'Portrait';
+    if (w && h) {
+      badge.textContent = `${w} × ${h} px (${modeText})`;
+    } else {
+      const devices = {
+        iphone16pro: { width: 393, height: 852 },
+        pixel9: { width: 412, height: 924 },
+        ipadmini: { width: 768, height: 1024 }
+      };
+      const dev = devices[currentDevicePreset] || devices.iphone16pro;
+      const width = isSimulatorLandscape ? dev.height : dev.width;
+      const height = isSimulatorLandscape ? dev.width : dev.height;
+      badge.textContent = `${width} × ${height} px (${modeText})`;
+    }
+  }
+}
+
+function setSimulatorOrientation(mode) {
+  isSimulatorLandscape = (mode === 'landscape');
+  if (isMobileViewport) {
+    applyDeviceDimensions();
+  }
+  updateOrientationUI();
+  showToast(`📱 Orientation: ${isSimulatorLandscape ? 'Landscape' : 'Portrait'}`);
 }
 
 function changeSimulatorDevice(device) {
@@ -1545,8 +1595,9 @@ function rotateSimulator() {
   isSimulatorLandscape = !isSimulatorLandscape;
   if (isMobileViewport) {
     applyDeviceDimensions();
-    showToast(`🔄 Orientation: ${isSimulatorLandscape ? 'Landscape' : 'Portrait'}`);
   }
+  updateOrientationUI();
+  showToast(`🔄 Orientation: ${isSimulatorLandscape ? 'Landscape' : 'Portrait'}`);
 }
 
 function changeSimulatorScale(scale) {
@@ -1566,7 +1617,7 @@ function updateSimulatorClock() {
 }
 
 function syncMobileNavActiveTab() {
-  const navTabs = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro'];
+  const navTabs = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub'];
   navTabs.forEach(tabName => {
     const el = document.getElementById(`mob-nav-${tabName}`);
     if (!el) return;
@@ -1576,6 +1627,31 @@ function syncMobileNavActiveTab() {
       el.className = "flex flex-col items-center gap-0.5 py-1 px-2 text-slate-500 hover:text-slate-800 transition-colors";
     }
   });
+}
+
+/**
+ * Handle real hardware orientation changes on phones & tablets
+ */
+function initOrientationListener() {
+  const handleOrientation = () => {
+    let isLandscape = false;
+    if (window.screen && window.screen.orientation) {
+      isLandscape = window.screen.orientation.type.includes('landscape');
+    } else if (typeof window.orientation !== 'undefined') {
+      isLandscape = Math.abs(window.orientation) === 90;
+    } else {
+      isLandscape = window.innerWidth > window.innerHeight;
+    }
+    document.body.classList.toggle('device-is-landscape', isLandscape);
+    document.body.classList.toggle('device-is-portrait', !isLandscape);
+  };
+
+  if (window.screen && window.screen.orientation) {
+    window.screen.orientation.addEventListener('change', handleOrientation);
+  }
+  window.addEventListener('orientationchange', handleOrientation);
+  window.addEventListener('resize', handleOrientation);
+  handleOrientation();
 }
 
 // Global Keyboard Shortcut: Press Escape to return to Desktop Cockpit
