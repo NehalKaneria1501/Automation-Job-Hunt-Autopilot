@@ -26,6 +26,20 @@ def main():
 
     # Launch FastAPI + Uvicorn modern web server
     try:
+        import threading
+        import time
+        import webbrowser
+
+        def open_browser():
+            time.sleep(1.2)
+            try:
+                webbrowser.open(f"http://localhost:{port}")
+            except Exception:
+                pass
+
+        if "--no-browser" not in sys.argv:
+            threading.Thread(target=open_browser, daemon=True).start()
+
         import server
         print("\n" + "=" * 68)
         print(f" 🚀 Job Hunt Autopilot is LIVE & RUNNING at http://localhost:{port}")
@@ -40,6 +54,7 @@ def main():
         print(f" ⚡ Auto-Sync Poller     : GET /api/automate/sync-status (APScheduler)")
         print("-" * 68)
         print(" 💡 This server is active and listening for web requests.")
+        print("    Your web browser should open automatically!")
         print("    Press CTRL+C anytime in this terminal to stop the server.")
         print("=" * 68 + "\n")
         server.run_fastapi(port=port)
