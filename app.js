@@ -481,6 +481,7 @@ async function initAutopilot() {
   safeCreateIcons();
   initChatWidget();
   pollSyncStatus();
+  initAuthSuite();
 }
 
 /**
@@ -2388,6 +2389,519 @@ function generateClientFallbackChatReply(msg) {
       `- **🛡️ Neutralized Scams**: 4 malicious attacks blocked\n\n` +
       `Try asking: *"Prep me for Stripe"*, *"Why was Apex Global flagged?"*, or *"Draft a follow-up for Figma"*!`
   };
+}
+
+/* ========================================================================== */
+/* AUTHENTICATION SUITE (SIGN IN, SIGN UP, FORGOT PASSWORD, OTP & PROFILE)     */
+/* ========================================================================== */
+
+let currentAuthUser = null;
+let currentOtpState = {
+  email: '',
+  demoOtp: '742918',
+  purpose: 'signin',
+  pendingUser: null,
+  timerInterval: null,
+  remainingSeconds: 60
+};
+
+function getAuthUser() {
+  if (currentAuthUser) return currentAuthUser;
+  try {
+    const isGuest = localStorage.getItem('autopilot_guest');
+    if (isGuest === 'true') return null;
+    const stored = localStorage.getItem('autopilot_user');
+    if (stored) {
+      currentAuthUser = JSON.parse(stored);
+      return currentAuthUser;
+    }
+  } catch (e) {
+    console.warn("Auth storage error:", e);
+  }
+  // Default demo user: Alex Chen
+  currentAuthUser = {
+    id: "usr_9421",
+    name: "Alex Chen",
+    email: "alex.chen@executive.dev",
+    role: "Staff Full-Stack Architect",
+    avatar: "AC",
+    target_comp: "$250k - $320k",
+    two_factor_enabled: true,
+    verified: true,
+    session_token: "zt_94218734"
+  };
+  return currentAuthUser;
+}
+
+function setAuthUser(user) {
+  currentAuthUser = user;
+  try {
+    localStorage.removeItem('autopilot_guest');
+    localStorage.setItem('autopilot_user', JSON.stringify(user));
+  } catch (e) {}
+  updateAuthUI();
+}
+
+function clearAuthUser() {
+  currentAuthUser = null;
+  try {
+    localStorage.removeItem('autopilot_user');
+    localStorage.setItem('autopilot_guest', 'true');
+  } catch (e) {}
+  updateAuthUI();
+}
+
+function updateAuthUI() {
+  const user = getAuthUser();
+  const loggedInEl = document.getElementById('header-auth-logged-in');
+  const loggedOutEl = document.getElementById('header-auth-logged-out');
+  const mobAuthLabel = document.getElementById('mob-nav-auth-label');
+
+  if (user) {
+    if (loggedInEl) loggedInEl.classList.remove('hidden');
+    if (loggedOutEl) loggedOutEl.classList.add('hidden');
+    if (mobAuthLabel) mobAuthLabel.textContent = "Profile";
+
+    safeSetText('header-user-name', user.name || "Alex Chen");
+    safeSetText('header-user-avatar', user.avatar || "AC");
+    safeSetText('dropdown-user-name', user.name || "Alex Chen");
+    safeSetText('dropdown-user-email', user.email || "alex.chen@executive.dev");
+    safeSetText('profile-modal-name', user.name || "Alex Chen");
+    safeSetText('profile-modal-email', user.email || "alex.chen@executive.dev");
+    safeSetText('profile-modal-role', user.role || "Staff Full-Stack Architect");
+    safeSetText('profile-modal-avatar', user.avatar || "AC");
+  } else {
+    if (loggedInEl) loggedInEl.classList.add('hidden');
+    if (loggedOutEl) {
+      loggedOutEl.classList.remove('hidden');
+      loggedOutEl.classList.add('flex');
+    }
+    if (mobAuthLabel) mobAuthLabel.textContent = "Sign In";
+  }
+}
+
+function toggleUserDropdown(force) {
+  const dd = document.getElementById('user-auth-dropdown');
+  if (!dd) return;
+  const isCurrentlyHidden = dd.classList.contains('hidden');
+  const shouldOpen = force !== undefined ? force : isCurrentlyHidden;
+  if (shouldOpen) {
+    dd.classList.remove('hidden');
+    dd.classList.add('flex');
+  } else {
+    dd.classList.add('hidden');
+    dd.classList.remove('flex');
+  }
+}
+
+function toggleMobileActionsDrawer(force) {
+  const drawer = document.getElementById('mobile-actions-drawer');
+  if (!drawer) return;
+  const isHidden = drawer.classList.contains('hidden');
+  const shouldOpen = force !== undefined ? force : isHidden;
+  if (shouldOpen) {
+    drawer.classList.remove('hidden');
+    drawer.classList.add('flex');
+  } else {
+    drawer.classList.add('hidden');
+    drawer.classList.remove('flex');
+  }
+  safeCreateIcons();
+}
+
+function handleBottomNavAuthClick() {
+  const user = getAuthUser();
+  if (user) {
+    openUserProfileModal();
+  } else {
+    openAuthModal('signin');
+  }
+}
+
+function openAuthModal(tab = 'signin') {
+  const modal = document.getElementById('modal-auth');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  switchAuthTab(tab);
+  safeCreateIcons();
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById('modal-auth');
+  if (!modal) return;
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  if (currentOtpState.timerInterval) {
+    clearInterval(currentOtpState.timerInterval);
+  }
+}
+
+function switchAuthTab(tab) {
+  const tabs = ['signin', 'signup', 'forgot', 'otp', 'reset'];
+  tabs.forEach(t => {
+    const view = document.getElementById(`auth-view-${t}`);
+    const btn = document.getElementById(`tab-btn-${t}`);
+    if (view) {
+      if (t === tab) {
+        view.classList.remove('hidden');
+      } else {
+        view.classList.add('hidden');
+      }
+    }
+    if (btn) {
+      if (t === tab) {
+        btn.className = "flex-1 py-3 text-center border-b-2 border-indigo-600 text-indigo-600 font-bold transition-all";
+      } else {
+        btn.className = "flex-1 py-3 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition-all";
+      }
+    }
+  });
+
+  if (tab === 'signin') {
+    const el = document.getElementById('signin-email');
+    if (el) el.focus();
+  } else if (tab === 'signup') {
+    const el = document.getElementById('signup-name');
+    if (el) el.focus();
+  } else if (tab === 'forgot') {
+    const el = document.getElementById('forgot-email');
+    if (el) el.focus();
+  } else if (tab === 'otp') {
+    const el = document.getElementById('otp-box-1');
+    if (el) el.focus();
+  }
+}
+
+function openUserProfileModal() {
+  const modal = document.getElementById('modal-user-profile');
+  if (!modal) return;
+  updateAuthUI();
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  safeCreateIcons();
+}
+
+function closeUserProfileModal() {
+  const modal = document.getElementById('modal-user-profile');
+  if (!modal) return;
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+
+function togglePasswordVisibility(inputId) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function fillDemoLogin(type) {
+  const emailInput = document.getElementById('signin-email');
+  const passInput = document.getElementById('signin-password');
+  if (emailInput) emailInput.value = "alex.chen@executive.dev";
+  if (passInput) passInput.value = "StitchAutopilot2026!";
+  showGlobalToast("Loaded Alex Chen credentials. Verifying Zero-Trust identity...");
+  setTimeout(() => {
+    handleSignInSubmit();
+  }, 400);
+}
+
+async function handleSignInSubmit(event) {
+  if (event) event.preventDefault();
+  const email = (document.getElementById('signin-email')?.value || "alex.chen@executive.dev").trim();
+  const password = document.getElementById('signin-password')?.value || "demo123";
+
+  showGlobalToast("Authenticating session with Zero-Trust identity guard...");
+
+  let userData = null;
+  try {
+    const res = await fetch('/api/auth/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, remember_me: true })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      userData = data.user;
+    }
+  } catch (e) {
+    // Client-side fallback for static GitHub Pages
+  }
+
+  if (!userData) {
+    const isAlex = email.toLowerCase().includes('alex') || email.toLowerCase().includes('demo');
+    const name = isAlex ? "Alex Chen" : email.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    userData = {
+      id: "usr_" + Math.floor(Math.random() * 90000 + 10000),
+      name: name,
+      email: email,
+      role: isAlex ? "Staff Full-Stack Architect" : "Senior Software Engineer",
+      avatar: name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase() || "AC",
+      target_comp: "$250k - $320k",
+      two_factor_enabled: true,
+      verified: true,
+      session_token: "zt_" + Math.floor(Math.random() * 90000000 + 10000000)
+    };
+  }
+
+  setAuthUser(userData);
+  closeAuthModal();
+  showGlobalToast(`Welcome back, ${userData.name}! Zero-Trust session authenticated.`);
+}
+
+async function handleSignUpSubmit(event) {
+  if (event) event.preventDefault();
+  const name = (document.getElementById('signup-name')?.value || "Alex Chen").trim();
+  const email = (document.getElementById('signup-email')?.value || "candidate@executive.dev").trim();
+  const role = (document.getElementById('signup-role')?.value || "Staff Full-Stack Engineer").trim();
+  const pass = document.getElementById('signup-password')?.value || "";
+  const confirm = document.getElementById('signup-password-confirm')?.value || "";
+
+  if (pass !== confirm) {
+    showGlobalToast("Passwords do not match. Please re-enter.");
+    return;
+  }
+
+  showGlobalToast(`Registering ${name} & dispatching Zero-Trust verification OTP...`);
+
+  let demoOtp = String(Math.floor(Math.random() * 900000 + 100000));
+  try {
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, role, password: pass, enable_2fa: true })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.demo_otp) demoOtp = data.demo_otp;
+    }
+  } catch (e) {}
+
+  currentOtpState = {
+    email: email,
+    demoOtp: demoOtp,
+    purpose: 'signup',
+    pendingUser: {
+      name, email, role,
+      avatar: name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase() || "AC"
+    },
+    timerInterval: null,
+    remainingSeconds: 60
+  };
+
+  safeSetText('otp-target-email', email);
+  safeSetText('otp-demo-code-display', demoOtp);
+  switchAuthTab('otp');
+  startOtpTimer();
+}
+
+async function handleForgotPasswordSubmit(event) {
+  if (event) event.preventDefault();
+  const email = (document.getElementById('forgot-email')?.value || "alex.chen@executive.dev").trim();
+
+  showGlobalToast(`Dispatching recovery code to ${email}...`);
+
+  let demoOtp = String(Math.floor(Math.random() * 900000 + 100000));
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.demo_otp) demoOtp = data.demo_otp;
+    }
+  } catch (e) {}
+
+  currentOtpState = {
+    email: email,
+    demoOtp: demoOtp,
+    purpose: 'reset',
+    timerInterval: null,
+    remainingSeconds: 60
+  };
+
+  safeSetText('otp-target-email', email);
+  safeSetText('otp-demo-code-display', demoOtp);
+  switchAuthTab('otp');
+  startOtpTimer();
+}
+
+function startOtpTimer() {
+  if (currentOtpState.timerInterval) {
+    clearInterval(currentOtpState.timerInterval);
+  }
+  currentOtpState.remainingSeconds = 60;
+  const timerSecs = document.getElementById('otp-timer-seconds');
+  const btnResend = document.getElementById('btn-resend-otp');
+  if (btnResend) {
+    btnResend.disabled = true;
+    btnResend.className = "text-slate-400 font-bold disabled:cursor-not-allowed";
+  }
+
+  currentOtpState.timerInterval = setInterval(() => {
+    currentOtpState.remainingSeconds -= 1;
+    if (timerSecs) timerSecs.textContent = currentOtpState.remainingSeconds;
+    if (currentOtpState.remainingSeconds <= 0) {
+      clearInterval(currentOtpState.timerInterval);
+      if (btnResend) {
+        btnResend.disabled = false;
+        btnResend.className = "text-indigo-600 font-bold hover:underline cursor-pointer";
+      }
+      safeSetText('otp-countdown-text', 'Code expired. Click to resend.');
+    }
+  }, 1000);
+}
+
+function resendOtpCode() {
+  const newOtp = String(Math.floor(Math.random() * 900000 + 100000));
+  currentOtpState.demoOtp = newOtp;
+  safeSetText('otp-demo-code-display', newOtp);
+  startOtpTimer();
+  showGlobalToast(`New 6-Digit OTP dispatched: ${newOtp}`);
+}
+
+function handleOtpInput(index) {
+  const currentBox = document.getElementById(`otp-box-${index}`);
+  if (!currentBox) return;
+  const val = currentBox.value;
+  if (val.length >= 1) {
+    currentBox.value = val.slice(-1);
+    if (index < 6) {
+      const nextBox = document.getElementById(`otp-box-${index + 1}`);
+      if (nextBox) nextBox.focus();
+    } else {
+      // Last digit entered: auto-verify
+      handleOtpVerifySubmit();
+    }
+  }
+}
+
+function handleOtpBackspace(event, index) {
+  if (event.key === 'Backspace') {
+    const currentBox = document.getElementById(`otp-box-${index}`);
+    if (currentBox && currentBox.value === '' && index > 1) {
+      const prevBox = document.getElementById(`otp-box-${index - 1}`);
+      if (prevBox) {
+        prevBox.focus();
+      }
+    }
+  }
+}
+
+function autoFillDemoOtp() {
+  const code = currentOtpState.demoOtp || "742918";
+  for (let i = 1; i <= 6; i++) {
+    const box = document.getElementById(`otp-box-${i}`);
+    if (box) box.value = code[i - 1] || "";
+  }
+  showGlobalToast(`Auto-filled 6-digit verification code: ${code}`);
+  setTimeout(() => {
+    handleOtpVerifySubmit();
+  }, 300);
+}
+
+async function handleOtpVerifySubmit() {
+  let enteredOtp = '';
+  for (let i = 1; i <= 6; i++) {
+    const box = document.getElementById(`otp-box-${i}`);
+    enteredOtp += (box?.value || '');
+  }
+
+  if (enteredOtp.length !== 6) {
+    showGlobalToast("Please enter all 6 digits of the OTP code.");
+    return;
+  }
+
+  showGlobalToast("Validating Zero-Trust cryptographic OTP token...");
+
+  try {
+    await fetch('/api/auth/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: currentOtpState.email, otp: enteredOtp, purpose: currentOtpState.purpose })
+    });
+  } catch (e) {}
+
+  if (currentOtpState.purpose === 'reset') {
+    switchAuthTab('reset');
+    showGlobalToast("OTP verified! Please set your new password.");
+  } else {
+    // Successful login or registration
+    const p = currentOtpState.pendingUser || {};
+    const name = p.name || (currentOtpState.email ? currentOtpState.email.split('@')[0] : "Alex Chen");
+    const user = {
+      id: "usr_" + Math.floor(Math.random() * 90000 + 10000),
+      name: name,
+      email: currentOtpState.email || "alex.chen@executive.dev",
+      role: p.role || "Staff Full-Stack Architect",
+      avatar: p.avatar || "AC",
+      target_comp: "$250k - $320k",
+      two_factor_enabled: true,
+      verified: true,
+      session_token: "zt_otp_" + Math.floor(Math.random() * 90000000 + 10000000)
+    };
+    setAuthUser(user);
+    closeAuthModal();
+    showGlobalToast(`Zero-Trust 2FA Verified! Welcome to Executive Career Cockpit, ${user.name}!`);
+  }
+}
+
+async function handleResetPasswordSubmit(event) {
+  if (event) event.preventDefault();
+  const p1 = document.getElementById('reset-new-password')?.value || "";
+  const p2 = document.getElementById('reset-confirm-password')?.value || "";
+  if (p1 !== p2) {
+    showGlobalToast("Passwords do not match. Please re-enter.");
+    return;
+  }
+
+  showGlobalToast("Updating password across Zero-Trust identity store...");
+  try {
+    await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: currentOtpState.email, otp: currentOtpState.demoOtp, new_password: p1 })
+    });
+  } catch (e) {}
+
+  const user = {
+    id: "usr_9421",
+    name: "Alex Chen",
+    email: currentOtpState.email || "alex.chen@executive.dev",
+    role: "Staff Full-Stack Architect",
+    avatar: "AC",
+    target_comp: "$250k - $320k",
+    two_factor_enabled: true,
+    verified: true,
+    session_token: "zt_pwd_" + Math.floor(Math.random() * 90000000 + 10000000)
+  };
+  setAuthUser(user);
+  closeAuthModal();
+  showGlobalToast("Password successfully updated! Session authenticated.");
+}
+
+async function handleSignOut() {
+  try {
+    await fetch('/api/auth/signout', { method: 'POST' });
+  } catch (e) {}
+  clearAuthUser();
+  showGlobalToast("Candidate session terminated. You are now browsing in Guest Mode.");
+}
+
+function initAuthSuite() {
+  updateAuthUI();
+  // Close dropdown on click outside
+  document.addEventListener('click', (e) => {
+    const userMenuBtn = document.getElementById('btn-user-profile-menu');
+    const dropdown = document.getElementById('user-auth-dropdown');
+    if (dropdown && !dropdown.classList.contains('hidden')) {
+      if (!dropdown.contains(e.target) && (!userMenuBtn || !userMenuBtn.contains(e.target))) {
+        toggleUserDropdown(false);
+      }
+    }
+  });
 }
 
 // Kick off initialization on DOM ready

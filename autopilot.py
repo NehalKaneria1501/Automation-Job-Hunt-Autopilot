@@ -653,6 +653,22 @@ class AutopilotRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
             return
 
+        if path == "/api/auth/me":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "id": "usr_9421",
+                "name": "Alex Chen",
+                "email": "alex.chen@executive.dev",
+                "role": "Staff Full-Stack Architect",
+                "avatar": "AC",
+                "target_comp": "$250k - $320k",
+                "two_factor_enabled": True,
+                "verified": True
+            }).encode("utf-8"))
+            return
+
         if path == "/":
             self.path = "/index.html"
 
@@ -795,6 +811,105 @@ class AutopilotRequestHandler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
                 return
+
+        if path == "/api/auth/signin":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            payload = json.loads(body)
+            email = payload.get("email", "").strip().lower()
+            name = "Alex Chen" if "alex" in email or "demo" in email else email.split("@")[0].title()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "success": True,
+                "message": f"Welcome back, {name}!",
+                "user": {
+                    "id": f"usr_{abs(hash(email)) % 100000}",
+                    "name": name,
+                    "email": email,
+                    "role": "Staff Full-Stack Architect",
+                    "avatar": "AC",
+                    "two_factor_enabled": True,
+                    "verified": True,
+                    "session_token": f"zt_{abs(hash(email)) % 999999}"
+                }
+            }).encode("utf-8"))
+            return
+
+        if path == "/api/auth/signup":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            payload = json.loads(body)
+            email = payload.get("email", "").strip().lower()
+            demo_otp = str(abs(hash(email + "otp")) % 900000 + 100000)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "success": True,
+                "requires_otp": True,
+                "email": email,
+                "demo_otp": demo_otp,
+                "message": f"Verification code sent. Demo code: {demo_otp}"
+            }).encode("utf-8"))
+            return
+
+        if path == "/api/auth/forgot-password":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            payload = json.loads(body)
+            email = payload.get("email", "").strip().lower()
+            demo_otp = str(abs(hash(email + "reset")) % 900000 + 100000)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "success": True,
+                "email": email,
+                "demo_otp": demo_otp,
+                "message": f"Reset code dispatched. Demo code: {demo_otp}"
+            }).encode("utf-8"))
+            return
+
+        if path == "/api/auth/verify-otp":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            payload = json.loads(body)
+            email = payload.get("email", "").strip().lower()
+            name = email.split("@")[0].title() if email else "Alex Chen"
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "success": True,
+                "verified": True,
+                "message": "OTP verified successfully.",
+                "user": {
+                    "id": f"usr_{abs(hash(email)) % 100000}",
+                    "name": name,
+                    "email": email,
+                    "role": "Staff Full-Stack Architect",
+                    "avatar": "".join([p[0].upper() for p in name.split()[:2]]) or "AC",
+                    "two_factor_enabled": True,
+                    "verified": True
+                }
+            }).encode("utf-8"))
+            return
+
+        if path == "/api/auth/reset-password":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({"success": True, "message": "Password updated successfully."}).encode("utf-8"))
+            return
+
+        if path == "/api/auth/signout":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({"success": True, "message": "Signed out."}).encode("utf-8"))
+            return
 
         self.send_response(404)
         self.end_headers()
