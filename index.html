@@ -326,143 +326,136 @@
             <span class="font-display font-extrabold text-sm sm:text-base tracking-tight text-slate-900">Job Hunt Autopilot</span>
             <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 border border-indigo-200 shadow-2xs">PRO v3.2</span>
           </div>
-          <p class="hidden xl:block text-[11px] text-slate-500 font-medium">Executive Career Cockpit • Autonomous Triage &amp; Threat Quarantine</p>
+          <p class="hidden xl:block text-[11px] text-slate-500 font-medium">Autonomous Career Cockpit for Sales, Marketers, HR, Recruiters &amp; Job Switchers</p>
         </div>
       </div>
 
       <!-- CENTER: Categorized Navigation Dropdowns (Desktop & Tablet) -->
-      <nav class="hidden md:flex items-center gap-1 lg:gap-1.5 text-xs font-semibold text-slate-700">
+      <nav class="hidden md:flex items-center gap-1.5 lg:gap-2 text-xs font-semibold text-slate-700">
         
-        <!-- DROPDOWN 1: Workspaces -->
+        <!-- DROPDOWN 1: Careers & Talent Hub (Attracts Sales, Marketing, HR, Recruiters & Job Switchers) -->
         <div class="relative header-dropdown-container">
-          <button type="button" onclick="toggleHeaderDropdown('nav-dd-workspaces')" class="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors">
-            <span class="material-symbols-outlined text-[18px] text-indigo-600">domain</span>
-            <span>Workspaces</span>
+          <button type="button" onclick="toggleHeaderDropdown('nav-dd-careers')" class="px-3 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors group">
+            <span class="material-symbols-outlined text-[18px] text-indigo-600 group-hover:scale-110 transition-transform">domain</span>
+            <span class="font-bold text-slate-800">Careers &amp; Talent Hub</span>
             <span class="material-symbols-outlined text-[16px] text-slate-400">expand_more</span>
           </button>
-          <div id="nav-dd-workspaces" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 flex-col gap-1">
-            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider">Candidate Workspaces</div>
+          <div id="nav-dd-careers" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2.5 flex-col gap-1">
+            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center justify-between">
+              <span>Careers &amp; Talent Engine</span>
+              <span class="px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700 font-bold text-[9px]">Multi-Persona</span>
+            </div>
+            
             <button type="button" onclick="switchView('kanban'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">view_kanban</span></span>
+              <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">view_kanban</span></span>
               <div>
                 <div class="font-bold text-slate-900">Pipeline Kanban</div>
-                <div class="text-[10px] text-slate-500">124 Multi-stage tracked jobs</div>
+                <div class="text-[10px] text-slate-500">Sales, Marketing, HR &amp; Tech requisitions</div>
               </div>
             </button>
+            
             <button type="button" onclick="switchView('inbox'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">mail</span></span>
+              <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">mail</span></span>
               <div>
-                <div class="font-bold text-slate-900">Inbound Triage Inbox</div>
-                <div class="text-[10px] text-slate-500">DKIM/SPF parsed email stream</div>
+                <div class="font-bold text-slate-900">Inbound Triage &amp; Recruiter Inbox</div>
+                <div class="text-[10px] text-slate-500">DKIM/SPF zero-trust recruiter email parser</div>
               </div>
             </button>
-            <button type="button" onclick="switchView('mnc-hub'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">apartment</span></span>
+            
+            <button type="button" onclick="switchView('mnc-hub'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-emerald-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">apartment</span></span>
               <div>
                 <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                  <span>MNC Career Hub</span>
-                  <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold">50+ MNCs</span>
+                  <span>50+ MNCs &amp; Roles</span>
+                  <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold">Hot Openings</span>
                 </div>
-                <div class="text-[10px] text-slate-500">Openings, Referrals, CVs &amp; Mentors</div>
+                <div class="text-[10px] text-slate-500">Sales, Marketing, People Ops &amp; Switchers</div>
               </div>
             </button>
+            
+            <button type="button" onclick="switchView('interview-studio'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-purple-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">mic</span></span>
+              <div>
+                <div class="font-bold text-slate-900">STAR &amp; Mentorship Studio</div>
+                <div class="text-[10px] text-slate-500">Audio simulator, MEDDPICC sales &amp; 1:1 mocks</div>
+              </div>
+            </button>
+
             <div class="h-px bg-slate-100 my-1"></div>
+            
             <button type="button" onclick="openLogModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">receipt_long</span></span>
+              <span class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">receipt_long</span></span>
               <div>
                 <div class="font-bold text-slate-800">Raw Ingest Audit Log</div>
-                <div class="text-[10px] text-slate-500">Live RFC822 parser logs (20)</div>
+                <div class="text-[10px] text-slate-500">RFC822 parser logs &amp; telemetry stream</div>
               </div>
             </button>
           </div>
         </div>
 
-        <!-- DROPDOWN 2: Security & SRE -->
+        <!-- DROPDOWN 2: AI Copilot & Tools -->
         <div class="relative header-dropdown-container">
-          <button type="button" onclick="toggleHeaderDropdown('nav-dd-security')" class="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors">
-            <span class="material-symbols-outlined text-[18px] text-red-500">shield</span>
-            <span>Security &amp; SRE</span>
+          <button type="button" onclick="toggleHeaderDropdown('nav-dd-ai-tools')" class="px-3 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors group">
+            <span class="material-symbols-outlined text-[18px] text-purple-600 group-hover:scale-110 transition-transform">psychology</span>
+            <span class="font-bold text-slate-800">AI Copilot &amp; Tools</span>
             <span class="material-symbols-outlined text-[16px] text-slate-400">expand_more</span>
           </button>
-          <div id="nav-dd-security" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 flex-col gap-1">
-            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider">Zero-Trust Intelligence</div>
-            <button type="button" onclick="switchView('scam-radar'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-red-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">security</span></span>
-              <div>
-                <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                  <span>Scam Radar &amp; IC3</span>
-                  <span class="px-1.5 py-0.2 rounded bg-red-100 text-red-700 text-[9px] font-bold">4 Blocked</span>
-                </div>
-                <div class="text-[10px] text-slate-500">Fake checks, Telegram &amp; spoof alerts</div>
-              </div>
-            </button>
-            <button type="button" onclick="switchView('follow-up'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-amber-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">schedule_send</span></span>
-              <div>
-                <div class="font-bold text-slate-900">Follow-up SLA Queue</div>
-                <div class="text-[10px] text-slate-500">Recruiter outreach countdowns</div>
-              </div>
-            </button>
-            <button type="button" onclick="switchView('interview-studio'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-purple-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">mic</span></span>
-              <div>
-                <div class="font-bold text-slate-900">Interview Studio</div>
-                <div class="text-[10px] text-slate-500">Audio simulator &amp; calendar invite</div>
-              </div>
-            </button>
-            <button type="button" onclick="switchView('grafana-retro'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-emerald-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">monitoring</span></span>
-              <div>
-                <div class="font-bold text-slate-900">Grafana SRE Telemetry</div>
-                <div class="text-[10px] text-slate-500">Ingest throughput &amp; error metrics</div>
-              </div>
-            </button>
-          </div>
-        </div>
+          <div id="nav-dd-ai-tools" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2.5 flex-col gap-1">
+            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center justify-between">
+              <span>AI Engines &amp; Productivity</span>
+              <span class="px-1.5 py-0.2 rounded bg-purple-50 text-purple-700 font-bold text-[9px]">Pro Suite</span>
+            </div>
 
-        <!-- DROPDOWN 3: AI & Tools -->
-        <div class="relative header-dropdown-container">
-          <button type="button" onclick="toggleHeaderDropdown('nav-dd-ai-tools')" class="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors">
-            <span class="material-symbols-outlined text-[18px] text-purple-600">psychology</span>
-            <span>AI &amp; Tools</span>
-            <span class="material-symbols-outlined text-[16px] text-slate-400">expand_more</span>
-          </button>
-          <div id="nav-dd-ai-tools" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 flex-col gap-1">
-            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider">AI Engines &amp; Extensibility</div>
             <button type="button" onclick="openResumeMatcher(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">psychology</span></span>
+              <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">psychology</span></span>
               <div>
                 <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                  <span>Gemini ATS Resume Matcher</span>
+                  <span>Gemini ATS Matcher</span>
                   <span class="px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 text-[9px] font-bold">AI</span>
                 </div>
-                <div class="text-[10px] text-slate-500">ATS score &amp; bullet-point critique</div>
+                <div class="text-[10px] text-slate-500">Tailored for Sales, Marketing, HR &amp; Switchers</div>
               </div>
             </button>
+
+            <button type="button" onclick="switchView('scam-radar'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-red-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">security</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Zero-Trust Scam Radar</span>
+                  <span class="px-1.5 py-0.2 rounded bg-red-100 text-red-700 text-[9px] font-bold">Shield</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Quarantine fake recruiter checks &amp; spoof alerts</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="switchView('follow-up'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-amber-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">schedule_send</span></span>
+              <div>
+                <div class="font-bold text-slate-900">Recruiter Follow-up SLA Queue</div>
+                <div class="text-[10px] text-slate-500">Autonomous outreach SLA countdowns</div>
+              </div>
+            </button>
+
             <button type="button" onclick="openJobScraper(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-blue-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">travel_explore</span></span>
+              <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">travel_explore</span></span>
               <div>
-                <div class="font-bold text-slate-900">Job URL Scraper (BS4)</div>
-                <div class="text-[10px] text-slate-500">Auto-parse job posts from link</div>
+                <div class="font-bold text-slate-900">Job URL Scraper &amp; Lead Parser</div>
+                <div class="text-[10px] text-slate-500">Auto-extract JD requirements &amp; skills</div>
               </div>
             </button>
-            <button type="button" onclick="triggerBackgroundSync(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-emerald-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">sync</span></span>
-              <div>
-                <div class="font-bold text-slate-900">APScheduler Background Poller</div>
-                <div class="text-[10px] text-slate-500">15-minute autonomous inbox sync</div>
-              </div>
-            </button>
+
             <button type="button" onclick="openDatabaseModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">database</span></span>
+              <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">database</span></span>
               <div>
-                <div class="font-bold text-slate-900" id="header-menu-db-label">Relational Database Studio</div>
-                <div class="text-[10px] text-slate-500">SQLite / IndexedDB persistence</div>
+                <div class="font-bold text-slate-900" id="header-menu-db-label">Database Studio</div>
+                <div class="text-[10px] text-slate-500">SQLite / IndexedDB candidate records</div>
               </div>
             </button>
+
             <div class="h-px bg-slate-100 my-1"></div>
+
             <a href="/docs" target="_blank" onclick="closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-purple-50 flex items-center gap-2.5 transition-colors text-purple-900">
-              <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">api</span></span>
+              <span class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">api</span></span>
               <div>
                 <div class="font-bold text-purple-950 flex items-center gap-1">
                   <span>Swagger OpenAPI Docs</span>
@@ -471,53 +464,6 @@
                 <div class="text-[10px] text-purple-700">Explore interactive REST endpoints</div>
               </div>
             </a>
-          </div>
-        </div>
-
-        <!-- DROPDOWN 4: Demo & Reset (Attract Professionals) -->
-        <div class="relative header-dropdown-container">
-          <button type="button" onclick="toggleHeaderDropdown('nav-dd-demo-reset')" class="px-2.5 py-1.5 rounded-xl bg-amber-50/90 hover:bg-amber-100 text-amber-900 border border-amber-200/80 flex items-center gap-1.5 transition-colors font-bold shadow-2xs">
-            <span class="material-symbols-outlined text-[18px] text-amber-600">restart_alt</span>
-            <span>Demo &amp; Reset</span>
-            <span class="material-symbols-outlined text-[16px] text-amber-600">expand_more</span>
-          </button>
-          <div id="nav-dd-demo-reset" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 flex-col gap-1">
-            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-amber-700 tracking-wider flex items-center justify-between">
-              <span>Executive Demo Controls</span>
-              <span class="px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded font-bold text-[9px]">Portfolio</span>
-            </div>
-            <button type="button" onclick="openResetWebsiteModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2.5 rounded-xl bg-gradient-to-r from-amber-50 to-indigo-50 hover:from-amber-100 hover:to-indigo-100 border border-amber-200/60 flex items-center gap-2.5 transition-all">
-              <span class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold shadow-xs"><span class="material-symbols-outlined text-[20px]">restart_alt</span></span>
-              <div>
-                <div class="font-bold text-slate-900 flex items-center gap-1">
-                  <span>Reset Website &amp; Demo</span>
-                  <span class="text-[9px] px-1 bg-amber-200 text-amber-900 rounded font-bold">Attract Pros</span>
-                </div>
-                <div class="text-[10px] text-slate-600">Restore clean benchmark state for recruiters</div>
-              </div>
-            </button>
-            <button type="button" onclick="triggerAutopilotIngestion(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i></span>
-              <div>
-                <div class="font-bold text-slate-900">Re-Scan Inbound Emails</div>
-                <div class="text-[10px] text-slate-500">Trigger immediate classification triage</div>
-              </div>
-            </button>
-            <button type="button" onclick="openConnectModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">link</span></span>
-              <div>
-                <div class="font-bold text-slate-900">OAuth Inbound Connections</div>
-                <div class="text-[10px] text-slate-500">Connect Google, Outlook or IMAP</div>
-              </div>
-            </button>
-            <div class="h-px bg-slate-100 my-1"></div>
-            <button type="button" onclick="exportDatabaseBackup(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-emerald-50 flex items-center gap-2.5 transition-colors">
-              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">download</span></span>
-              <div>
-                <div class="font-bold text-slate-900">Export Career Database (JSON)</div>
-                <div class="text-[10px] text-slate-500">Download backup file to local machine</div>
-              </div>
-            </button>
           </div>
         </div>
 
@@ -678,6 +624,106 @@
       </div>
     </div>
   </header>
+
+  <!-- MOBILE ACTIONS & APPS DRAWER -->
+  <div id="mobile-actions-drawer" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh] animate-in slide-in-from-bottom duration-200">
+      <div class="p-4 sm:p-5 bg-gradient-to-r from-slate-900 to-indigo-950 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
+            <span class="material-symbols-outlined text-[20px]">apps</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-sm text-white">Career Cockpit Tools</h3>
+            <p class="text-[10px] text-indigo-200">Executive tools for Sales, Marketing, HR &amp; Switchers</p>
+          </div>
+        </div>
+        <button type="button" onclick="toggleMobileActionsDrawer(false)" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto space-y-4 text-xs">
+        <div>
+          <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2">Careers &amp; Talent Engine</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="switchView('kanban'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-left transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-indigo-600">view_kanban</span>
+              <div>
+                <div class="font-bold text-slate-900">Pipeline Kanban</div>
+                <div class="text-[9px] text-slate-500">Tracked applications</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('inbox'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-50 hover:bg-blue-50 border border-slate-200 text-left transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-blue-600">mail</span>
+              <div>
+                <div class="font-bold text-slate-900">Inbound Inbox</div>
+                <div class="text-[9px] text-slate-500">Triage stream</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('mnc-hub'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 text-left transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-emerald-600">apartment</span>
+              <div>
+                <div class="font-bold text-slate-900">50+ MNC Directory</div>
+                <div class="text-[9px] text-slate-500">Sales, Tech &amp; HR</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('interview-studio'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-50 hover:bg-purple-50 border border-slate-200 text-left transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-purple-600">mic</span>
+              <div>
+                <div class="font-bold text-slate-900">Mentor Studio</div>
+                <div class="text-[9px] text-slate-500">1:1 Mocks &amp; STAR</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2">AI Copilot &amp; Security Tools</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="openResumeMatcher(); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-left transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-indigo-600">psychology</span>
+              <div>
+                <div class="font-bold text-slate-900">Gemini ATS</div>
+                <div class="text-[9px] text-slate-500">Resume Matcher</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('scam-radar'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-50 hover:bg-red-50 border border-slate-200 text-left transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-red-600">security</span>
+              <div>
+                <div class="font-bold text-slate-900">Scam Radar</div>
+                <div class="text-[9px] text-slate-500">Zero-Trust Shield</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('follow-up'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-50 hover:bg-amber-50 border border-slate-200 text-left transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-amber-600">schedule_send</span>
+              <div>
+                <div class="font-bold text-slate-900">SLA Queue</div>
+                <div class="text-[9px] text-slate-500">Recruiter timers</div>
+              </div>
+            </button>
+            <button type="button" onclick="openJobScraper(); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-50 hover:bg-blue-50 border border-slate-200 text-left transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-blue-600">travel_explore</span>
+              <div>
+                <div class="font-bold text-slate-900">Job Scraper</div>
+                <div class="text-[9px] text-slate-500">Auto-parse link</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+          <button type="button" onclick="openResetWebsiteModal(); toggleMobileActionsDrawer(false);" class="flex-1 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold flex items-center justify-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-[16px] text-amber-600">restart_alt</span>
+            <span>Reset Demo</span>
+          </button>
+          <button type="button" onclick="toggleMobileActionsDrawer(false)" class="flex-1 py-2 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- CONTAINER WRAPPER FOR DESKTOP / MOBILE SIMULATION -->
   <div id="viewport-container" class="w-full flex-1 flex flex-col transition-all duration-300">
@@ -1600,12 +1646,16 @@
               </select>
 
               <select id="openings-track-filter" onchange="filterOpeningsList()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700">
-                <option value="all">All Engineering Tracks</option>
-                <option value="backend">Backend &amp; Distributed Systems</option>
-                <option value="frontend">Frontend &amp; Platform Web</option>
-                <option value="fullstack">Full-Stack Architect</option>
-                <option value="cloud">Cloud, SRE &amp; DevOps</option>
-                <option value="ai">AI / ML / Data Science</option>
+                <option value="all">All Career Tracks (Sales, Marketing, HR, Tech, Switchers)</option>
+                <option value="sales">💼 Sales, BD &amp; Enterprise AE</option>
+                <option value="marketing">📈 Growth, Product Marketing &amp; Demand Gen</option>
+                <option value="hr-recruiting">🤝 HRBP, People Ops &amp; Talent Acquisition</option>
+                <option value="switcher">🚀 Career Switchers &amp; Strategic Pivot</option>
+                <option value="backend">⚙️ Backend &amp; Distributed Systems</option>
+                <option value="frontend">🎨 Frontend &amp; Platform Web</option>
+                <option value="fullstack">🏗️ Full-Stack Architect</option>
+                <option value="cloud">☁️ Cloud, SRE &amp; DevOps</option>
+                <option value="ai">🤖 AI / ML / Data Science</option>
               </select>
             </div>
           </div>
@@ -1657,12 +1707,15 @@
                     </select>
                   </div>
                   <div>
-                    <label class="block font-bold text-slate-700 mb-1">Architecture Track</label>
+                    <label class="block font-bold text-slate-700 mb-1">Career &amp; Domain Track</label>
                     <select id="cv-track" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800">
-                      <option value="distributed">Distributed Systems &amp; Cloud</option>
-                      <option value="frontend">High-Performance Frontend &amp; Web</option>
-                      <option value="microservices">Microservices &amp; High-Throughput</option>
-                      <option value="aiml">AI / ML Platforms &amp; RAG</option>
+                      <option value="sales">💼 Enterprise SaaS Sales &amp; Strategic Accounts</option>
+                      <option value="marketing">📈 Growth Marketing, PMM &amp; Demand Gen</option>
+                      <option value="hr-recruiting">🤝 Talent Acquisition, HRBP &amp; People Ops</option>
+                      <option value="switcher">🚀 High-Impact Career Transition &amp; Pivot</option>
+                      <option value="distributed" selected>⚙️ Distributed Systems &amp; Cloud</option>
+                      <option value="frontend">🎨 High-Performance Frontend &amp; Web</option>
+                      <option value="aiml">🤖 AI / ML Platforms &amp; RAG</option>
                     </select>
                   </div>
                 </div>
@@ -3423,15 +3476,59 @@
           <span class="px-2 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-bold">Active</span>
         </div>
 
+        <!-- Interactive Career Persona Switcher (Attract Sales, Marketing, HR, Recruiters & Switchers) -->
+        <div class="p-3.5 bg-gradient-to-r from-indigo-50/70 via-purple-50/50 to-emerald-50/50 border border-indigo-100 rounded-2xl space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] uppercase font-bold text-indigo-900 tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-indigo-600">switch_account</span>
+              <span>1-Click Career Persona Switcher</span>
+            </span>
+            <span class="text-[10px] text-indigo-700 bg-indigo-100/80 px-2 py-0.5 rounded-full font-bold">Multi-Persona</span>
+          </div>
+          <p class="text-[11px] text-slate-600 leading-tight">Instantly adapt cockpit profile, CV engine, and metrics to your specific career discipline:</p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 pt-1">
+            <button type="button" onclick="switchCareerPersona('sales')" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-left transition-all group shadow-2xs">
+              <div class="font-bold text-[11px] text-slate-900 group-hover:text-emerald-700 flex items-center gap-1">
+                <span>💼</span> <span>Sales Leader</span>
+              </div>
+              <div class="text-[9px] text-slate-500 font-medium">Enterprise AE • $340k OTE</div>
+            </button>
+            <button type="button" onclick="switchCareerPersona('marketing')" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-purple-50 border border-slate-200 hover:border-purple-300 text-left transition-all group shadow-2xs">
+              <div class="font-bold text-[11px] text-slate-900 group-hover:text-purple-700 flex items-center gap-1">
+                <span>📈</span> <span>Marketer / Growth</span>
+              </div>
+              <div class="text-[9px] text-slate-500 font-medium">Head of PMM • $260k TC</div>
+            </button>
+            <button type="button" onclick="switchCareerPersona('hr')" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-left transition-all group shadow-2xs">
+              <div class="font-bold text-[11px] text-slate-900 group-hover:text-blue-700 flex items-center gap-1">
+                <span>🤝</span> <span>HR &amp; Recruiter</span>
+              </div>
+              <div class="text-[9px] text-slate-500 font-medium">Lead Recruiter • $210k</div>
+            </button>
+            <button type="button" onclick="switchCareerPersona('switcher')" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-left transition-all group shadow-2xs">
+              <div class="font-bold text-[11px] text-slate-900 group-hover:text-amber-700 flex items-center gap-1">
+                <span>🚀</span> <span>Job Switcher</span>
+              </div>
+              <div class="text-[9px] text-slate-500 font-medium">Career Pivot • $195k</div>
+            </button>
+            <button type="button" onclick="switchCareerPersona('tech')" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-left transition-all group shadow-2xs col-span-2 sm:col-span-2">
+              <div class="font-bold text-[11px] text-slate-900 group-hover:text-indigo-700 flex items-center gap-1">
+                <span>⚙️</span> <span>Staff Software Architect</span>
+              </div>
+              <div class="text-[9px] text-slate-500 font-medium">Distributed Systems • $310k TC</div>
+            </button>
+          </div>
+        </div>
+
         <!-- Candidate Telemetry Snapshot -->
         <div class="grid grid-cols-2 gap-3">
           <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
             <span class="text-slate-400 uppercase text-[10px] font-bold block mb-1">Target Compensation</span>
-            <span class="font-black text-slate-900 text-sm font-mono">$250k - $320k TC</span>
+            <span id="profile-modal-comp" class="font-black text-slate-900 text-sm font-mono">$250k - $320k TC</span>
           </div>
           <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
             <span class="text-slate-400 uppercase text-[10px] font-bold block mb-1">Active Pipeline Loops</span>
-            <span class="font-black text-indigo-600 text-sm font-mono">4 Interviews</span>
+            <span id="profile-modal-loops" class="font-black text-indigo-600 text-sm font-mono">4 Interviews</span>
           </div>
         </div>
 

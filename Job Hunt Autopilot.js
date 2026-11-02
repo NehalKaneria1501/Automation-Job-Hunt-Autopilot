@@ -3813,6 +3813,129 @@ const MNC_OPENINGS = [
     atsMatch: "93%",
     urgency: "Priority",
     techStack: ["Python", "PySpark", "Snowflake", "Databricks", "LLM APIs"]
+  },
+  // =========================================================================
+  // MULTI-PERSONA REQUISITIONS (SALES, MARKETING, HR, RECRUITING & SWITCHERS)
+  // =========================================================================
+  {
+    id: "req-sfdc-sales-01",
+    company: "Salesforce",
+    role: "Enterprise Account Executive — Strategic Cloud Accounts",
+    location: "San Francisco, CA / Remote",
+    region: "us",
+    level: "senior",
+    track: "sales",
+    salary: "$240k - $360k OTE",
+    daysAgo: 1,
+    applicants: 12,
+    atsMatch: "96%",
+    urgency: "Quota Crusher",
+    techStack: ["MEDDPICC", "Salesforce CRM", "Strategic Accounts", "C-Suite Discovery", "Enterprise SaaS"]
+  },
+  {
+    id: "req-goog-sales-02",
+    company: "Google",
+    role: "Regional Head of Enterprise Sales — Cloud Platform",
+    location: "Gurugram / Mumbai, India",
+    region: "india",
+    level: "staff",
+    track: "sales",
+    salary: "₹50 - 75 LPA",
+    daysAgo: 2,
+    applicants: 8,
+    atsMatch: "97%",
+    urgency: "Priority Loop",
+    techStack: ["Enterprise GCP", "Quota Attainment (160%)", "Channel Partners", "Executive Negotiations"]
+  },
+  {
+    id: "req-adbe-mkt-01",
+    company: "Adobe",
+    role: "Director of Product Marketing — GenAI & Creative Cloud",
+    location: "San Jose, CA / Remote",
+    region: "us",
+    level: "staff",
+    track: "marketing",
+    salary: "$210k - $285k TC",
+    daysAgo: 2,
+    applicants: 11,
+    atsMatch: "96%",
+    urgency: "Strategic Hire",
+    techStack: ["GTM Positioning", "Product-Led Growth", "PMM Messaging", "Competitive Intelligence", "User Acquisition"]
+  },
+  {
+    id: "req-canv-mkt-02",
+    company: "Canva",
+    role: "Senior Growth & Lifecycle Marketing Lead",
+    location: "Sydney / Remote APAC",
+    region: "global",
+    level: "senior",
+    track: "marketing",
+    salary: "A$175k - A$230k",
+    daysAgo: 1,
+    applicants: 16,
+    atsMatch: "95%",
+    urgency: "Hot Loop",
+    techStack: ["Lifecycle Retention", "Growth Experimentation", "Amplitude", "Customer Journey", "CAC/LTV Optimization"]
+  },
+  {
+    id: "req-nflx-hr-01",
+    company: "Netflix",
+    role: "Senior People Partner / HRBP (Content & Studio Tech)",
+    location: "Los Angeles, CA / Remote",
+    region: "us",
+    level: "senior",
+    track: "hr-recruiting",
+    salary: "$220k - $300k All-Cash Base",
+    daysAgo: 1,
+    applicants: 9,
+    atsMatch: "98%",
+    urgency: "Executive Role",
+    techStack: ["Culture & Values", "Talent Density", "Organizational Design", "Executive Coaching", "Compensation Bands"]
+  },
+  {
+    id: "req-strp-rec-02",
+    company: "Stripe",
+    role: "Lead Technical & Executive Recruiter",
+    location: "San Francisco / Remote",
+    region: "us",
+    level: "senior",
+    track: "hr-recruiting",
+    salary: "$160k - $225k TC",
+    daysAgo: 2,
+    applicants: 13,
+    atsMatch: "95%",
+    urgency: "Active Loop",
+    techStack: ["Full-Cycle Recruiting", "Greenhouse ATS", "Executive Headhunting", "Offer Closing (91%)", "Diversity Sourcing"]
+  },
+  {
+    id: "req-appl-switch-01",
+    company: "Apple",
+    role: "Strategic Program Manager / Business Operations (Career Pivot)",
+    location: "Cupertino, CA / Hybrid",
+    region: "us",
+    level: "senior",
+    track: "switcher",
+    salary: "$185k - $245k TC",
+    daysAgo: 3,
+    applicants: 21,
+    atsMatch: "94%",
+    urgency: "Cross-Functional",
+    techStack: ["Strategic Planning", "Cross-Domain Alignment", "Stakeholder Management", "Operations Scaling", "PMP / Agile"]
+  },
+  {
+    id: "req-uber-switch-02",
+    company: "Uber",
+    role: "Senior Operations & Business Switcher Manager",
+    location: "Mumbai / Gurugram, India",
+    region: "india",
+    level: "mid",
+    track: "switcher",
+    salary: "₹32 - 48 LPA",
+    daysAgo: 2,
+    applicants: 27,
+    atsMatch: "91%",
+    urgency: "Lateral Switch",
+    techStack: ["Market Launch", "Unit Economics", "Driver/Rider Ops", "P&L Ownership", "Analytical SQL"]
   }
 ];
 
@@ -3912,6 +4035,54 @@ const CURATED_COURSES = [
     description: "How to validate product ideas, talk to initial enterprise customers, navigate seed equity vs cash compensation, and hire founding engineers.",
     badge: "Founding Engineer Track",
     badgeColor: "bg-orange-50 text-orange-700 border-orange-200"
+  },
+  {
+    id: "course-sales-meddpicc",
+    title: "MEDDPICC Enterprise SaaS Sales Closing Masterclass",
+    author: "John McMahon & Force Management",
+    category: "B2B Enterprise Sales",
+    difficulty: "Mid to Enterprise AE",
+    estimatedHours: "30 Hours",
+    link: "https://forcemanagement.com/meddpicc-sales-process/",
+    description: "Master enterprise deal qualification: Metrics, Economic Buyer, Decision Criteria, Decision Process, Identify Pain, Champion, and Competition.",
+    badge: "Enterprise Quota Crusher",
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200"
+  },
+  {
+    id: "course-reforge-growth",
+    title: "Reforge Product Marketing & Advanced Growth Strategy",
+    author: "Brian Balfour & Elena Verna",
+    category: "Growth & Product Marketing",
+    difficulty: "Director / Head of PMM",
+    estimatedHours: "45 Hours",
+    link: "https://www.reforge.com/courses/product-marketing",
+    description: "Executive frameworks for positioning, category creation, CAC/LTV payback, retention loops, and product-led market expansion.",
+    badge: "Executive GTM Playbook",
+    badgeColor: "bg-purple-50 text-purple-700 border-purple-200"
+  },
+  {
+    id: "course-talent-sourcing",
+    title: "Modern Technical Talent Sourcing & Bar-Raiser Recruiting",
+    author: "Glen Cathey & Lou Adler",
+    category: "Talent Acquisition & HR",
+    difficulty: "Mid to Executive Recruiter",
+    estimatedHours: "25 Hours",
+    link: "https://booleanblackbelt.com/",
+    description: "Boolean search mastery, Greenhouse pipeline velocity, executive closing scripts, diversity sourcing, and counter-offer mitigation.",
+    badge: "Recruiter Masterclass",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200"
+  },
+  {
+    id: "course-career-switcher",
+    title: "Strategic Career Pivot & Non-Tech to Tech Playbook",
+    author: "Michael Higgins & Career Transition Guild",
+    category: "Career Transition & Pivot",
+    difficulty: "All Transitioning Professionals",
+    estimatedHours: "35 Hours",
+    link: "https://hbr.org/topic/subject/career-transitions",
+    description: "Translating non-traditional backgrounds into high-leverage business ops, customer success, and product roles with 6-figure salaries.",
+    badge: "Career Switcher Blueprint",
+    badgeColor: "bg-amber-50 text-amber-700 border-amber-200"
   }
 ];
 
@@ -4018,6 +4189,58 @@ const VERIFIED_MENTORS = [
     specialties: ["Founding Engineer Roles", "Startup Equity & Vesting", "Fast MVP Execution"],
     bio: "YC alumnus, ex-Staff SWE at Airbnb. Advises engineers deciding between Big Tech stability and early-stage startup equity upside.",
     slotsAvailable: "2 Slots Available",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-samantha-sales",
+    name: "Samantha Vance",
+    role: "VP of Enterprise Sales",
+    company: "Salesforce",
+    location: "San Francisco / Remote",
+    avatar: "SV",
+    color: "from-emerald-600 to-teal-700",
+    specialties: ["Enterprise SaaS Deals", "MEDDPICC Closing", "Quota Overachievement (180%)"],
+    bio: "12+ years in B2B enterprise sales. Closed $40M+ in cloud contracts. Mentors AEs and SDRs on landing enterprise quotas and closing multi-million dollar deals.",
+    slotsAvailable: "3 Slots This Week",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-darren-mkt",
+    name: "Darren Brooks",
+    role: "Head of Product Marketing",
+    company: "Canva",
+    location: "Sydney / Remote APAC",
+    avatar: "DB",
+    color: "from-purple-600 to-indigo-700",
+    specialties: ["Product-Led Growth", "GTM Messaging & Positioning", "CAC/LTV Payback"],
+    bio: "Led growth and product marketing at HubSpot and Canva. Advises marketers on crafting category-defining narrative decks and scaling self-serve funnels.",
+    slotsAvailable: "2 Slots Available",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-amina-hr",
+    name: "Amina Patel",
+    role: "Director of Global Talent Acquisition",
+    company: "Netflix",
+    location: "Los Angeles / Remote",
+    avatar: "AP",
+    color: "from-blue-600 to-cyan-700",
+    specialties: ["Executive Headhunting", "Offer Closing & Equity Negotiation", "Resume Red Flags"],
+    bio: "15+ years hiring top 1% talent across Netflix, Uber, and Google. Helps job seekers decode recruiter psychology and negotiate all-cash and equity packages.",
+    slotsAvailable: "4 Slots Available",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-carlos-switch",
+    name: "Carlos Rivera",
+    role: "Executive Career Pivot Coach",
+    company: "Ex-McKinsey & YC Advisor",
+    location: "New York / Remote",
+    avatar: "CR",
+    color: "from-amber-600 to-orange-700",
+    specialties: ["Non-Tech to Tech Transition", "Cross-Functional Framing", "Executive Presence"],
+    bio: "Guided 100+ professionals transitioning from consulting, finance, retail, and traditional corporations into high-growth tech leadership.",
+    slotsAvailable: "3 Slots Available",
     freeCommunityMock: true
   }
 ];
@@ -4444,6 +4667,7 @@ function handleCvCompanyChange() {
 
 /**
  * AI CV / Resume Generator tailored for chosen MNC and Requisition
+ * Supports Sales, Marketing, HR/Recruiting, Career Switchers & Engineering
  */
 function generateTailoredCV() {
   const company = document.getElementById('cv-target-company')?.value || "Stripe";
@@ -4452,17 +4676,181 @@ function generateTailoredCV() {
   const track = document.getElementById('cv-track')?.value || "distributed";
   const techStack = document.getElementById('cv-tech-stack')?.value || "Go, Python, React, Kubernetes, AWS";
 
-  const user = getAuthUser();
+  const user = getAuthUser() || {};
   const candidateName = user.name || "Alex Chen";
   const candidateEmail = user.email || "alex.chen@executive.dev";
 
-  let levelText = "8+ years of high-impact engineering leadership";
-  if (level === 'senior') levelText = "6+ years building distributed production software";
-  if (level === 'principal') levelText = "12+ years architecting enterprise distributed backbones";
-  if (level === 'mid') levelText = "3+ years delivering scalable microservices & modern UI";
-  if (level === 'fresher') levelText = "Graduate engineer with rigorous computer science foundation";
+  let levelText = "8+ years of high-impact leadership";
+  if (level === 'senior') levelText = "6+ years delivering rigorous, measurable results";
+  if (level === 'principal' || level === 'staff') levelText = "10+ years driving organizational scale and enterprise execution";
+  if (level === 'mid') levelText = "3+ years delivering agile execution and cross-functional momentum";
+  if (level === 'fresher') levelText = "High-aptitude professional with top-tier foundation";
 
-  const cvMarkdown = `
+  let cvMarkdown = "";
+
+  if (track === 'sales') {
+    cvMarkdown = `
+# ${candidateName.toUpperCase()}
+**${role}** | ${candidateEmail} | San Francisco / Remote | linkedin.com/in/alex-sales-leader | (415) 890-4421
+
+---
+
+### PROFESSIONAL EXECUTIVE SUMMARY
+Revenue-focused Enterprise SaaS sales leader with ${levelText}, recognized for consistent quota overachievement (146% average quota attainment over 4 years) and closing $28M+ in enterprise ARR tailored for **${company}**. Master of MEDDPICC deal qualification, multi-threaded C-suite discovery, and strategic enterprise negotiations that compress sales cycles by 35%.
+
+---
+
+### CORE SALES & REVENUE COMPETENCIES
+- **Methodologies:** MEDDPICC, Challenger Sales, Value Selling, Command of the Message
+- **Sales Tech Stack:** ${techStack}
+- **Pipeline & Closing:** Enterprise Account Planning, Multi-Year SaaS Contracts, Inbound/Outbound Funnel Velocity
+- **Executive Engagement:** C-Suite Discovery (CIO, CTO, CFO, CISO), Mutual Action Plans (MAP), Board-Level RoI Presentations
+- **Leadership & Forecasting:** CRM Hygiene, Pipeline Coverage (4.5x), Team Mentorship, Deal Desk & Legal Collaboration
+
+---
+
+### KEY PROFESSIONAL ACCOMPLISHMENTS (GOOGLE XYZ / STAR FORMAT)
+
+**Enterprise Account Executive — Strategic Cloud Accounts** — Cloud Revenue Platform (2022 – Present)
+- **Closed $4.2M Multi-Year Anchor Enterprise Deal:** Qualified economic buyer and champion using MEDDPICC, displacing legacy competitor and delivering 184% of annual quota.
+- **Enterprise Expansion & Net Retention:** Navigated procurement, legal, and infosec reviews across 14 enterprise logos, boosting Net Retention Rate (NRR) from 108% to 132%.
+- **Pipeline Generation Leadership:** Generated $8.6M in qualified self-sourced pipeline through targeted executive outreach, achieving 115% outbound meeting target for 6 consecutive quarters.
+
+**Senior Corporate Account Executive** — High-Growth B2B SaaS (2019 – 2022)
+- **Ranked #1 AE Globally (FY21):** Delivered $3.8M in new bookings against a $2.5M quota (152% attainment), receiving President's Club recognition.
+- **Cycle Compression:** Instituted Mutual Action Plans with customer procurement teams, reducing average sales cycle from 92 days to 58 days.
+- **Cross-Functional Enablement:** Partnered with Product Marketing to develop ROI calculator models used across 45 quota-carrying representatives.
+
+---
+
+### EDUCATION & REVENUE CERTIFICATIONS
+- **Bachelor of Business Administration (BBA) — Marketing & Sales Leadership**
+- **Force Management Certified (MEDDPICC Enterprise Qualification)**
+- **Salesforce Certified Sales Cloud Consultant**
+    `.trim();
+  } else if (track === 'marketing') {
+    cvMarkdown = `
+# ${candidateName.toUpperCase()}
+**${role}** | ${candidateEmail} | San Francisco / Remote | linkedin.com/in/alex-growth-marketer | alexmarketing.portfolio
+
+---
+
+### PROFESSIONAL EXECUTIVE SUMMARY
+Data-driven Product Marketing & Growth leader with ${levelText}, specializing in product-led growth (PLG) mechanics, category positioning, and high-converting demand generation tailored for **${company}**. Proven track record driving 320,000+ qualified signups, slashing Customer Acquisition Cost (CAC) by 38%, and scaling ARR from $5M to $25M through full-funnel retention loops.
+
+---
+
+### CORE MARKETING & GROWTH COMPETENCIES
+- **Growth & Acquisition:** Product-Led Growth (PLG), Demand Generation, SEM/SEO, Lifecycle Funnel, Paid Performance
+- **Marketing Stack:** ${techStack}
+- **Product Marketing (PMM):** Positioning & Messaging Frameworks, Competitive Intelligence, Win-Loss Analysis, Pricing Packaging
+- **Analytics & Experimentation:** Amplitude, Mixpanel, Cohort Retention Analysis, A/B Split Testing, CAC/LTV Payback Modeling
+- **Content & GTM Execution:** Category Narratives, Keynote Launch Keynotes, Enterprise Sales Enablement Decks
+
+---
+
+### KEY PROFESSIONAL ACCOMPLISHMENTS (GOOGLE XYZ / STAR FORMAT)
+
+**Director of Product Marketing & Growth** — SaaS Scaleup (2022 – Present)
+- **Orchestrated Planetary Product Launch:** Led GTM narrative and multi-channel launch campaign generating 180,000 active users in 30 days and 42 tier-1 press features (TechCrunch, Forbes).
+- **Full-Funnel CAC/LTV Optimization:** Redesigned self-serve onboarding flow and viral invite loop, lifting activation rate from 18% to 34% and cutting blended CAC by 38%.
+- **Enterprise Sales Enablement:** Created competitive battlecards and value matrix decks adopted by 25 enterprise account executives, lifting competitive win-rate against incumbent by 24%.
+
+**Senior Growth & Lifecycle Marketing Lead** — Consumer Marketplace (2019 – 2022)
+- **Lifecycle Retention Loops:** Architected automated behavioral email and push notifications sequence driving $4.8M in incremental annual recurring revenue.
+- **Conversion Rate Optimization:** Designed and ran 120+ rapid A/B experiments across pricing pages, lifting free-to-paid conversion from 3.1% to 6.8%.
+- **Cross-Functional Growth Guild:** Led bi-weekly growth sprint reviews between engineering, design, and product management to unblock high-velocity experiments.
+
+---
+
+### EDUCATION & CERTIFICATIONS
+- **Bachelor of Science in Marketing & Data Analytics** (Magna Cum Laude)
+- **Reforge Certified (Product Marketing & Growth Series)**
+- **Google Analytics (GA4) & HubSpot Inbound Certified**
+    `.trim();
+  } else if (track === 'hr-recruiting') {
+    cvMarkdown = `
+# ${candidateName.toUpperCase()}
+**${role}** | ${candidateEmail} | San Francisco / Remote | linkedin.com/in/alex-talent-partner
+
+---
+
+### PROFESSIONAL EXECUTIVE SUMMARY
+Strategic Talent Acquisition & People Operations partner with ${levelText}, renowned for building high-density engineering, sales, and executive organizations tailored for **${company}**. Track record delivering 94% offer acceptance rate, reducing time-to-hire by 46% (from 52 to 28 days), and architecting candidate NPS programs that attract top 1% global talent.
+
+---
+
+### CORE PEOPLE & TALENT COMPETENCIES
+- **Talent Acquisition:** Full-Cycle Technical & Executive Recruiting, Sourcing Algorithms, Bar-Raiser Interview Frameworks
+- **HR Tools & ATS:** ${techStack}
+- **People Operations:** Talent Density, Performance Management, Compensation Benchmarking (Option Impact/Radford), Org Design
+- **Closing & Sourcing:** Executive Headhunting, Competitive Equity Structuring, Counter-Offer Mitigation, Diversity & Inclusion
+- **Analytics & Metrics:** Candidate NPS (+74), Quality of Hire, Pipeline Velocity, Sourcing Funnel Yield Ratios
+
+---
+
+### KEY PROFESSIONAL ACCOMPLISHMENTS (GOOGLE XYZ / STAR FORMAT)
+
+**Lead Technical & Executive Recruiter** — Tech Unicorn (2022 – Present)
+- **Scaled Critical Engineering Org:** Sourced and closed 54 Staff+ engineers, engineering managers, and directors, cutting average time-to-fill from 52 to 28 days.
+- **Elevated Offer Acceptance Rate to 94.2%:** Deployed personalized executive closing decks and transparent equity compensation modeling, mitigating 92% of candidate counter-offers.
+- **Instituted Bar-Raiser Training:** Designed and trained 80+ hiring managers on structured behavioral interviewing and bias reduction, boosting candidate interview NPS to +74.
+
+**Senior People Partner & Recruiter** — Global Technology Enterprise (2019 – 2022)
+- **High-Impact Sourcing Strategy:** Built proprietary Boolean and LinkedIn Talent search pipelines yielding 42% outbound candidate response rate (3.5x industry average).
+- **Internal Mobility & Retention:** Created lateral career progression framework, reducing voluntary first-year engineering attrition by 26%.
+- **Executive Compensation Redesign:** Partnered with Head of People to overhaul salary bands and equity tiers aligned with Radford tech percentiles.
+
+---
+
+### EDUCATION & HR CERTIFICATIONS
+- **Bachelor of Arts in Human Resource Management & Organizational Psychology**
+- **SHRM Senior Certified Professional (SHRM-SCP)**
+- **AIRS Certified Internet Recruiter (CIR) & Advanced Diversity Sourcing**
+    `.trim();
+  } else if (track === 'switcher') {
+    cvMarkdown = `
+# ${candidateName.toUpperCase()}
+**${role}** | ${candidateEmail} | San Francisco / Remote | linkedin.com/in/alex-strategic-pivot
+
+---
+
+### PROFESSIONAL EXECUTIVE SUMMARY
+High-velocity strategic operator and career transitioner with ${levelText}, successfully pivoting transferable excellence in business operations, stakeholder leadership, and P&L execution into tech product and business strategy tailored for **${company}**. Proven record translating complex non-tech problems into scalable digital systems, driving $1.8M in cost efficiencies and leading cross-domain transformation.
+
+---
+
+### TRANSFERABLE & DOMAIN COMPETENCIES
+- **Strategic Execution:** Cross-Functional Alignment, Program Management, P&L Ownership, Unit Economics, OKRs
+- **Modern Tech Literacy:** ${techStack}
+- **Problem Solving:** Data-Driven Decision Making, Process Automation, Root-Cause Analysis, Customer Journey Mapping
+- **Stakeholder Management:** Executive Alignment, Change Management, Cross-Team Unblocking, Vendor Negotiation
+- **Agile & Execution:** Scrum/Agile Frameworks, Continuous Improvement, Rapid Prototyping, KPI Dashboards
+
+---
+
+### KEY PROFESSIONAL ACCOMPLISHMENTS (GOOGLE XYZ / STAR FORMAT)
+
+**Strategic Program Manager / Business Operations** — Cross-Domain Enterprise (2022 – Present)
+- **Spearheaded Operational Digital Transformation:** Automated legacy manual workflows across 4 departments, saving 1,400+ hours annually and reducing operational expenditure by $420,000.
+- **Cross-Functional Alignment on Core Initiatives:** Directed delivery of 8 high-priority business initiatives across engineering, finance, and marketing with 98% on-time milestone attainment.
+- **Data-Driven Revenue Optimization:** Built executive dashboards analyzing operational unit economics, uncovering $1.1M in annualized revenue leakage and implementing instant remediation.
+
+**Senior Operations & Generalist Lead** — Consulting & Operations (2019 – 2022)
+- **Rapid Cross-Functional Adaptation:** Mastered modern data analytics and workflow automation in under 60 days, leading an 18-person transition team through company-wide platform migration.
+- **Stakeholder Negotiation:** Negotiated multi-party vendor contracts resulting in $290,000 in immediate savings with 100% SLA compliance.
+- **Mentorship & Culture:** Mentored 15 career switchers and analysts on building technical fluency and presenting executive business cases to leadership.
+
+---
+
+### EDUCATION & CREDENTIALS
+- **Bachelor of Science in Business & Economics** (Top 5% of Class)
+- **Project Management Professional (PMP) & Certified ScrumMaster (CSM)**
+- **Wharton Executive Education — Business Analytics & Strategic Leadership**
+    `.trim();
+  } else {
+    // Default: Staff Distributed Systems Architect
+    cvMarkdown = `
 # ${candidateName.toUpperCase()}
 **${role}** | ${candidateEmail} | San Francisco / Remote | linkedin.com/in/alex-chen-exec | github.com/alexchen
 
@@ -4500,7 +4888,8 @@ Results-driven software architect with ${levelText}, specializing in high-throug
 - **Bachelor of Science in Computer Science & Distributed Systems** — Top Tier University (First Class Honors)
 - **Certified Kubernetes Administrator (CKA)** — Cloud Native Computing Foundation (CNCF)
 - **AWS Certified Solutions Architect – Professional (SAP-C02)**
-  `.trim();
+    `.trim();
+  }
 
   const container = document.getElementById('cv-output-container');
   if (container) {
@@ -4512,6 +4901,115 @@ Results-driven software architect with ${levelText}, specializing in high-throug
   if (atsEl) {
     atsEl.innerText = `${Math.floor(Math.random() * 4) + 95}% ATS Compatibility`;
   }
+}
+
+/**
+ * 1-Click Career Persona Switcher (Attract Sales, Marketing, HR, Recruiters & Job Switchers)
+ */
+function switchCareerPersona(personaKey) {
+  const personas = {
+    sales: {
+      name: "Marcus Vance",
+      email: "marcus.vance@enterprisesales.io",
+      role: "Enterprise Account Executive — Strategic Cloud Accounts",
+      targetComp: "$240k - $360k OTE",
+      activeLoops: "3 Executive Loops",
+      avatar: "MV",
+      track: "sales",
+      company: "Salesforce",
+      techStack: "MEDDPICC, Salesforce CRM, Strategic Accounts, C-Suite Discovery, Enterprise SaaS"
+    },
+    marketing: {
+      name: "Elena Rostova",
+      email: "elena.rostova@growthmarketing.co",
+      role: "Director of Product Marketing & Growth",
+      targetComp: "$210k - $285k TC",
+      activeLoops: "4 Final Rounds",
+      avatar: "ER",
+      track: "marketing",
+      company: "Adobe",
+      techStack: "GTM Positioning, Product-Led Growth, Amplitude, Customer Journey, Lifecycle"
+    },
+    hr: {
+      name: "Amina Patel",
+      email: "amina.patel@peopletalent.org",
+      role: "Lead Technical & Executive Recruiter",
+      targetComp: "$160k - $225k TC",
+      activeLoops: "5 Talent Pipelines",
+      avatar: "AP",
+      track: "hr-recruiting",
+      company: "Stripe",
+      techStack: "Full-Cycle Recruiting, Greenhouse ATS, Executive Headhunting, Talent Density"
+    },
+    switcher: {
+      name: "Carlos Rivera",
+      email: "carlos.rivera@strategicpivot.io",
+      role: "Strategic Program Manager / Business Operations",
+      targetComp: "$185k - $245k TC",
+      activeLoops: "3 Cross-Domain Loops",
+      avatar: "CR",
+      track: "switcher",
+      company: "Apple",
+      techStack: "Operations Scaling, P&L Ownership, Cross-Functional Alignment, Strategic Planning"
+    },
+    tech: {
+      name: "Alex Chen",
+      email: "alex.chen@executive.dev",
+      role: "Staff Distributed Systems Architect",
+      targetComp: "$250k - $320k TC",
+      activeLoops: "4 Interviews",
+      avatar: "AC",
+      track: "distributed",
+      company: "Stripe",
+      techStack: "Go, Python, React, TypeScript, Kafka, Kubernetes, AWS, PostgreSQL, Redis"
+    }
+  };
+
+  const p = personas[personaKey] || personas.tech;
+
+  // Update Auth User in localStorage
+  const user = getAuthUser() || {};
+  user.name = p.name;
+  user.email = p.email;
+  user.role = p.role;
+  localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+
+  // Update UI Header and profile avatars
+  updateAuthHeaderUI();
+
+  const compEl = document.getElementById('profile-modal-comp');
+  if (compEl) compEl.innerText = p.targetComp;
+
+  const loopsEl = document.getElementById('profile-modal-loops');
+  if (loopsEl) loopsEl.innerText = p.activeLoops;
+
+  const emailEl = document.getElementById('profile-modal-email');
+  if (emailEl) emailEl.innerText = p.email;
+
+  // Set CV Builder inputs
+  const cvComp = document.getElementById('cv-target-company');
+  if (cvComp) cvComp.value = p.company;
+
+  const cvRole = document.getElementById('cv-target-role');
+  if (cvRole) cvRole.value = p.role;
+
+  const cvTrack = document.getElementById('cv-track');
+  if (cvTrack) cvTrack.value = p.track;
+
+  const cvStack = document.getElementById('cv-tech-stack');
+  if (cvStack) cvStack.value = p.techStack;
+
+  // Filter Openings to match track
+  const trackFilter = document.getElementById('openings-track-filter');
+  if (trackFilter) {
+    trackFilter.value = p.track;
+    filterOpeningsList();
+  }
+
+  // Regenerate CV
+  generateTailoredCV();
+
+  showGlobalToast(`✓ Persona switched to ${p.role}! Benchmark cockpit adapted.`);
 }
 
 /**
