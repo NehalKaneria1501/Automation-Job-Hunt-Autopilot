@@ -520,11 +520,56 @@ function updateKPIs() {
   safeSetText('sidebar-followup-badge', `${counts.followups} Due`);
   safeSetText('telemetry-interviews', `${counts.interview} Interviews Scheduled`);
   safeSetText('telemetry-scams', `${counts.scam} Fake Offers Blocked`);
+
+  const nonScamTotal = allEmails.filter(e => !e.isScam).length;
+  safeSetText('mob-count-all', nonScamTotal);
+  safeSetText('mob-count-applied', counts.applied);
+  safeSetText('mob-count-interview', counts.interview);
+  safeSetText('mob-count-offer', counts.offer);
+  safeSetText('mob-count-rejected', counts.rejected);
 }
 
 function safeSetText(id, text) {
   const el = document.getElementById(id);
   if (el) el.innerText = text;
+}
+
+let activeMobileKanbanStage = 'all';
+
+/**
+ * Filter Kanban Columns for Mobile Stage Segmented Control
+ */
+function filterKanbanStage(stage) {
+  activeMobileKanbanStage = stage;
+  const colApplied = document.getElementById('col-applied-wrapper');
+  const colInterview = document.getElementById('col-interview-wrapper');
+  const colOffer = document.getElementById('col-offer-wrapper');
+  const colRejected = document.getElementById('col-rejected-wrapper');
+
+  const stageButtons = ['all', 'applied', 'interview', 'offer', 'rejected'];
+  stageButtons.forEach(s => {
+    const btn = document.getElementById(`mob-stage-${s}`);
+    if (!btn) return;
+    if (s === stage) {
+      btn.className = "px-3 py-1.5 rounded-full text-xs font-bold bg-indigo-600 text-white shadow-xs shrink-0 transition-all";
+    } else {
+      btn.className = "px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition-all";
+    }
+  });
+
+  if (!colApplied || !colInterview || !colOffer || !colRejected) return;
+
+  if (stage === 'all') {
+    colApplied.classList.remove('hidden');
+    colInterview.classList.remove('hidden');
+    colOffer.classList.remove('hidden');
+    colRejected.classList.remove('hidden');
+  } else {
+    colApplied.classList.toggle('hidden', stage !== 'applied');
+    colInterview.classList.toggle('hidden', stage !== 'interview');
+    colOffer.classList.toggle('hidden', stage !== 'offer');
+    colRejected.classList.toggle('hidden', stage !== 'rejected');
+  }
 }
 
 /**
@@ -947,6 +992,15 @@ function switchView(viewName) {
   });
 
   syncMobileNavActiveTab();
+  
+  // Reset scroll position to top on view switch
+  const scrollViewport = document.getElementById('device-scroll-viewport');
+  if (isMobileViewport && scrollViewport) {
+    scrollViewport.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   safeCreateIcons();
 }
 
