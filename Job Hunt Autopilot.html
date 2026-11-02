@@ -5579,7 +5579,7 @@
       <div class="flex flex-col text-left">
         <div class="flex items-center gap-1.5">
           <span class="font-extrabold text-xs sm:text-sm tracking-tight text-white">AI Copilot</span>
-          <span class="bg-indigo-950/70 border border-indigo-400/40 text-[9px] font-mono px-1.5 py-0.2 rounded font-bold text-indigo-200">Python</span>
+          <span class="bg-indigo-950/70 border border-amber-400/50 text-[9px] font-mono px-1.5 py-0.2 rounded font-bold text-amber-300">🔥 AI Logic</span>
         </div>
       </div>
     </button>
@@ -5600,9 +5600,9 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="font-display font-bold text-sm tracking-tight text-white">AI Career Copilot</h3>
-              <span id="chat-engine-badge" class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">Python • Live DB</span>
+              <span id="chat-engine-badge" class="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>🔥 Firebase AI Logic</span>
             </div>
-            <p class="text-[11px] text-indigo-200/80">Stripe Prep, Scam Radar &amp; Latency Nudges</p>
+            <p class="text-[11px] text-indigo-200/80 flex items-center gap-1.5"><span>Gemini 1.5/2.5 Flash</span><span>•</span><a href="https://console.firebase.google.com/project/job-hunt-autopilot-16ebb/ailogic" target="_blank" rel="noopener" class="text-amber-300 hover:text-white underline font-mono flex items-center gap-0.5"><span>Console</span><span class="material-symbols-outlined text-[11px]">open_in_new</span></a></p>
           </div>
         </div>
 
@@ -5669,11 +5669,11 @@
           </button>
         </div>
         <div class="flex items-center justify-between text-[10px] text-slate-400 px-1 font-medium">
-          <span class="flex items-center gap-1">
+          <span class="flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            Python `autopilot.py` / Gemini API
+            🔥 Firebase AI Logic (job-hunt-autopilot-16ebb)
           </span>
-          <span class="font-mono">SQLite Grounded</span>
+          <a href="https://console.firebase.google.com/project/job-hunt-autopilot-16ebb/ailogic" target="_blank" rel="noopener" class="font-mono text-indigo-600 hover:text-indigo-800 underline flex items-center gap-0.5">AI Logic Console ↗</a>
         </div>
       </form>
     </div>
@@ -6176,10 +6176,23 @@
               </span>
             </div>
           </div>
+          <div class="p-2 rounded-xl bg-amber-100/70 border border-amber-200 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-[10px] text-amber-950 flex items-center gap-1">
+                <span>🤖</span>
+                <span>Firebase AI Logic (Gemini Models)</span>
+              </div>
+              <div class="text-[9px] text-amber-800 font-mono">gemini-1.5-flash • Copilot Client SDK</div>
+            </div>
+            <a href="https://console.firebase.google.com/project/job-hunt-autopilot-16ebb/ailogic" target="_blank" rel="noopener" class="px-2 py-0.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white text-[9px] font-bold flex items-center gap-0.5">
+              <span>Console</span>
+              <span class="material-symbols-outlined text-[10px]">open_in_new</span>
+            </a>
+          </div>
           <div class="flex items-center justify-between pt-1">
-            <span class="text-[10px] text-slate-500">Messaging: 425838075662</span>
+            <span class="text-[10px] text-slate-500">Project Number: 425838075662</span>
             <button type="button" onclick="testFirebaseConnection()" class="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] shadow-2xs transition-colors">
-              Test Firebase Ping
+              Test Firebase &amp; AI Ping
             </button>
           </div>
         </div>
@@ -6443,6 +6456,10 @@
       addDoc, 
       getDocs 
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { 
+      getVertexAI, 
+      getGenerativeModel 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-vertexai-preview.js";
 
     // Your web app's Firebase configuration
     const firebaseConfig = {
@@ -6466,6 +6483,92 @@
       }
       const auth = getAuth(app);
       const db = getFirestore(app);
+
+      // Initialize Firebase AI Logic (Gemini Provider for Firebase)
+      let vertexAI = null;
+      let generativeModel = null;
+      try {
+        vertexAI = getVertexAI(app);
+        generativeModel = getGenerativeModel(vertexAI, { 
+          model: "gemini-1.5-flash",
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 2048,
+          },
+          systemInstruction: {
+            parts: [{
+              text: "You are the AI Career Copilot for Job Hunt Autopilot (Alex Chen, Staff Architect). You provide elite FAANG-tier advice on systems architecture, interview loops (e.g. Stripe Round 2), resume optimization, offer evaluation (e.g. Datadog $300k TC), DSA solutions in Python & JavaScript, and recruitment scam forensic detection."
+            }]
+          }
+        });
+        console.log("🔥 Firebase AI Logic initialized: gemini-1.5-flash (Project: job-hunt-autopilot-16ebb)");
+      } catch (aiErr) {
+        console.info("Firebase AI Logic init notice:", aiErr.message);
+      }
+
+      window.firebaseVertexAI = vertexAI;
+      window.firebaseGenerativeModel = generativeModel;
+      window.firebaseAiLogic = {
+        projectId: firebaseConfig.projectId,
+        consoleUrl: "https://console.firebase.google.com/project/job-hunt-autopilot-16ebb/ailogic",
+        modelName: "gemini-1.5-flash",
+        vertexAI: vertexAI,
+        generativeModel: generativeModel,
+        async generateReply(prompt, history = []) {
+          // 1. Try Firebase Vertex AI Client SDK
+          if (generativeModel) {
+            try {
+              const chat = generativeModel.startChat({
+                history: (history || []).slice(-6).map(h => ({
+                  role: h.role === 'assistant' ? 'model' : 'user',
+                  parts: [{ text: h.content || h.text || '' }]
+                }))
+              });
+              const result = await chat.sendMessage(prompt);
+              const response = await result.response;
+              const replyText = response.text();
+              if (replyText) {
+                return {
+                  reply: replyText,
+                  source: '🔥 Firebase AI Logic (Gemini)'
+                };
+              }
+            } catch (err) {
+              console.warn("Firebase AI Logic SDK invocation notice:", err.message);
+            }
+          }
+          
+          // 2. Direct Firebase ML gateway attempt
+          try {
+            const url = `https://firebaseml.googleapis.com/v1beta/projects/${firebaseConfig.projectId}/locations/us-central1/publishers/google/models/gemini-1.5-flash:generateContent?key=${firebaseConfig.apiKey}`;
+            const payload = {
+              contents: [
+                ...(history || []).slice(-4).map(h => ({
+                  role: h.role === 'assistant' ? 'model' : 'user',
+                  parts: [{ text: h.content || h.text || '' }]
+                })),
+                { role: 'user', parts: [{ text: prompt }] }
+              ]
+            };
+            const res = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (text) {
+                return { reply: text, source: '🔥 Firebase AI Logic (Gemini)' };
+              }
+            }
+          } catch (e) {
+            // Downstream fallback
+          }
+          
+          return null;
+        }
+      };
 
       // Expose to window for global app accessibility
       window.firebaseApp = app;
