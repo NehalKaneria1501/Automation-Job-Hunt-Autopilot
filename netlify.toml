@@ -1,0 +1,30 @@
+# Netlify Configuration for Job Hunt Autopilot
+# Project: job-hunt-autopilot (https://app.netlify.com/projects/job-hunt-autopilot/overview)
+
+[build]
+  publish = "."
+  command = ""
+
+# Single Page Application (SPA) catch-all routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security and Cache Headers
+[[headers]]
+  for = "/*"
+    [headers.values]
+      X-Frame-Options = "SAMEORIGIN"
+      X-Content-Type-Options = "nosniff"
+      Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/app.js"
+    [headers.values]
+      Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/index.html"
+    [headers.values]
+      Cache-Control = "public, max-age=0, must-revalidate"
