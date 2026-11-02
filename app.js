@@ -974,7 +974,7 @@ function renderIngestLog() {
 function switchView(viewName) {
   activeView = viewName;
 
-  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox'];
+  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox', 'logs-center', 'newsletter'];
   views.forEach(v => {
     const el = document.getElementById(`view-${v}`);
     if (el) {
@@ -999,6 +999,12 @@ function switchView(viewName) {
 
   if (viewName === 'mnc-hub' && typeof renderMncHub === 'function') {
     renderMncHub();
+  }
+  if (viewName === 'logs-center' && typeof initLogsCenter === 'function') {
+    initLogsCenter();
+  }
+  if (viewName === 'newsletter' && typeof initNewsletter === 'function') {
+    initNewsletter();
   }
 
   syncMobileNavActiveTab();
@@ -5244,4 +5250,618 @@ function renderMncHub() {
 
 // Kick off initialization on DOM ready
 document.addEventListener('DOMContentLoaded', initAutopilot);
+
+
+
+// ============================================================================
+// LIVE SYSTEM, AUDIT & INGESTION LOGS STUDIO (Stitch Screen b7f0bcda381843029c4be1aaa7f1ed3d)
+// ============================================================================
+
+let isLogsStreaming = true;
+let logsStreamInterval = null;
+let currentLogCategory = 'all';
+let currentLogLevel = 'ALL';
+let logsSearchTerm = '';
+
+// Seed log entries grounded in Stitch screens (FBI IC3, DKIM, APScheduler, SQLite WAL, Honeypots)
+let logsBuffer = [
+  {
+    id: 1,
+    timestamp: "12:44:02.184",
+    stream: "ic3",
+    level: "CRITICAL",
+    badge: "[IC3-GATEWAY]",
+    badgeClass: "bg-red-950 text-red-400 border border-red-800",
+    message: "Threat actor cluster isolated: NCFTA-CYWEX-9841. Impostor domain careers-apple-talent.com intercepted.",
+    detail: {
+      status: "SUCCESS",
+      code: 200,
+      docket_id: "IC3-DOCKET-2025-0914-APL",
+      canonical_sha384: "7e2b189a02fc3187b99c72a8019b88e14670dc4e34f89d34208a0d9b6264f331f47890a8809e1e2d4f55a12fbc93de76",
+      zero_bit_drift: true,
+      adversary_ip: "185.220.101.42",
+      adversary_asn: "AS48210",
+      honeypot_token: "CANARY-9841-APL",
+      countersigned_by: "FBI-IC3-INGEST-GATEWAY-CA-04"
+    }
+  },
+  {
+    id: 2,
+    timestamp: "12:44:01.912",
+    stream: "ic3",
+    level: "WARN",
+    badge: "[HONEYPOT-TRIGGER]",
+    badgeClass: "bg-amber-950 text-amber-400 border border-amber-800",
+    message: "Honeypot token CANARY-9841-APL pingback received from 185.220.101.42 (Tor exit node). RTT latency: 24.2ms.",
+    detail: {
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ScraperBot/2.4",
+      http_headers: { "X-Forwarded-For": "185.220.101.42", "CF-RAY": "8dc1420a7b4198c2-AMS" }
+    }
+  },
+  {
+    id: 3,
+    timestamp: "12:43:58.410",
+    stream: "inbox",
+    level: "SUCCESS",
+    badge: "[DKIM-VERIFY]",
+    badgeClass: "bg-emerald-950 text-emerald-400 border border-emerald-800",
+    message: "Legitimate inbound verified: Stripe Staff Recruiter (talent-acquisition@stripe.com). dkim=pass (2048-bit key) spf=pass (ip4:199.255.192.0/22).",
+    detail: {
+      auth_results: "spf=pass smtp.mailfrom=stripe.com; dkim=pass header.i=@stripe.com; dmarc=pass action=none",
+      latency_ms: 18.5,
+      role: "Staff Infrastructure Engineer ($260k - $310k)"
+    }
+  },
+  {
+    id: 4,
+    timestamp: "12:43:55.204",
+    stream: "database",
+    level: "INFO",
+    badge: "[SQLITE-WAL]",
+    badgeClass: "bg-purple-950 text-purple-400 border border-purple-800",
+    message: "WAL checkpoint executed (passive). 124 application records synchronized in 3.1ms. Zero corruption.",
+    detail: {
+      busy_handlers: 0,
+      checkpoint_pages: 18,
+      db_file: "autopilot.db",
+      journal_mode: "WAL"
+    }
+  },
+  {
+    id: 5,
+    timestamp: "12:43:50.012",
+    stream: "scheduler",
+    level: "INFO",
+    badge: "[APScheduler]",
+    badgeClass: "bg-blue-950 text-blue-400 border border-blue-800",
+    message: "Background job 'poll_inbound_recruiter_webhooks' executed. Next fire at 12:44:20.000 (every 30s).",
+    detail: {
+      executor: "ThreadPoolExecutor-4",
+      active_jobs: 3,
+      jitter_ms: 12
+    }
+  },
+  {
+    id: 6,
+    timestamp: "12:43:42.880",
+    stream: "inbox",
+    level: "SUCCESS",
+    badge: "[DKIM-VERIFY]",
+    badgeClass: "bg-emerald-950 text-emerald-400 border border-emerald-800",
+    message: "Legitimate inbound verified: Datadog Executive Recruiter (careers@datadoghq.com). dkim=pass spf=pass. Stage: Recruiter Screen.",
+    detail: {
+      role: "Director of Enterprise Sales (New York / Remote)",
+      ote: "$340,000",
+      followup_sla_hours: 48
+    }
+  },
+  {
+    id: 7,
+    timestamp: "12:43:35.450",
+    stream: "ic3",
+    level: "CRITICAL",
+    badge: "[IC3-RADAR]",
+    badgeClass: "bg-red-950 text-red-400 border border-red-800",
+    message: "Quarantined Telegram fake recruiter check: 'Meta Talent Outreach' requesting WhatsApp crypto deposit. Sender blocked.",
+    detail: {
+      channel: "Telegram / SMS spoof",
+      verdict: "CRITICAL FRAUD (Impersonation)",
+      ic3_referral: "FILED-ONLINE"
+    }
+  },
+  {
+    id: 8,
+    timestamp: "12:43:28.110",
+    stream: "scheduler",
+    level: "INFO",
+    badge: "[APScheduler]",
+    badgeClass: "bg-blue-950 text-blue-400 border border-blue-800",
+    message: "SLA watchdog: Checked 8 pending recruiter replies. 2 reminders scheduled within 24-hour window.",
+    detail: {
+      upcoming_slas: [
+        { company: "Anthropic", hours_remaining: 18.2 },
+        { company: "Figma", hours_remaining: 23.5 }
+      ]
+    }
+  },
+  {
+    id: 9,
+    timestamp: "12:43:15.900",
+    stream: "database",
+    level: "INFO",
+    badge: "[INDEXED-DB]",
+    badgeClass: "bg-purple-950 text-purple-400 border border-purple-800",
+    message: "Browser offline fallback store synced: 50 MNC companies, 24 mentor cards cached in localStorage.",
+    detail: {
+      storage_quota_bytes: 482012,
+      sync_mode: "hybrid-local-first"
+    }
+  }
+];
+
+/**
+ * Initialize the Logs Center view
+ */
+function initLogsCenter() {
+  renderLogsTerminal();
+  updateLogsCountBadges();
+
+  if (!logsStreamInterval) {
+    // Simulate real-time streaming every 4.5 seconds
+    logsStreamInterval = setInterval(() => {
+      if (!isLogsStreaming) return;
+      generateSimulatedLogEvent();
+    }, 4500);
+  }
+}
+
+/**
+ * Render terminal lines based on active category, level, and search keyword
+ */
+function renderLogsTerminal() {
+  const container = document.getElementById('logs-terminal-stream');
+  if (!container) return;
+
+  const filtered = logsBuffer.filter(log => {
+    // Stream filter
+    if (currentLogCategory !== 'all' && log.stream !== currentLogCategory) return false;
+    // Level filter
+    if (currentLogLevel !== 'ALL' && log.level !== currentLogLevel) return false;
+    // Search keyword
+    if (logsSearchTerm) {
+      const matchText = `${log.timestamp} ${log.badge} ${log.level} ${log.message} ${JSON.stringify(log.detail || '')}`.toLowerCase();
+      if (!matchText.includes(logsSearchTerm)) return false;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="py-12 text-center text-slate-500 font-mono text-xs">
+        <span class="material-symbols-outlined text-3xl text-slate-600 block mb-2">filter_alt_off</span>
+        No logs match the current filter criteria (category: ${currentLogCategory}, level: ${currentLogLevel}).
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(log => {
+    let levelClass = "text-slate-400";
+    if (log.level === 'CRITICAL') levelClass = "text-[#ff6b6b] font-bold";
+    else if (log.level === 'WARN') levelClass = "text-[#ffbe3b] font-bold";
+    else if (log.level === 'SUCCESS') levelClass = "text-[#6ffbbe] font-bold";
+    else if (log.level === 'INFO') levelClass = "text-[#82aaff]";
+
+    const hasDetail = !!log.detail;
+    const detailId = `log-detail-${log.id}`;
+
+    return `
+      <div class="group hover:bg-white/[0.04] p-1.5 rounded-lg transition-colors border-l-2 ${log.level === 'CRITICAL' ? 'border-red-500 bg-red-950/20' : log.level === 'WARN' ? 'border-amber-500' : 'border-transparent'}">
+        <div class="flex flex-wrap items-start gap-2">
+          <span class="text-slate-500 select-none">${log.timestamp}</span>
+          <span class="px-1.5 py-0.2 rounded text-[10px] font-bold ${log.badgeClass} select-none">${log.badge}</span>
+          <span class="${levelClass} select-none text-[11px]">${log.level}</span>
+          <span class="flex-1 text-[#dae2fd] text-xs leading-relaxed break-all">${escapeHtmlLogs(log.message)}</span>
+          ${hasDetail ? `
+            <button type="button" onclick="toggleLogDetail(${log.id})" class="text-[10px] text-indigo-400 hover:text-indigo-300 underline font-mono select-none ml-auto shrink-0">
+              {payload}
+            </button>
+          ` : ''}
+        </div>
+        ${hasDetail ? `
+          <div id="${detailId}" class="hidden mt-2 p-3 rounded-xl bg-black/60 border border-slate-800 text-[11px] text-slate-300 font-mono overflow-x-auto leading-relaxed select-all">
+            <pre class="m-0">${escapeHtmlLogs(JSON.stringify(log.detail, null, 2))}</pre>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+
+  const stats = document.getElementById('logs-buffer-stats');
+  if (stats) stats.innerText = `${logsBuffer.length} lines buffer`;
+
+  // Auto-scroll if enabled
+  const chk = document.getElementById('logs-autoscroll-chk');
+  if (chk && chk.checked) {
+    container.scrollTop = container.scrollHeight;
+  }
+}
+
+function escapeHtmlLogs(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function toggleLogDetail(id) {
+  const el = document.getElementById(`log-detail-${id}`);
+  if (el) {
+    el.classList.toggle('hidden');
+  }
+}
+
+/**
+ * Filter logs based on search input and level dropdown
+ */
+function filterLogsTerminal() {
+  const searchInput = document.getElementById('logs-search-input');
+  const levelSelect = document.getElementById('logs-level-filter');
+
+  logsSearchTerm = (searchInput?.value || '').trim().toLowerCase();
+  currentLogLevel = levelSelect?.value || 'ALL';
+
+  renderLogsTerminal();
+}
+
+/**
+ * Switch stream category tabs
+ */
+function setLogsStreamCategory(cat) {
+  currentLogCategory = cat;
+
+  document.querySelectorAll('.log-cat-tab').forEach(tab => {
+    tab.className = "log-cat-tab px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1";
+  });
+
+  const activeTab = document.getElementById(`log-cat-${cat}`);
+  if (activeTab) {
+    activeTab.className = "log-cat-tab px-3 py-1.5 rounded-xl font-bold bg-slate-900 text-white transition-all shrink-0 flex items-center gap-1";
+  }
+
+  renderLogsTerminal();
+}
+
+function updateLogsCountBadges() {
+  const allEl = document.getElementById('count-logs-all');
+  const ic3El = document.getElementById('count-logs-ic3');
+  const inboxEl = document.getElementById('count-logs-inbox');
+  const schedEl = document.getElementById('count-logs-scheduler');
+  const dbEl = document.getElementById('count-logs-database');
+
+  if (allEl) allEl.innerText = logsBuffer.length;
+  if (ic3El) ic3El.innerText = logsBuffer.filter(l => l.stream === 'ic3').length;
+  if (inboxEl) inboxEl.innerText = logsBuffer.filter(l => l.stream === 'inbox').length;
+  if (schedEl) schedEl.innerText = logsBuffer.filter(l => l.stream === 'scheduler').length;
+  if (dbEl) dbEl.innerText = logsBuffer.filter(l => l.stream === 'database').length;
+}
+
+/**
+ * Toggle live stream on/off
+ */
+function toggleLogsStream() {
+  isLogsStreaming = !isLogsStreaming;
+  const icon = document.getElementById('logs-toggle-icon');
+  const label = document.getElementById('logs-toggle-label');
+  const ind = document.getElementById('logs-active-indicator');
+
+  if (isLogsStreaming) {
+    if (icon) icon.innerText = 'pause';
+    if (label) label.innerText = 'Pause Stream';
+    if (ind) {
+      ind.innerText = 'STREAMING';
+      ind.parentElement.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 font-bold";
+    }
+    showGlobalToast("▶ Live Log Stream Resumed");
+  } else {
+    if (icon) icon.innerText = 'play_arrow';
+    if (label) label.innerText = 'Resume Stream';
+    if (ind) {
+      ind.innerText = 'PAUSED';
+      ind.parentElement.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-800/60 font-bold";
+    }
+    showGlobalToast("⏸ Live Log Stream Paused");
+  }
+}
+
+/**
+ * Clear the current log buffer
+ */
+function clearLogsTerminal() {
+  logsBuffer = [
+    {
+      id: Date.now(),
+      timestamp: new Date().toLocaleTimeString(),
+      stream: "scheduler",
+      level: "INFO",
+      badge: "[SYSTEM]",
+      badgeClass: "bg-slate-800 text-slate-300 border border-slate-700",
+      message: "Terminal buffer cleared by operator. Listening on mTLS 1.3 socket...",
+      detail: { operator: "admin", action: "buffer_flush" }
+    }
+  ];
+  renderLogsTerminal();
+  updateLogsCountBadges();
+  showGlobalToast("🧹 Terminal buffer cleared");
+}
+
+/**
+ * Copy entire logs stream to clipboard
+ */
+function copyLogsStream() {
+  const lines = logsBuffer.map(l => `[${l.timestamp}] ${l.badge} ${l.level}: ${l.message}`).join('\n');
+  navigator.clipboard.writeText(lines).then(() => {
+    showGlobalToast("✓ Logs stream copied to clipboard!");
+  }).catch(() => {
+    showGlobalToast("✓ Logs copied!");
+  });
+}
+
+/**
+ * Download logs stream as file
+ */
+function downloadLogsFile(format) {
+  let content = "";
+  let filename = `autopilot_audit_stream_${Date.now()}.${format}`;
+  let mimeType = "text/plain";
+
+  if (format === 'json') {
+    content = JSON.stringify(logsBuffer, null, 2);
+    mimeType = "application/json";
+  } else {
+    content = logsBuffer.map(l => {
+      let str = `[${l.timestamp}] ${l.badge} [${l.level}] ${l.message}`;
+      if (l.detail) str += `\n  PAYLOAD: ${JSON.stringify(l.detail)}`;
+      return str;
+    }).join('\n');
+  }
+
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showGlobalToast(`✓ Downloaded ${filename}`);
+}
+
+/**
+ * Generate occasional simulated log events
+ */
+function generateSimulatedLogEvent() {
+  const events = [
+    {
+      stream: "scheduler",
+      level: "INFO",
+      badge: "[APScheduler]",
+      badgeClass: "bg-blue-950 text-blue-400 border border-blue-800",
+      message: "Background heartbeat: IMAP/OAuth socket alive. 0 dropped packets.",
+      detail: { socket_alive: true, latency_ms: 11.4 }
+    },
+    {
+      stream: "inbox",
+      level: "SUCCESS",
+      badge: "[DKIM-VERIFY]",
+      badgeClass: "bg-emerald-950 text-emerald-400 border border-emerald-800",
+      message: "Recruiter webhook received: Salesforce Talent Partner. SPF pass, DMARC pass.",
+      detail: { domain: "salesforce.com", sender: "careers@salesforce.com", dkim_score: 1.0 }
+    },
+    {
+      stream: "database",
+      level: "INFO",
+      badge: "[SQLITE-WAL]",
+      badgeClass: "bg-purple-950 text-purple-400 border border-purple-800",
+      message: "Auto-checkpoint: SQLite WAL committed 4 new audit events.",
+      detail: { pages: 4, write_time_ms: 1.8 }
+    },
+    {
+      stream: "ic3",
+      level: "WARN",
+      badge: "[HONEYPOT-PROBE]",
+      badgeClass: "bg-amber-950 text-amber-400 border border-amber-800",
+      message: "Suspicious crawler blocked on canary endpoint: User-Agent Python-urllib/3.10 quarantined.",
+      detail: { ip: "194.26.29.112", action: "403_FORBIDDEN" }
+    }
+  ];
+
+  const pick = events[Math.floor(Math.random() * events.length)];
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}`;
+
+  const newLog = {
+    id: Date.now(),
+    timestamp: timeStr,
+    ...pick
+  };
+
+  logsBuffer.push(newLog);
+  if (logsBuffer.length > 200) logsBuffer.shift();
+
+  renderLogsTerminal();
+  updateLogsCountBadges();
+}
+
+/**
+ * Modal handlers for FBI IC3 Docket
+ */
+function openIc3DocketModal() {
+  const modal = document.getElementById('modal-ic3-docket');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+function closeIc3DocketModal() {
+  const modal = document.getElementById('modal-ic3-docket');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function copyIc3PayloadJson() {
+  const payload = {
+    status: "SUCCESS",
+    code: 200,
+    docket_id: "IC3-DOCKET-2025-0914-APL",
+    canonical_sha384: "7e2b189a02fc3187b99c72a8019b88e14670dc4e34f89d34208a0d9b6264f331f47890a8809e1e2d4f55a12fbc93de76",
+    zero_bit_drift: true,
+    threat_actor_cluster: "NCFTA-CYWEX-9841",
+    adversary_ip: "185.220.101.42",
+    adversary_asn: "AS48210",
+    honeypot_token: "CANARY-9841-APL",
+    countersigned_by: "FBI-IC3-INGEST-GATEWAY-CA-04",
+    timestamp: "2026-11-02T12:44:02.184Z"
+  };
+
+  navigator.clipboard.writeText(JSON.stringify(payload, null, 2)).then(() => {
+    showGlobalToast("✓ IC3 Docket JSON copied to clipboard!");
+  }).catch(() => {
+    showGlobalToast("✓ Docket copied!");
+  });
+}
+
+
+// ============================================================================
+// EXECUTIVE CAREER & HIRING NEWSLETTER HUB (Issue #48)
+// ============================================================================
+
+let activeNewsletterTab = 'briefing';
+
+function initNewsletter() {
+  switchNewsletterTab(activeNewsletterTab);
+  safeCreateIcons();
+}
+
+function switchNewsletterTab(tabKey) {
+  activeNewsletterTab = tabKey;
+
+  const tabs = ['briefing', 'benchmarks', 'personas', 'archive', 'subscribe'];
+  tabs.forEach(t => {
+    const contentEl = document.getElementById(`nl-content-${t}`);
+    const tabBtn = document.getElementById(`nl-tab-${t}`);
+
+    if (contentEl) {
+      if (t === tabKey) {
+        contentEl.classList.remove('hidden');
+      } else {
+        contentEl.classList.add('hidden');
+      }
+    }
+
+    if (tabBtn) {
+      if (t === tabKey) {
+        tabBtn.className = "nl-nav-tab px-4 py-2 rounded-xl font-bold bg-indigo-600 text-white transition-all shrink-0 flex items-center gap-1.5 shadow-sm";
+      } else {
+        tabBtn.className = "nl-nav-tab px-4 py-2 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1.5";
+      }
+    }
+  });
+
+  safeCreateIcons();
+}
+
+function filterCompTable(domain) {
+  document.querySelectorAll('.comp-filter-btn').forEach(btn => {
+    btn.className = "comp-filter-btn px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition-all";
+  });
+
+  const activeBtn = document.getElementById(`comp-btn-${domain}`);
+  if (activeBtn) {
+    activeBtn.className = "comp-filter-btn px-3 py-1.5 rounded-xl font-bold bg-indigo-600 text-white transition-all";
+  }
+
+  const rows = document.querySelectorAll('.comp-row');
+  rows.forEach(r => {
+    const rowDomain = r.getAttribute('data-domain');
+    if (domain === 'all' || rowDomain === domain) {
+      r.style.display = '';
+    } else {
+      r.style.display = 'none';
+    }
+  });
+}
+
+function handleNewsletterSubscribe(e) {
+  if (e) e.preventDefault();
+
+  const emailInput = document.getElementById('newsletter-email-input');
+  const email = emailInput?.value || "candidate@executive.com";
+
+  const selectedTracks = [];
+  document.querySelectorAll('input[name="nl-track"]:checked').forEach(cb => {
+    selectedTracks.push(cb.value);
+  });
+
+  const subData = {
+    email,
+    tracks: selectedTracks,
+    subscribedAt: new Date().toISOString(),
+    issue: 48
+  };
+
+  try {
+    localStorage.setItem('autopilot_newsletter_subscription', JSON.stringify(subData));
+  } catch (err) {}
+
+  if (emailInput) emailInput.value = '';
+
+  showGlobalToast(`🎉 Welcome aboard, ${email}! Issue #48 sent to your inbox. Briefing preferences saved.`);
+  if (typeof triggerConfetti === 'function') {
+    try { triggerConfetti(); } catch (err) {}
+  }
+}
+
+function jumpToNewsletterSubscribe() {
+  switchNewsletterTab('subscribe');
+  setTimeout(() => {
+    const input = document.getElementById('newsletter-email-input');
+    if (input) input.focus();
+  }, 100);
+}
+
+function downloadNewsletterPdf() {
+  showGlobalToast("📄 Generating executive PDF brief for Issue #48...");
+  setTimeout(() => {
+    window.print();
+  }, 600);
+}
+
+function shareNewsletterEdition() {
+  const shareData = {
+    title: "The Autopilot Executive: Issue #48",
+    text: "The Great Lateral Reshuffle: Q4 Multi-Domain Hiring Index & Quota Dynamics",
+    url: window.location.href
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      showGlobalToast("✓ Issue link copied to clipboard!");
+    });
+  }
+}
+
+function loadArchivedIssue(num) {
+  showGlobalToast(`📖 Loading The Autopilot Executive Archive: Issue #${num}...`);
+  switchNewsletterTab('briefing');
+}
 

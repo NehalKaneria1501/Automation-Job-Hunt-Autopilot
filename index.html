@@ -381,6 +381,17 @@
               </div>
             </button>
 
+            <button type="button" onclick="switchView('newsletter'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-amber-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">newspaper</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Executive Newsletter</span>
+                  <span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold">Issue #48</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Market intelligence &amp; hiring benchmarks</div>
+              </div>
+            </button>
+
             <div class="h-px bg-slate-100 my-1"></div>
             
             <button type="button" onclick="openLogModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
@@ -441,6 +452,17 @@
               <div>
                 <div class="font-bold text-slate-900">Job URL Scraper &amp; Lead Parser</div>
                 <div class="text-[10px] text-slate-500">Auto-extract JD requirements &amp; skills</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="switchView('logs-center'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-900 hover:text-white group flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-slate-900 text-emerald-400 group-hover:bg-slate-800 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">terminal</span></span>
+              <div>
+                <div class="font-bold text-slate-900 group-hover:text-white flex items-center gap-1.5">
+                  <span>Live System &amp; Audit Logs</span>
+                  <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 group-hover:bg-emerald-900 group-hover:text-emerald-200 text-[9px] font-bold">Live Stream</span>
+                </div>
+                <div class="text-[10px] text-slate-500 group-hover:text-slate-300">FBI IC3 telemetry, mTLS 1.3 &amp; ingestion pipeline</div>
               </div>
             </button>
 
@@ -675,6 +697,16 @@
                 <div class="text-[9px] text-slate-500">1:1 Mocks &amp; STAR</div>
               </div>
             </button>
+            <button type="button" onclick="switchView('newsletter'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200 text-left transition-colors flex items-center gap-2 col-span-2">
+              <span class="material-symbols-outlined text-[20px] text-amber-600">newspaper</span>
+              <div>
+                <div class="font-bold text-amber-950 flex items-center gap-1.5">
+                  <span>Executive Career Newsletter</span>
+                  <span class="px-1.5 py-0.2 rounded bg-amber-200 text-amber-900 text-[8px] font-bold">Issue #48</span>
+                </div>
+                <div class="text-[9px] text-amber-800">Sales, Marketing &amp; HR hiring market intel</div>
+              </div>
+            </button>
           </div>
         </div>
 
@@ -707,6 +739,16 @@
               <div>
                 <div class="font-bold text-slate-900">Job Scraper</div>
                 <div class="text-[9px] text-slate-500">Auto-parse link</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('logs-center'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-slate-900 text-white border border-slate-800 text-left transition-colors flex items-center gap-2 col-span-2">
+              <span class="material-symbols-outlined text-[20px] text-emerald-400">terminal</span>
+              <div>
+                <div class="font-bold text-white flex items-center gap-1.5">
+                  <span>Live System &amp; Audit Logs Studio</span>
+                  <span class="px-1.5 py-0.2 rounded bg-emerald-900 text-emerald-300 text-[8px] font-bold">Live Stream</span>
+                </div>
+                <div class="text-[9px] text-slate-400">FBI IC3 telemetry, mTLS 1.3 &amp; ingestion pipeline</div>
               </div>
             </button>
           </div>
@@ -1938,6 +1980,793 @@
 
       </div>
 
+      <!-- ========================================================================= -->
+      <!-- VIEW: LIVE SYSTEM & AUDIT LOGS STUDIO (Stitch Screen b7f0bcda381843029c4be1aaa7f1ed3d Inspired) -->
+      <!-- ========================================================================= -->
+      <div id="view-logs-center" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Header & Real-time Telemetry Status Bar -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>Live Stream • Stitch v3.3</span>
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">mTLS 1.3 / PQC-Hybrid Handshake</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black font-display text-white tracking-tight flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[26px] text-emerald-400">terminal</span>
+              <span>Live Ingestion, Zero-Trust Audit &amp; Telemetry Logs</span>
+            </h1>
+            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Real-time cryptographic audit log inspector capturing incoming recruiter email webhooks, RFC822 parser events, APScheduler background syncs, and adversary honeypot callbacks.
+            </p>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button type="button" id="logs-stream-toggle-btn" onclick="toggleLogsStream()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-colors border border-white/10">
+              <span class="material-symbols-outlined text-[16px] text-emerald-400" id="logs-toggle-icon">pause</span>
+              <span id="logs-toggle-label">Pause Stream</span>
+            </button>
+            <button type="button" onclick="clearLogsTerminal()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-colors border border-white/10">
+              <span class="material-symbols-outlined text-[16px]">backspace</span>
+              <span>Clear</span>
+            </button>
+            <button type="button" onclick="copyLogsStream()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-colors border border-white/10">
+              <span class="material-symbols-outlined text-[16px]">content_copy</span>
+              <span>Copy</span>
+            </button>
+            <button type="button" onclick="downloadLogsFile('log')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-sm">
+              <span class="material-symbols-outlined text-[16px]">download</span>
+              <span>Export .LOG</span>
+            </button>
+            <button type="button" onclick="openIc3DocketModal()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-red-900/30">
+              <span class="material-symbols-outlined text-[16px]">policy</span>
+              <span>Inspect IC3 Docket</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Real-time Telemetry Stat Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[22px]">speed</span>
+            </div>
+            <div>
+              <div class="text-[10px] uppercase font-bold text-slate-400">Ingestion Velocity</div>
+              <div class="text-base sm:text-lg font-black text-slate-900 font-mono">18.4 <span class="text-xs font-normal text-slate-500">eps</span></div>
+              <div class="text-[10px] text-emerald-600 font-bold">99.98% delivery rate</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[22px]">gshield</span>
+            </div>
+            <div>
+              <div class="text-[10px] uppercase font-bold text-slate-400">Zero-Trust Intercepts</div>
+              <div class="text-base sm:text-lg font-black text-red-600 font-mono">7 <span class="text-xs font-normal text-slate-500">Actors</span></div>
+              <div class="text-[10px] text-red-600 font-bold">Impostors quarantined</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[22px]">timer</span>
+            </div>
+            <div>
+              <div class="text-[10px] uppercase font-bold text-slate-400">Canary RTT Latency</div>
+              <div class="text-base sm:text-lg font-black text-slate-900 font-mono">24.2 <span class="text-xs font-normal text-slate-500">ms</span></div>
+              <div class="text-[10px] text-emerald-600 font-bold">Honeypot active</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[22px]">verified</span>
+            </div>
+            <div>
+              <div class="text-[10px] uppercase font-bold text-slate-400">Attestation State</div>
+              <div class="text-base sm:text-lg font-black text-indigo-700 font-mono">4/4 <span class="text-xs font-normal text-slate-500">OK</span></div>
+              <div class="text-[10px] text-indigo-600 font-bold">SHA-384 Zero Bit Drift</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal Filter & Controls Toolbar -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
+          <!-- Stream category tabs -->
+          <div class="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 text-xs">
+            <button type="button" onclick="setLogsStreamCategory('all')" id="log-cat-all" class="log-cat-tab px-3 py-1.5 rounded-xl font-bold bg-slate-900 text-white transition-all shrink-0">
+              All Streams (<span id="count-logs-all">124</span>)
+            </button>
+            <button type="button" onclick="setLogsStreamCategory('ic3')" id="log-cat-ic3" class="log-cat-tab px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              FBI IC3 &amp; Radar (<span id="count-logs-ic3">38</span>)
+            </button>
+            <button type="button" onclick="setLogsStreamCategory('inbox')" id="log-cat-inbox" class="log-cat-tab px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+              DKIM/SPF Triage (<span id="count-logs-inbox">42</span>)
+            </button>
+            <button type="button" onclick="setLogsStreamCategory('scheduler')" id="log-cat-scheduler" class="log-cat-tab px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              APScheduler (<span id="count-logs-scheduler">24</span>)
+            </button>
+            <button type="button" onclick="setLogsStreamCategory('database')" id="log-cat-database" class="log-cat-tab px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+              SQLite WAL (<span id="count-logs-database">20</span>)
+            </button>
+          </div>
+
+          <!-- Search & Severity dropdown -->
+          <div class="flex items-center gap-2 shrink-0">
+            <div class="relative flex-1 sm:w-56">
+              <span class="material-symbols-outlined text-[16px] text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+              <input type="text" id="logs-search-input" oninput="filterLogsTerminal()" placeholder="Filter logs (IP, hash, text)..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <select id="logs-level-filter" onchange="filterLogsTerminal()" class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="ALL">All Severities</option>
+              <option value="INFO">INFO Only</option>
+              <option value="SUCCESS">SUCCESS Only</option>
+              <option value="WARN">WARN Only</option>
+              <option value="CRITICAL">CRITICAL / THREAT Only</option>
+            </select>
+
+            <label class="hidden md:flex items-center gap-1 text-[11px] text-slate-600 font-medium cursor-pointer select-none pl-1">
+              <input type="checkbox" id="logs-autoscroll-chk" checked class="rounded text-indigo-600 focus:ring-indigo-500">
+              <span>Auto-scroll</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- STITCH DARK TERMINAL WINDOW -->
+        <div class="bg-[#0b1320] text-[#dae2fd] border border-slate-800 rounded-3xl shadow-2xl overflow-hidden font-mono text-xs flex flex-col">
+          <!-- Terminal Titlebar -->
+          <div class="bg-[#050b14] px-4 py-3 border-b border-slate-800 flex items-center justify-between select-none">
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-xs"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-xs"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-xs"></span>
+              </div>
+              <span class="text-slate-500 text-xs font-mono ml-2 hidden sm:inline">bash — </span>
+              <span class="text-slate-300 text-xs font-bold font-mono tracking-tight">session@autopilot-prod-ca-04: ~/logs/pipeline_stream.log</span>
+            </div>
+
+            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="logs-active-indicator">STREAMING</span>
+              </span>
+              <span id="logs-buffer-stats" class="hidden sm:inline text-slate-400">124 lines buffer</span>
+            </div>
+          </div>
+
+          <!-- Terminal Content Stream -->
+          <div id="logs-terminal-stream" class="p-4 sm:p-5 overflow-y-auto max-h-[580px] space-y-2 select-text leading-relaxed">
+            <!-- Dynamically populated by renderLogsTerminal() in app.js -->
+          </div>
+
+          <!-- Terminal Status Footer -->
+          <div class="bg-[#050b14] px-4 py-2.5 border-t border-slate-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] text-slate-400 gap-2">
+            <div class="flex items-center gap-2 font-mono">
+              <span class="text-emerald-400">wss://127.0.0.1:8000/api/stream/audit-logs</span>
+              <span class="text-slate-600">•</span>
+              <span class="text-slate-300">mTLS 1.3 Certified</span>
+              <span class="text-slate-600">•</span>
+              <span class="text-emerald-400 font-bold">Zero-Bit Drift: TRUE</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-slate-500">Live feed cursor:</span>
+              <span class="text-emerald-400 font-black animate-pulse">▋</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW: CAREER & HIRING MARKET INTELLIGENCE NEWSLETTER HUB -->
+      <!-- ========================================================================= -->
+      <div id="view-newsletter" class="hidden flex-col gap-8 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+
+        <!-- Newsletter Hero Banner -->
+        <div class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-10 rounded-3xl shadow-2xl border border-slate-800 flex flex-col gap-6">
+          <div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-amber-500/10 blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-20 -top-20 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none"></div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
+                <span class="material-symbols-outlined text-[16px]">newspaper</span>
+                <span>The Autopilot Executive • Issue #48</span>
+              </span>
+              <span class="text-xs text-slate-400">November 2026 Edition</span>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs text-slate-300">
+              <span class="flex items-center gap-1 text-amber-400 font-bold">
+                <span class="material-symbols-outlined text-[16px]">verified</span>
+                <span>24,800+ Verified Subscribers</span>
+              </span>
+              <span class="text-slate-600">•</span>
+              <span>9 min read</span>
+            </div>
+          </div>
+
+          <div class="space-y-3 max-w-4xl">
+            <h1 class="text-2xl sm:text-4xl font-black font-display text-white tracking-tight leading-tight">
+              The Great Lateral Reshuffle: Q4 Multi-Domain Hiring Index &amp; Quota Dynamics
+            </h1>
+            <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+              Strategic compensation intelligence, quota attainment reality, and hidden headcount leaks for <strong>Enterprise Sales</strong>, <strong>Product Marketers</strong>, <strong>People Ops / Recruiters</strong>, and <strong>Strategic Career Switchers</strong>.
+            </p>
+          </div>
+
+          <div class="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs">
+            <div class="flex items-center gap-3">
+              <div class="flex -space-x-2">
+                <div class="w-8 h-8 rounded-full bg-indigo-600 border-2 border-slate-900 flex items-center justify-center font-bold text-white text-[11px]">NK</div>
+                <div class="w-8 h-8 rounded-full bg-purple-600 border-2 border-slate-900 flex items-center justify-center font-bold text-white text-[11px]">ER</div>
+                <div class="w-8 h-8 rounded-full bg-emerald-600 border-2 border-slate-900 flex items-center justify-center font-bold text-white text-[11px]">SL</div>
+              </div>
+              <div class="text-slate-300">
+                <span class="font-bold text-white">Curated by Autopilot Talent Intelligence Council</span>
+                <span class="block text-[11px] text-slate-400">Former VP Sales (Stripe), Head of People (Figma), Principal PMM (HubSpot)</span>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="jumpToNewsletterSubscribe()" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors shadow-lg shadow-amber-400/20">
+                <span class="material-symbols-outlined text-[16px]">mark_email_read</span>
+                <span>Subscribe Free (1-Click)</span>
+              </button>
+              <button type="button" onclick="downloadNewsletterPdf()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-colors border border-white/10">
+                <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+                <span>Download Briefing</span>
+              </button>
+              <button type="button" onclick="shareNewsletterEdition()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-colors border border-white/10">
+                <span class="material-symbols-outlined text-[16px]">share</span>
+                <span>Share</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Newsletter Interactive Navigation Tabs -->
+        <div class="flex items-center gap-1 overflow-x-auto pb-1 bg-white p-2 rounded-2xl border border-slate-200 shadow-xs text-xs">
+          <button type="button" onclick="switchNewsletterTab('briefing')" id="nl-tab-briefing" class="nl-nav-tab px-4 py-2 rounded-xl font-bold bg-indigo-600 text-white transition-all shrink-0">
+            Issue #48 Main Briefing
+          </button>
+          <button type="button" onclick="switchNewsletterTab('benchmarks')" id="nl-tab-benchmarks" class="nl-nav-tab px-4 py-2 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-emerald-600">payments</span>
+            <span>Q4 Compensation Matrix</span>
+          </button>
+          <button type="button" onclick="switchNewsletterTab('personas')" id="nl-tab-personas" class="nl-nav-tab px-4 py-2 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-purple-600">groups</span>
+            <span>Domain Deep Dives (4 Tracks)</span>
+          </button>
+          <button type="button" onclick="switchNewsletterTab('archive')" id="nl-tab-archive" class="nl-nav-tab px-4 py-2 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-blue-600">history_edu</span>
+            <span>Past Issues Archive</span>
+          </button>
+          <button type="button" onclick="switchNewsletterTab('subscribe')" id="nl-tab-subscribe" class="nl-nav-tab px-4 py-2 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-amber-600">tune</span>
+            <span>Alert Preferences</span>
+          </button>
+        </div>
+
+        <!-- TAB CONTENT 1: Issue #48 Main Briefing -->
+        <div id="nl-content-briefing" class="space-y-8">
+          
+          <!-- Executive Editorial Callout -->
+          <div class="p-6 rounded-3xl bg-amber-50/70 border border-amber-200 shadow-xs flex flex-col md:flex-row items-start gap-5">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold shrink-0 shadow-md shadow-amber-500/20">
+              <span class="material-symbols-outlined text-[28px]">lightbulb</span>
+            </div>
+            <div class="space-y-2">
+              <div class="text-[11px] uppercase font-bold text-amber-800 tracking-wider">Executive Takeaway • Q4 2026 Macro Outlook</div>
+              <h3 class="text-lg font-bold text-slate-900">The Era of Vanity Keyword Stuffing is Dead</h3>
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                Across 350+ Fortune 500 enterprises and Tier-1 startups analyzed in our November audit, talent acquisition teams have deployed automated zero-trust triage. Candidates who rely on generic resume submissions face a <strong>94.2% automated discard rate</strong>. Conversely, candidates who provide verifiable, domain-specific proof-of-work—such as verified MEDDPICC pipeline numbers for Sales, CAC-payback metrics for Marketing, or automated time-to-fill gains for HR—are commanding <strong>18% to 35% compensation premiums</strong>.
+              </p>
+            </div>
+          </div>
+
+          <!-- 4 Pillar Intelligence Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- PILLAR 1: SALES & REVENUE LEADERSHIP -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-4">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                    <span>Enterprise Sales &amp; RevOps</span>
+                  </span>
+                  <span class="text-xs font-mono font-bold text-emerald-600">OTE: $280k - $420k</span>
+                </div>
+                <h4 class="text-base font-bold text-slate-900">MEDDPICC Rigor &amp; The 51.4% Quota Reality</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  While average SaaS quota attainment dipped to 51.4% in late 2026, top-decile Account Executives are achieving 140%+ by strictly executing MEDDPICC qualification. Executive interviewers are now rejecting sales candidates who speak in generic relationship terms, instead demanding step-by-step breakdowns of how they tested the Champion and verified Economic Buyer metrics.
+                </p>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-[11px] text-slate-700 space-y-1">
+                  <div class="font-bold text-slate-900">Key Interview Shift:</div>
+                  <div>Live deal-dissection mocks where candidates must justify why a stalled $250k ACV deal was won or walked away from.</div>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-500">Target Role: <strong>Enterprise AE / VP Sales</strong></span>
+                <button type="button" onclick="switchView('interview-studio')" class="text-indigo-600 font-bold hover:underline flex items-center gap-1">
+                  Prep Sales Mock ↗
+                </button>
+              </div>
+            </div>
+
+            <!-- PILLAR 2: PRODUCT MARKETING & PLG -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-4">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">campaign</span>
+                    <span>Marketing &amp; PLG</span>
+                  </span>
+                  <span class="text-xs font-mono font-bold text-purple-600">Base: $190k - $275k</span>
+                </div>
+                <h4 class="text-base font-bold text-slate-900">Compressing CAC Payback to Under 9 Months</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  The era of limitless branding budgets has been replaced by ruthless payback accountability. High-earning Product Marketing Managers (PMMs) and Growth Leaders are those who construct customer evidence loops, competitive kill-sheets, and self-serve onboarding funnels that directly compress sales cycles.
+                </p>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-[11px] text-slate-700 space-y-1">
+                  <div class="font-bold text-slate-900">Key Interview Shift:</div>
+                  <div>Take-home positioning exercises evaluated on clarity and quantifiable conversion lift rather than slide deck aesthetics.</div>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-500">Target Role: <strong>Principal PMM / Head of Growth</strong></span>
+                <button type="button" onclick="switchView('mnc-hub')" class="text-purple-600 font-bold hover:underline flex items-center gap-1">
+                  View PMM Roles ↗
+                </button>
+              </div>
+            </div>
+
+            <!-- PILLAR 3: PEOPLE OPS & RECRUITING -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-4">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">handshake</span>
+                    <span>People Ops &amp; Talent</span>
+                  </span>
+                  <span class="text-xs font-mono font-bold text-emerald-600">Total: $170k - $290k</span>
+                </div>
+                <h4 class="text-base font-bold text-slate-900">Automated Inbound Triage &amp; The Ghosting Buster</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  With corporate inboxes inundated by synthetic generative applications, Talent Acquisition Leaders are adopting cryptographic email verification and autonomous outbound scouting. Top recruiters are being evaluated on <strong>Time-to-Offer velocity (reduced from 58 to 18 days)</strong> and offer acceptance rates.
+                </p>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-[11px] text-slate-700 space-y-1">
+                  <div class="font-bold text-slate-900">Key Interview Shift:</div>
+                  <div>Demonstrating end-to-end recruitment pipelines with automated SLA follow-ups and zero-trust credential vetting.</div>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-500">Target Role: <strong>Head of Talent / People Analytics</strong></span>
+                <button type="button" onclick="switchView('inbox')" class="text-emerald-600 font-bold hover:underline flex items-center gap-1">
+                  Inspect Inbound Triage ↗
+                </button>
+              </div>
+            </div>
+
+            <!-- PILLAR 4: CAREER SWITCHERS & PIVOTS -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-4">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">swap_horiz</span>
+                    <span>Career Switchers</span>
+                  </span>
+                  <span class="text-xs font-mono font-bold text-amber-600">Upside: +42% Uplift</span>
+                </div>
+                <h4 class="text-base font-bold text-slate-900">The 5 High-Converting Cross-Domain Bridges</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  The most lucrative career moves in Q4 2026 are not junior engineering jumps, but high-impact lateral pivots where business acumen meets technical fluency: Sales Reps transitioning to Solutions Architects, or Recruiters evolving into People Data Scientists.
+                </p>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-[11px] text-slate-700 space-y-1">
+                  <div class="font-bold text-slate-900">Top Conversion Path:</div>
+                  <div>Customer Success Manager ➔ Technical Product Specialist (Average +$65k base compensation bump).</div>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-500">Target Track: <strong>Lateral Domain Bridge</strong></span>
+                <button type="button" onclick="switchView('mnc-hub')" class="text-amber-600 font-bold hover:underline flex items-center gap-1">
+                  Explore Switcher Courses ↗
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- TAB CONTENT 2: Executive Compensation Matrix (Q4 2026) -->
+        <div id="nl-content-benchmarks" class="hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Q4 2026 Multi-Domain Compensation Index</h3>
+              <p class="text-xs text-slate-500">Verified base salaries, target OTE/bonuses, and equity bands across 1,400+ offers.</p>
+            </div>
+            
+            <!-- Persona Filter Buttons -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 text-xs">
+              <button type="button" onclick="filterCompTable('all')" id="comp-btn-all" class="comp-filter-btn px-3 py-1.5 rounded-xl font-bold bg-indigo-600 text-white transition-all">All</button>
+              <button type="button" onclick="filterCompTable('sales')" id="comp-btn-sales" class="comp-filter-btn px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition-all">Sales</button>
+              <button type="button" onclick="filterCompTable('marketing')" id="comp-btn-marketing" class="comp-filter-btn px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition-all">Marketing</button>
+              <button type="button" onclick="filterCompTable('hr')" id="comp-btn-hr" class="comp-filter-btn px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition-all">HR / TA</button>
+              <button type="button" onclick="filterCompTable('switchers')" id="comp-btn-switchers" class="comp-filter-btn px-3 py-1.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition-all">Switchers</button>
+            </div>
+          </div>
+
+          <!-- Interactive Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-700">
+                <thead class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  <tr>
+                    <th class="py-3.5 px-4 sm:px-6">Role &amp; Domain</th>
+                    <th class="py-3.5 px-4">Level</th>
+                    <th class="py-3.5 px-4">Base Salary (P50 - P90)</th>
+                    <th class="py-3.5 px-4">Variable / OTE</th>
+                    <th class="py-3.5 px-4">Equity Grant Band</th>
+                    <th class="py-3.5 px-4 text-right">Time to Offer</th>
+                  </tr>
+                </thead>
+                <tbody id="comp-table-body" class="divide-y divide-slate-100">
+                  <!-- Dynamically populated or static fallback rows -->
+                  <tr class="comp-row" data-domain="sales">
+                    <td class="py-3.5 px-4 sm:px-6 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                      <span>Strategic Enterprise Account Executive</span>
+                    </td>
+                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] font-bold">L6 / Principal</span></td>
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">$175k - $210k</td>
+                    <td class="py-3.5 px-4 font-mono text-emerald-600 font-bold">$350k - $420k OTE</td>
+                    <td class="py-3.5 px-4 text-slate-500">$80k - $160k / 4-yr</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-indigo-600 font-bold">21 Days</td>
+                  </tr>
+                  <tr class="comp-row" data-domain="sales">
+                    <td class="py-3.5 px-4 sm:px-6 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                      <span>VP of Global Revenue &amp; Sales</span>
+                    </td>
+                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-mono text-[10px] font-bold">Executive</span></td>
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">$275k - $340k</td>
+                    <td class="py-3.5 px-4 font-mono text-emerald-600 font-bold">$550k - $680k OTE</td>
+                    <td class="py-3.5 px-4 text-slate-500">0.4% - 1.2% Equity</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-indigo-600 font-bold">35 Days</td>
+                  </tr>
+                  <tr class="comp-row" data-domain="marketing">
+                    <td class="py-3.5 px-4 sm:px-6 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                      <span>Director of Product Marketing (PMM)</span>
+                    </td>
+                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] font-bold">L7 / Director</span></td>
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">$215k - $265k</td>
+                    <td class="py-3.5 px-4 font-mono text-purple-600 font-bold">25% Bonus ($270k - $330k)</td>
+                    <td class="py-3.5 px-4 text-slate-500">$120k - $220k / 4-yr</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-indigo-600 font-bold">24 Days</td>
+                  </tr>
+                  <tr class="comp-row" data-domain="marketing">
+                    <td class="py-3.5 px-4 sm:px-6 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                      <span>Head of Product-Led Growth (PLG)</span>
+                    </td>
+                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] font-bold">L7 / Head</span></td>
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">$225k - $285k</td>
+                    <td class="py-3.5 px-4 font-mono text-purple-600 font-bold">30% Bonus ($290k - $370k)</td>
+                    <td class="py-3.5 px-4 text-slate-500">$150k - $280k / 4-yr</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-indigo-600 font-bold">19 Days</td>
+                  </tr>
+                  <tr class="comp-row" data-domain="hr">
+                    <td class="py-3.5 px-4 sm:px-6 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span>VP of People &amp; Talent Acquisition</span>
+                    </td>
+                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-mono text-[10px] font-bold">Executive</span></td>
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">$230k - $310k</td>
+                    <td class="py-3.5 px-4 font-mono text-emerald-600 font-bold">30% Bonus ($300k - $400k)</td>
+                    <td class="py-3.5 px-4 text-slate-500">0.3% - 0.8% Equity</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-indigo-600 font-bold">28 Days</td>
+                  </tr>
+                  <tr class="comp-row" data-domain="hr">
+                    <td class="py-3.5 px-4 sm:px-6 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span>Lead Technical Talent Partner / SRE Lead</span>
+                    </td>
+                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] font-bold">L5 / Staff</span></td>
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">$150k - $195k</td>
+                    <td class="py-3.5 px-4 font-mono text-emerald-600 font-bold">$30k Placement Bonus</td>
+                    <td class="py-3.5 px-4 text-slate-500">$60k - $110k / 4-yr</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-indigo-600 font-bold">14 Days</td>
+                  </tr>
+                  <tr class="comp-row" data-domain="switchers">
+                    <td class="py-3.5 px-4 sm:px-6 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                      <span>Solutions Engineer / Pre-Sales Architect</span>
+                    </td>
+                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-mono text-[10px] font-bold">Bridge #1</span></td>
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">$165k - $215k</td>
+                    <td class="py-3.5 px-4 font-mono text-amber-600 font-bold">70/30 Split ($235k - $305k)</td>
+                    <td class="py-3.5 px-4 text-slate-500">$75k - $140k / 4-yr</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-indigo-600 font-bold">18 Days</td>
+                  </tr>
+                  <tr class="comp-row" data-domain="switchers">
+                    <td class="py-3.5 px-4 sm:px-6 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                      <span>People Analytics &amp; Workforce Strategist</span>
+                    </td>
+                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-mono text-[10px] font-bold">Bridge #2</span></td>
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">$155k - $195k</td>
+                    <td class="py-3.5 px-4 font-mono text-amber-600 font-bold">15% Performance Bonus</td>
+                    <td class="py-3.5 px-4 text-slate-500">$50k - $95k / 4-yr</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-indigo-600 font-bold">16 Days</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 3: Domain Deep Dives (4 Tracks) -->
+        <div id="nl-content-personas" class="hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">target</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base">The Enterprise Sales Battlecard for 2026</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Why multi-threading is replacing the single champion model: A complete analysis of deals closed above $100k ACV shows an average of 6.8 stakeholders involved. Learn how to map CFO, CISO, and Procurement timelines simultaneously.
+              </p>
+              <div class="pt-2 text-xs font-bold text-indigo-600 flex items-center gap-1">
+                <span>Download MEDDPICC Framework PDF</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">insights</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base">Growth &amp; Marketing Win-Loss Telemetry</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Why 63% of lost deals cite "lack of tangible ROI proof" rather than pricing: How senior PMMs build customer telemetry dashboards that sales reps can screen-share during final negotiation calls.
+              </p>
+              <div class="pt-2 text-xs font-bold text-purple-600 flex items-center gap-1">
+                <span>View Win-Loss Dashboard Blueprint</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">diversity_3</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base">The Anti-Ghosting Protocol for Recruiters</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                How automated SLA alerts increase offer acceptance from 64% to 89%: The exact sequence of 48-hour candidate debriefs, transparent compensation ranges, and zero-surprise offer drafting.
+              </p>
+              <div class="pt-2 text-xs font-bold text-emerald-600 flex items-center gap-1">
+                <span>Access Recruiter SLA Queue Rules</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">conversion_path</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base">Career Pivot Portfolio: Proving Non-Linear Value</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                How non-technical candidates assemble a GitHub or live web portfolio that outshines 5-year veterans: Case studies of account executives who learned SQL &amp; built live data applications.
+              </p>
+              <div class="pt-2 text-xs font-bold text-amber-600 flex items-center gap-1">
+                <span>Explore Switcher Proof-of-Work Guide</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 4: Past Issues Archive -->
+        <div id="nl-content-archive" class="hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-indigo-300 transition-colors space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-mono font-bold text-indigo-600">Issue #47 • Oct 2026</span>
+                <span class="text-slate-400">18,200 reads</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">The Sovereign Candidate: Bypassing Agency Middlemen</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Why Fortune 500 tech leaders are directly scouting autonomous applicant pipelines to save $45,000 per hire in headhunter contingency fees.
+              </p>
+              <button type="button" onclick="loadArchivedIssue(47)" class="text-xs font-bold text-indigo-600 hover:underline pt-1 inline-block">
+                Read Archive Edition ↗
+              </button>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-indigo-300 transition-colors space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-mono font-bold text-indigo-600">Issue #46 • Oct 2026</span>
+                <span class="text-slate-400">21,400 reads</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">Autonomous Inbound: How AI Agents Pre-Score Recruiter Outreach</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Filtering out spoofed agency emails with SPF/DKIM verification and calculating expected interview-to-offer probabilities before replying.
+              </p>
+              <button type="button" onclick="loadArchivedIssue(46)" class="text-xs font-bold text-indigo-600 hover:underline pt-1 inline-block">
+                Read Archive Edition ↗
+              </button>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-indigo-300 transition-colors space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-mono font-bold text-indigo-600">Issue #45 • Sep 2026</span>
+                <span class="text-slate-400">29,100 reads</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">The Death of the Phone Screen: Asynchronous Audio Assessments</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                How top-tier tech companies use 3-minute voice simulations to evaluate executive communication and domain clarity.
+              </p>
+              <button type="button" onclick="loadArchivedIssue(45)" class="text-xs font-bold text-indigo-600 hover:underline pt-1 inline-block">
+                Read Archive Edition ↗
+              </button>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-indigo-300 transition-colors space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-mono font-bold text-indigo-600">Issue #44 • Sep 2026</span>
+                <span class="text-slate-400">33,500 reads</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">The $500k Non-Technical Contributor</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Analyzing the compensation structures of Individual Contributor (IC) Account Executives and Principal Marketers who out-earn their managers.
+              </p>
+              <button type="button" onclick="loadArchivedIssue(44)" class="text-xs font-bold text-indigo-600 hover:underline pt-1 inline-block">
+                Read Archive Edition ↗
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 5 / EMBEDDED SUBSCRIBE CARD -->
+        <div id="nl-content-subscribe" class="p-6 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl border border-slate-800 space-y-6">
+          <div class="space-y-2 max-w-2xl">
+            <span class="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold text-[10px] uppercase tracking-wider">
+              Executive Career Dispatch
+            </span>
+            <h3 class="text-xl sm:text-2xl font-black font-display text-white">Join 24,800+ Leaders Receiving Market Intelligence</h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Tailored bi-weekly dispatches containing verified salary movements, hidden MNC requisitions, and recruitment telemetry. Zero spam. Unsubscribe anytime.
+            </p>
+          </div>
+
+          <!-- Subscription Form -->
+          <form onsubmit="handleNewsletterSubscribe(event)" class="space-y-4 max-w-xl">
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="email" id="newsletter-email-input" required placeholder="Enter your executive or personal email..." class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-2xl text-xs sm:text-sm text-white placeholder-slate-400 focus:bg-white/15 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <button type="submit" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow-lg shadow-amber-400/20 shrink-0">
+                Subscribe Free ↗
+              </button>
+            </div>
+
+            <!-- Multi-Persona Domain Checkboxes -->
+            <div class="space-y-2 pt-2">
+              <div class="text-[11px] font-bold text-slate-300">Select your domain focus (customizes briefing benchmarks):</div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" name="nl-track" value="sales" checked class="rounded text-amber-400 focus:ring-amber-400">
+                  <span class="text-slate-200">Sales &amp; Rev</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" name="nl-track" value="marketing" checked class="rounded text-amber-400 focus:ring-amber-400">
+                  <span class="text-slate-200">Marketing &amp; PLG</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" name="nl-track" value="hr" checked class="rounded text-amber-400 focus:ring-amber-400">
+                  <span class="text-slate-200">HR &amp; Recruiting</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" name="nl-track" value="switchers" checked class="rounded text-amber-400 focus:ring-amber-400">
+                  <span class="text-slate-200">Career Pivots</span>
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODAL: FBI IC3 DOCKET & THREAT ACTOR TELEMETRY INSPECTOR (Stitch Screen b7f0bcda381843029c4be1aaa7f1ed3d) -->
+      <!-- ========================================================================= -->
+      <div id="modal-ic3-docket" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="bg-[#0b1320] text-[#dae2fd] border border-slate-700 rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
+          
+          <!-- Modal Window Bar -->
+          <div class="bg-[#050b14] px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3 h-3 rounded-full bg-[#ff5f56]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#ffbd2e]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#27c93f]"></span>
+              <div class="ml-2 font-mono text-xs">
+                <span class="text-red-400 font-bold">[FEDERAL IC3 GATEWAY]</span>
+                <span class="text-slate-300">Docket # IC3-DOCKET-2025-0914-APL</span>
+              </div>
+            </div>
+            <button type="button" onclick="closeIc3DocketModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 flex items-center justify-center transition-colors">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6 overflow-y-auto space-y-4 font-mono text-xs">
+            <div class="p-3.5 rounded-2xl bg-red-950/40 border border-red-800/60 flex items-center justify-between">
+              <div>
+                <span class="text-red-400 font-bold uppercase text-[11px] block">Active Threat Actor Cluster Isolated</span>
+                <span class="text-sm font-black text-white">NCFTA-CYWEX-9841 • Impostor Apple Talent Global</span>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-red-900/80 text-red-200 border border-red-700 text-[10px] font-bold">QUARANTINED</span>
+            </div>
+
+            <div>
+              <div class="text-[11px] text-slate-400 uppercase font-bold mb-2">Canonical SHA-384 Attestation Receipt:</div>
+              <div class="p-3 rounded-xl bg-black/60 border border-slate-800 text-[11px] text-emerald-400 break-all select-all font-mono">
+                7e2b189a02fc3187b99c72a8019b88e14670dc4e34f89d34208a0d9b6264f331f47890a8809e1e2d4f55a12fbc93de76
+              </div>
+            </div>
+
+            <div>
+              <div class="text-[11px] text-slate-400 uppercase font-bold mb-2">Raw JSON Payload (HTTP 200 OK Handshake):</div>
+              <pre class="p-4 rounded-2xl bg-black/80 border border-slate-800 text-[#dae2fd] text-[11px] leading-relaxed overflow-x-auto select-all">{
+  "status": "SUCCESS",
+  "code": 200,
+  "docket_id": "IC3-DOCKET-2025-0914-APL",
+  "canonical_sha384": "7e2b189a02fc3187b99c72a8019b88e14670dc4e34f89d34208a0d9b6264f331f47890a8809e1e2d4f55a12fbc93de76",
+  "zero_bit_drift": true,
+  "threat_actor_cluster": "NCFTA-CYWEX-9841",
+  "adversary_ip": "185.220.101.42",
+  "adversary_asn": "AS48210",
+  "honeypot_token": "CANARY-9841-APL",
+  "countersigned_by": "FBI-IC3-INGEST-GATEWAY-CA-04",
+  "timestamp": "2026-11-02T12:44:02.184Z"
+}</pre>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="p-4 bg-[#050b14] border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-400 text-[11px]">Countersigned: FBI-IC3-INGEST-GATEWAY-CA-04</span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="copyIc3PayloadJson()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition-colors">
+                Copy JSON
+              </button>
+              <button type="button" onclick="closeIc3DocketModal()" class="px-4 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold transition-colors">
+                Close Inspector
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </main>
 
     <!-- ========================================================================= -->
@@ -1983,6 +2812,9 @@
               <li><button type="button" onclick="switchView('scam-radar')" class="hover:text-red-400 transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-red-400">security</span>Scam Radar &amp; IC3</button></li>
               <li><button type="button" onclick="switchView('follow-up')" class="hover:text-amber-400 transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-amber-400">schedule_send</span>Follow-up SLAs</button></li>
               <li><button type="button" onclick="switchView('interview-studio')" class="hover:text-purple-400 transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-purple-400">mic</span>Interview Studio</button></li>
+              <li><button type="button" onclick="switchView('mnc-hub')" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-400">apartment</span>50+ MNCs &amp; Roles</button></li>
+              <li><button type="button" onclick="switchView('newsletter')" class="hover:text-amber-400 transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-amber-400">newspaper</span>Executive Newsletter</button></li>
+              <li><button type="button" onclick="switchView('logs-center')" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-400">terminal</span>Live System Logs</button></li>
               <li><button type="button" onclick="switchView('grafana-retro')" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-400">monitoring</span>SRE Telemetry</button></li>
             </ul>
           </div>
