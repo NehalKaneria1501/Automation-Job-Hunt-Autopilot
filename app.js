@@ -974,7 +974,7 @@ function renderIngestLog() {
 function switchView(viewName) {
   activeView = viewName;
 
-  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox', 'logs-center', 'newsletter'];
+  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox', 'logs-center', 'newsletter', 'auth', 'dsa-sdlc', 'companies-hr', 'ats-tools', 'courses-mentors', 'pricing', 'ai-radar'];
   views.forEach(v => {
     const el = document.getElementById(`view-${v}`);
     if (el) {
@@ -1005,6 +1005,27 @@ function switchView(viewName) {
   }
   if (viewName === 'newsletter' && typeof initNewsletter === 'function') {
     initNewsletter();
+  }
+  if (viewName === 'auth' && typeof renderAuthPage === 'function') {
+    renderAuthPage();
+  }
+  if (viewName === 'dsa-sdlc' && typeof initDsaSdlcView === 'function') {
+    initDsaSdlcView();
+  }
+  if (viewName === 'companies-hr' && typeof initCompaniesHrView === 'function') {
+    initCompaniesHrView();
+  }
+  if (viewName === 'ats-tools' && typeof initAtsToolsView === 'function') {
+    initAtsToolsView();
+  }
+  if (viewName === 'courses-mentors' && typeof initCoursesMentorsView === 'function') {
+    initCoursesMentorsView();
+  }
+  if (viewName === 'pricing' && typeof initPricingView === 'function') {
+    initPricingView();
+  }
+  if (viewName === 'ai-radar' && typeof initAiRadarView === 'function') {
+    initAiRadarView();
   }
 
   syncMobileNavActiveTab();
@@ -2576,11 +2597,22 @@ function updateAuthUI() {
   const loggedInEl = document.getElementById('header-auth-logged-in');
   const loggedOutEl = document.getElementById('header-auth-logged-out');
   const mobAuthLabel = document.getElementById('mob-nav-auth-label');
+  const authSignedInBanner = document.getElementById('auth-signed-in-banner');
+  const authSignedOutBanner = document.getElementById('auth-signed-out-banner');
 
   if (user) {
     if (loggedInEl) loggedInEl.classList.remove('hidden');
     if (loggedOutEl) loggedOutEl.classList.add('hidden');
     if (mobAuthLabel) mobAuthLabel.textContent = "Profile";
+
+    if (authSignedInBanner) {
+      authSignedInBanner.classList.remove('hidden');
+      authSignedInBanner.classList.add('flex');
+    }
+    if (authSignedOutBanner) {
+      authSignedOutBanner.classList.add('hidden');
+      authSignedOutBanner.classList.remove('flex');
+    }
 
     safeSetText('header-user-name', user.name || "Alex Chen");
     safeSetText('header-user-avatar', user.avatar || "AC");
@@ -2590,6 +2622,13 @@ function updateAuthUI() {
     safeSetText('profile-modal-email', user.email || "alex.chen@executive.dev");
     safeSetText('profile-modal-role', user.role || "Staff Full-Stack Architect");
     safeSetText('profile-modal-avatar', user.avatar || "AC");
+
+    // Also sync dedicated auth page card
+    safeSetText('auth-page-active-name', user.name || "Alex Chen");
+    safeSetText('auth-page-active-avatar', user.avatar || "AC");
+    safeSetText('auth-page-active-email', user.email || "alex.chen@executive.dev");
+    safeSetText('auth-page-active-role', user.role || "Staff Full-Stack Architect");
+    safeSetText('auth-page-active-comp', user.target_comp || "$250k - $320k");
   } else {
     if (loggedInEl) loggedInEl.classList.add('hidden');
     if (loggedOutEl) {
@@ -2597,6 +2636,11 @@ function updateAuthUI() {
       loggedOutEl.classList.add('flex');
     }
     if (mobAuthLabel) mobAuthLabel.textContent = "Sign In";
+
+    if (authSignedInBanner) {
+      authSignedInBanner.classList.add('hidden');
+      authSignedInBanner.classList.remove('flex');
+    }
   }
 }
 
@@ -3035,6 +3079,8 @@ async function handleSignOut() {
     await fetch('/api/auth/signout', { method: 'POST' });
   } catch (e) {}
   clearAuthUser();
+  navigateToAuth('signin');
+  showSignedOutBanner(true);
   showGlobalToast("Candidate session terminated. You are now browsing in Guest Mode.");
 }
 
@@ -5864,4 +5910,2265 @@ function loadArchivedIssue(num) {
   showGlobalToast(`📖 Loading The Autopilot Executive Archive: Issue #${num}...`);
   switchNewsletterTab('briefing');
 }
+
+
+
+// ============================================================================
+// DEDICATED SIGN IN, SIGN OUT & CANDIDATE IDENTITY PORTAL (#view-auth)
+// ============================================================================
+
+let currentAuthPageTab = 'signin';
+let pageOtpTimerInterval = null;
+let pageOtpRemainingSeconds = 60;
+let currentPendingPageUser = null;
+
+/**
+ * Navigate directly to full-screen Candidate Auth Portal
+ */
+function navigateToAuth(tab = 'signin') {
+  closeAllHeaderDropdowns();
+  toggleUserDropdown(false);
+  toggleMobileActionsDrawer(false);
+  closeAuthModal();
+
+  switchView('auth');
+  switchAuthPageTab(tab);
+}
+
+/**
+ * Renders the Auth Portal view state
+ */
+function renderAuthPage() {
+  updateAuthUI();
+  switchAuthPageTab(currentAuthPageTab);
+  safeCreateIcons();
+}
+
+/**
+ * Switch tabs on the dedicated auth page
+ */
+function switchAuthPageTab(tab) {
+  currentAuthPageTab = tab;
+
+  const tabs = ['signin', 'signup', 'forgot', 'otp'];
+  tabs.forEach(t => {
+    const view = document.getElementById(`page-auth-view-${t}`);
+    const btn = document.getElementById(`page-tab-btn-${t}`);
+
+    if (view) {
+      if (t === tab) {
+        view.classList.remove('hidden');
+      } else {
+        view.classList.add('hidden');
+      }
+    }
+
+    if (btn) {
+      if (t === tab) {
+        btn.className = "page-auth-tab flex-1 py-3.5 px-4 text-center border-b-2 border-indigo-600 text-indigo-600 font-bold transition-all shrink-0 shadow-xs";
+      } else {
+        btn.className = "page-auth-tab flex-1 py-3.5 px-4 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-900 font-semibold transition-all shrink-0";
+      }
+    }
+  });
+
+  if (tab === 'signin') {
+    const el = document.getElementById('page-signin-email');
+    if (el) el.focus();
+  } else if (tab === 'signup') {
+    const el = document.getElementById('page-signup-name');
+    if (el) el.focus();
+  } else if (tab === 'forgot') {
+    const el = document.getElementById('page-forgot-email');
+    if (el) el.focus();
+  } else if (tab === 'otp') {
+    const el = document.getElementById('page-otp-1');
+    if (el) el.focus();
+  }
+
+  safeCreateIcons();
+}
+
+/**
+ * Toggle the signed-out confirmation banner
+ */
+function showSignedOutBanner(show) {
+  const banner = document.getElementById('auth-signed-out-banner');
+  if (banner) {
+    if (show) {
+      banner.classList.remove('hidden');
+      banner.classList.add('flex');
+    } else {
+      banner.classList.add('hidden');
+      banner.classList.remove('flex');
+    }
+  }
+}
+
+function dismissSignedOutBanner() {
+  showSignedOutBanner(false);
+}
+
+/**
+ * 1-Click Multi-Persona Logins: Marcus (Sales), Elena (Marketing), Sarah (HR), Alex (SWE), David (Switcher)
+ */
+function loginAsPersona(personaKey) {
+  const personas = {
+    marcus: {
+      id: "usr_marcus_vance",
+      name: "Marcus Vance",
+      email: "marcus.vance@executive.dev",
+      role: "VP of Enterprise Sales & RevOps",
+      avatar: "MV",
+      target_comp: "$280k - $420k OTE",
+      two_factor_enabled: true,
+      verified: true,
+      domain: "sales",
+      session_token: "zt_mv_9841"
+    },
+    elena: {
+      id: "usr_elena_rostova",
+      name: "Elena Rostova",
+      email: "elena.rostova@executive.dev",
+      role: "Principal Product Marketing Manager (PMM)",
+      avatar: "ER",
+      target_comp: "$210k - $275k Base",
+      two_factor_enabled: true,
+      verified: true,
+      domain: "marketing",
+      session_token: "zt_er_7419"
+    },
+    sarah: {
+      id: "usr_sarah_lin",
+      name: "Sarah Lin",
+      email: "sarah.lin@executive.dev",
+      role: "Head of People & Executive Talent Partner",
+      avatar: "SL",
+      target_comp: "$220k - $300k Base",
+      two_factor_enabled: true,
+      verified: true,
+      domain: "hr",
+      session_token: "zt_sl_3821"
+    },
+    alex: {
+      id: "usr_alex_chen",
+      name: "Alex Chen",
+      email: "alex.chen@executive.dev",
+      role: "Staff Full-Stack Architect",
+      avatar: "AC",
+      target_comp: "$250k - $320k Total",
+      two_factor_enabled: true,
+      verified: true,
+      domain: "tech",
+      session_token: "zt_ac_9421"
+    },
+    david: {
+      id: "usr_david_miller",
+      name: "David Miller",
+      email: "david.miller@executive.dev",
+      role: "Solutions Architect & Career Switcher",
+      avatar: "DM",
+      target_comp: "$180k - $240k Base",
+      two_factor_enabled: true,
+      verified: true,
+      domain: "switchers",
+      session_token: "zt_dm_5192"
+    }
+  };
+
+  const user = personas[personaKey] || personas.alex;
+  setAuthUser(user);
+  dismissSignedOutBanner();
+
+  showGlobalToast(`🎉 Welcome back, ${user.name}! Authenticated as ${user.role}.`);
+  if (typeof triggerConfetti === 'function') {
+    try { triggerConfetti(); } catch (e) {}
+  }
+
+  // Pre-select persona in MNC Hub / Kanban if available
+  if (typeof selectPersonaTrack === 'function') {
+    selectPersonaTrack(user.domain || 'tech');
+  }
+
+  // Redirect to Pipeline Kanban view
+  setTimeout(() => {
+    switchView('kanban');
+  }, 400);
+}
+
+/**
+ * Handle form submission on dedicated Sign In page
+ */
+async function handlePageSignInSubmit(event) {
+  if (event) event.preventDefault();
+
+  const email = (document.getElementById('page-signin-email')?.value || "alex.chen@executive.dev").trim();
+  const password = document.getElementById('page-signin-password')?.value || "StitchAutopilot2026!";
+
+  showGlobalToast("Authenticating session with Zero-Trust identity guard...");
+
+  let userData = null;
+  try {
+    const res = await fetch('/api/auth/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, remember_me: true })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      userData = data.user;
+    }
+  } catch (e) {}
+
+  if (!userData) {
+    const isAlex = email.toLowerCase().includes('alex') || email.toLowerCase().includes('demo');
+    const name = isAlex ? "Alex Chen" : email.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    userData = {
+      id: "usr_" + Math.floor(Math.random() * 90000 + 10000),
+      name: name,
+      email: email,
+      role: isAlex ? "Staff Full-Stack Architect" : "Senior Software Engineer",
+      avatar: name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase() || "AC",
+      target_comp: "$250k - $320k",
+      two_factor_enabled: true,
+      verified: true,
+      session_token: "zt_" + Math.floor(Math.random() * 90000000 + 10000000)
+    };
+  }
+
+  setAuthUser(userData);
+  dismissSignedOutBanner();
+
+  showGlobalToast(`Welcome back, ${userData.name}! Zero-Trust session authenticated.`);
+  if (typeof triggerConfetti === 'function') {
+    try { triggerConfetti(); } catch (e) {}
+  }
+
+  setTimeout(() => {
+    switchView('kanban');
+  }, 400);
+}
+
+/**
+ * Handle form submission on dedicated Sign Up page
+ */
+async function handlePageSignUpSubmit(event) {
+  if (event) event.preventDefault();
+
+  const name = (document.getElementById('page-signup-name')?.value || "Alex Chen").trim();
+  const email = (document.getElementById('page-signup-email')?.value || "candidate@executive.dev").trim();
+  const persona = document.getElementById('page-signup-persona')?.value || "tech";
+  const pass = document.getElementById('page-signup-password')?.value || "";
+  const confirm = document.getElementById('page-signup-confirm')?.value || "";
+
+  if (pass !== confirm) {
+    showGlobalToast("Passwords do not match. Please re-enter.");
+    return;
+  }
+
+  const roleMap = {
+    sales: "VP of Enterprise Sales & RevOps",
+    marketing: "Principal Product Marketing Manager (PMM)",
+    hr: "Head of People & Talent Acquisition Lead",
+    switchers: "Solutions Architect & Career Switcher",
+    tech: "Staff Full-Stack Architect"
+  };
+
+  const userRole = roleMap[persona] || "Senior Candidate";
+
+  showGlobalToast(`Registering ${name} & generating Zero-Trust 2FA OTP...`);
+
+  let demoOtp = String(Math.floor(Math.random() * 900000 + 100000));
+  try {
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, role: userRole, password: pass, enable_2fa: true })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.demo_otp) demoOtp = data.demo_otp;
+    }
+  } catch (e) {}
+
+  currentPendingPageUser = {
+    name,
+    email,
+    role: userRole,
+    domain: persona,
+    avatar: name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase() || "AC",
+    demoOtp
+  };
+
+  safeSetText('page-otp-target-email', email);
+  safeSetText('page-otp-demo-display', demoOtp);
+  switchAuthPageTab('otp');
+  startPageOtpTimer();
+}
+
+/**
+ * Handle form submission on dedicated Forgot Password page
+ */
+async function handlePageForgotPasswordSubmit(event) {
+  if (event) event.preventDefault();
+
+  const email = (document.getElementById('page-forgot-email')?.value || "alex.chen@executive.dev").trim();
+  showGlobalToast(`Dispatching recovery code to ${email}...`);
+
+  let demoOtp = String(Math.floor(Math.random() * 900000 + 100000));
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.demo_otp) demoOtp = data.demo_otp;
+    }
+  } catch (e) {}
+
+  currentPendingPageUser = {
+    email,
+    demoOtp,
+    purpose: 'recovery'
+  };
+
+  safeSetText('page-otp-target-email', email);
+  safeSetText('page-otp-demo-display', demoOtp);
+  switchAuthPageTab('otp');
+  startPageOtpTimer();
+}
+
+function startPageOtpTimer() {
+  if (pageOtpTimerInterval) {
+    clearInterval(pageOtpTimerInterval);
+  }
+  pageOtpRemainingSeconds = 60;
+  const timerSecs = document.getElementById('page-otp-timer-seconds');
+  const btnResend = document.getElementById('btn-page-resend-otp');
+  if (btnResend) {
+    btnResend.disabled = true;
+    btnResend.className = "text-slate-400 font-bold disabled:cursor-not-allowed";
+  }
+
+  pageOtpTimerInterval = setInterval(() => {
+    pageOtpRemainingSeconds -= 1;
+    if (timerSecs) timerSecs.textContent = pageOtpRemainingSeconds;
+    if (pageOtpRemainingSeconds <= 0) {
+      clearInterval(pageOtpTimerInterval);
+      if (btnResend) {
+        btnResend.disabled = false;
+        btnResend.className = "text-indigo-600 font-bold hover:underline cursor-pointer";
+      }
+      safeSetText('page-otp-timer-text', 'Code expired. Click to resend.');
+    }
+  }, 1000);
+}
+
+function resendPageOtpCode() {
+  const newOtp = String(Math.floor(Math.random() * 900000 + 100000));
+  if (currentPendingPageUser) {
+    currentPendingPageUser.demoOtp = newOtp;
+  }
+  safeSetText('page-otp-demo-display', newOtp);
+  startPageOtpTimer();
+  showGlobalToast(`New 6-Digit OTP dispatched: ${newOtp}`);
+}
+
+function handlePageOtpInput(index) {
+  const currentBox = document.getElementById(`page-otp-${index}`);
+  if (!currentBox) return;
+  const val = currentBox.value;
+  if (val.length >= 1) {
+    currentBox.value = val.slice(-1);
+    if (index < 6) {
+      const nextBox = document.getElementById(`page-otp-${index + 1}`);
+      if (nextBox) nextBox.focus();
+    } else {
+      // Auto-verify on 6th digit
+      handlePageOtpVerifySubmit();
+    }
+  }
+}
+
+function handlePageOtpBackspace(event, index) {
+  if (event.key === 'Backspace') {
+    const currentBox = document.getElementById(`page-otp-${index}`);
+    if (currentBox && currentBox.value === '' && index > 1) {
+      const prevBox = document.getElementById(`page-otp-${index - 1}`);
+      if (prevBox) prevBox.focus();
+    }
+  }
+}
+
+function autoFillPageDemoOtp() {
+  const code = (currentPendingPageUser && currentPendingPageUser.demoOtp) || "742918";
+  for (let i = 1; i <= 6; i++) {
+    const box = document.getElementById(`page-otp-${i}`);
+    if (box) box.value = code[i - 1] || "";
+  }
+  showGlobalToast(`Auto-filled 6-digit verification code: ${code}`);
+  setTimeout(() => {
+    handlePageOtpVerifySubmit();
+  }, 300);
+}
+
+async function handlePageOtpVerifySubmit() {
+  let enteredOtp = '';
+  for (let i = 1; i <= 6; i++) {
+    const box = document.getElementById(`page-otp-${i}`);
+    enteredOtp += (box?.value || '');
+  }
+
+  if (enteredOtp.length !== 6) {
+    showGlobalToast("Please enter all 6 digits of the verification code.");
+    return;
+  }
+
+  showGlobalToast("Validating Zero-Trust cryptographic OTP token...");
+
+  const p = currentPendingPageUser || {};
+  const name = p.name || "Alex Chen";
+  const user = {
+    id: "usr_" + Math.floor(Math.random() * 90000 + 10000),
+    name: name,
+    email: p.email || "alex.chen@executive.dev",
+    role: p.role || "Staff Full-Stack Architect",
+    avatar: p.avatar || "AC",
+    target_comp: "$250k - $320k",
+    two_factor_enabled: true,
+    verified: true,
+    domain: p.domain || "tech",
+    session_token: "zt_page_otp_" + Math.floor(Math.random() * 90000000 + 10000000)
+  };
+
+  setAuthUser(user);
+  dismissSignedOutBanner();
+
+  showGlobalToast(`✓ Zero-Trust 2FA Verified! Welcome to Executive Career Cockpit, ${user.name}!`);
+  if (typeof triggerConfetti === 'function') {
+    try { triggerConfetti(); } catch (e) {}
+  }
+
+  setTimeout(() => {
+    switchView('kanban');
+  }, 400);
+}
+
+// URL Hash routing for direct bookmarks: #signin, #signup, #signout, #auth
+function checkAuthHashRouting() {
+  const hash = (window.location.hash || '').toLowerCase();
+  if (hash === '#signin' || hash === '#login' || hash === '#auth') {
+    navigateToAuth('signin');
+  } else if (hash === '#signup' || hash === '#register') {
+    navigateToAuth('signup');
+  } else if (hash === '#signout' || hash === '#logout') {
+    handleSignOut();
+  } else if (hash === '#forgot') {
+    navigateToAuth('forgot');
+  } else if (hash === '#otp') {
+    navigateToAuth('otp');
+  }
+}
+
+window.addEventListener('hashchange', checkAuthHashRouting);
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(checkAuthHashRouting, 200);
+});
+
+
+
+// =============================================================================
+// COMPREHENSIVE SUITE MODULE: DSA/SDLC, COMPANIES/HR, ATS, COURSES, PRICING, AI
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// 1. GLOBAL SEARCH & REAL-TIME SUGGESTIONS (Ctrl+K)
+// -----------------------------------------------------------------------------
+const globalSearchIndex = [
+  // Views & Hubs
+  { title: "Pipeline Kanban", category: "Navigation", subtitle: "Track Sales, Marketing, HR & Tech applications", action: () => switchView('kanban'), keywords: "kanban pipeline jobs board" },
+  { title: "DSA & SDLC Lifecycle", category: "Engineering", subtitle: "Problem bank, solutions & 6-phase engineering lifecycle", action: () => switchView('dsa-sdlc'), keywords: "dsa sdlc algorithms data structures system design" },
+  { title: "Companies & Verified HR", category: "Companies", subtitle: "50+ Product, Service & AI Unicorns with recruiter contacts", action: () => switchView('companies-hr'), keywords: "companies recruiters hr talent google stripe databricks" },
+  { title: "ATS & CV Intelligence Suite", category: "Tools", subtitle: "Resume score scanner, X-Y-Z bullet rewriter & PDF export", action: () => switchView('ats-tools'), keywords: "ats resume cv scanner keywords bullets cover letter" },
+  { title: "Courses & 1-on-1 Mentorship", category: "Education", subtitle: "Masterclasses & private mock interviews with Staff Mentors", action: () => switchView('courses-mentors'), keywords: "courses mentors mock interview coaching classes" },
+  { title: "Subscriptions & Pro Plans", category: "Pricing", subtitle: "Unlock unlimited ATS scans, verified HR emails & mentorship", action: () => switchView('pricing'), keywords: "pricing plans pro subscription billing upgrade" },
+  { title: "AI & Tech Radar Logs", category: "Engineering", subtitle: "Deep-dives on Agentic MCP, Gemini Flash, DeepSeek & SRE", action: () => switchView('ai-radar'), keywords: "ai logs tech radar mcp gemini deepseek llm" },
+  { title: "Candidate Sign In / Sign Out", category: "Identity", subtitle: "Multi-persona identity portal (Marcus, Elena, Sarah, Alex, David)", action: () => switchView('auth'), keywords: "signin signout login logout persona auth" },
+
+  // Key Companies
+  { title: "Google", category: "Company", subtitle: "Staff SWE, Product Managers, Cloud RevOps (Mountain View / Remote)", action: () => { switchView('companies-hr'); searchCompanies('Google'); }, keywords: "google alphabet faang" },
+  { title: "Stripe", category: "Company", subtitle: "Financial Infrastructure, Staff Full-Stack, Technical Recruiters", action: () => { switchView('companies-hr'); searchCompanies('Stripe'); }, keywords: "stripe fintech payments" },
+  { title: "Databricks", category: "Company", subtitle: "Data Intelligence Platform, Solutions Architects, Enterprise Sales", action: () => { switchView('companies-hr'); searchCompanies('Databricks'); }, keywords: "databricks spark lakehouse ai" },
+  { title: "OpenAI", category: "Company", subtitle: "Frontier AI Research, Research Engineers, Member of Technical Staff", action: () => { switchView('companies-hr'); searchCompanies('OpenAI'); }, keywords: "openai chatgpt gpt-4" },
+  { title: "Tata Consultancy Services (TCS)", category: "Company", subtitle: "Global Systems Integration, Enterprise Transformation", action: () => { switchView('companies-hr'); searchCompanies('TCS'); }, keywords: "tcs service consulting" },
+
+  // Key DSA Topics
+  { title: "Two Sum & Hash Maps", category: "DSA Problem", subtitle: "Arrays & Hash Table • O(N) Time complexity", action: () => { switchView('dsa-sdlc'); openDsaSolutionModal(1); }, keywords: "two sum array hash map leetcode" },
+  { title: "LRU Cache Design", category: "DSA Problem", subtitle: "Linked List & Hash Table • System Design core", action: () => { switchView('dsa-sdlc'); openDsaSolutionModal(146); }, keywords: "lru cache doubly linked list system design" },
+  { title: "Trapping Rain Water", category: "DSA Problem", subtitle: "Two Pointers • Hard interview question", action: () => { switchView('dsa-sdlc'); openDsaSolutionModal(42); }, keywords: "trapping rain water two pointers" },
+
+  // SDLC Phases
+  { title: "Phase 1: Requirements & PRD", category: "SDLC", subtitle: "User Stories, KPI specs & RFC Architecture", action: () => { switchView('dsa-sdlc'); switchDsaSdlcTab('sdlc'); renderSdlcActiveStage(0); }, keywords: "sdlc requirements prd user story" },
+  { title: "Phase 5: Canary Deployments & CI/CD", category: "SDLC", subtitle: "Kubernetes, Docker, ArgoCD, Zero-Downtime rollouts", action: () => { switchView('dsa-sdlc'); switchDsaSdlcTab('sdlc'); renderSdlcActiveStage(4); }, keywords: "sdlc canary deployment kubernetes k8s cicd" },
+  { title: "Phase 6: Observability & SRE", category: "SDLC", subtitle: "Prometheus, Grafana, SLOs & Blameless Post-Mortems", action: () => { switchView('dsa-sdlc'); switchDsaSdlcTab('sdlc'); renderSdlcActiveStage(5); }, keywords: "sdlc sre observability grafana prometheus post-mortem" }
+];
+
+function handleGlobalSearch(query) {
+  const q = (query || '').toLowerCase().trim();
+  const dropdown = document.getElementById('header-search-dropdown');
+  const resultsList = document.getElementById('header-search-results-list');
+  const modalResultsList = document.getElementById('modal-search-results-list');
+
+  if (!q) {
+    if (resultsList) resultsList.innerHTML = '<div class="p-3 text-center text-xs text-slate-400">Type keywords to search across the cockpit...</div>';
+    if (modalResultsList) modalResultsList.innerHTML = '<div class="p-4 text-center text-xs text-slate-400">Type keywords to search across the cockpit...</div>';
+    return;
+  }
+
+  const matches = globalSearchIndex.filter(item => {
+    return item.title.toLowerCase().includes(q) ||
+           item.category.toLowerCase().includes(q) ||
+           item.subtitle.toLowerCase().includes(q) ||
+           item.keywords.toLowerCase().includes(q);
+  }).slice(0, 8);
+
+  const renderHtml = (items) => {
+    if (!items.length) {
+      return '<div class="p-3 text-center text-xs text-slate-500">No results found for "' + q + '".</div>';
+    }
+    return items.map(item => `
+      <div 
+        onclick="executeSearchResult(${globalSearchIndex.indexOf(item)})"
+        class="p-2.5 rounded-xl hover:bg-indigo-50 border border-transparent hover:border-indigo-100 cursor-pointer flex items-center justify-between gap-2 transition-colors"
+      >
+        <div>
+          <div class="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+            <span>${item.title}</span>
+            <span class="px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 text-[9px] font-mono">${item.category}</span>
+          </div>
+          <div class="text-[11px] text-slate-500 line-clamp-1">${item.subtitle}</div>
+        </div>
+        <span class="material-symbols-outlined text-slate-400 text-[16px]">arrow_forward</span>
+      </div>
+    `).join('');
+  };
+
+  const html = renderHtml(matches);
+  if (resultsList) resultsList.innerHTML = html;
+  if (modalResultsList) modalResultsList.innerHTML = html;
+
+  if (dropdown && matches.length > 0) {
+    dropdown.classList.remove('hidden');
+    dropdown.classList.add('flex');
+  }
+}
+
+function executeSearchResult(index) {
+  const item = globalSearchIndex[index];
+  if (item && typeof item.action === 'function') {
+    item.action();
+  }
+  closeGlobalSearchDropdown();
+  closeGlobalSearchModal();
+}
+
+function openGlobalSearchDropdown() {
+  const dropdown = document.getElementById('header-search-dropdown');
+  const input = document.getElementById('header-global-search-input');
+  if (dropdown) {
+    dropdown.classList.remove('hidden');
+    dropdown.classList.add('flex');
+  }
+  if (input && input.value) {
+    handleGlobalSearch(input.value);
+  } else {
+    handleGlobalSearch('');
+  }
+}
+
+function closeGlobalSearchDropdown() {
+  const dropdown = document.getElementById('header-search-dropdown');
+  if (dropdown) {
+    dropdown.classList.add('hidden');
+    dropdown.classList.remove('flex');
+  }
+}
+
+function openGlobalSearchModal() {
+  const modal = document.getElementById('modal-global-search');
+  const input = document.getElementById('modal-search-input');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  if (input) {
+    input.value = '';
+    setTimeout(() => input.focus(), 100);
+    handleGlobalSearch('');
+  }
+}
+
+function closeGlobalSearchModal() {
+  const modal = document.getElementById('modal-global-search');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+// Keyboard Shortcut: Ctrl+K or Cmd+K
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    openGlobalSearchModal();
+  }
+  if (e.key === 'Escape') {
+    closeGlobalSearchModal();
+    closeGlobalSearchDropdown();
+    closeNotificationsDropdown();
+    closeDsaSolutionModal();
+    closeMentorBookingModal();
+    closeSubscriptionCheckout();
+    closeAiLogReaderModal();
+    closeHrOutreachModal();
+  }
+});
+
+// Click outside handler for dropdowns
+document.addEventListener('click', (e) => {
+  const searchContainer = document.getElementById('header-global-search-input')?.parentElement?.parentElement;
+  if (searchContainer && !searchContainer.contains(e.target)) {
+    closeGlobalSearchDropdown();
+  }
+  const notifContainer = document.getElementById('header-notification-btn')?.parentElement;
+  if (notifContainer && !notifContainer.contains(e.target)) {
+    closeNotificationsDropdown();
+  }
+});
+
+// -----------------------------------------------------------------------------
+// 2. HEADER NOTIFICATIONS SYSTEM
+// -----------------------------------------------------------------------------
+const notificationsData = [
+  { id: 1, type: "recruiter", icon: "visibility", color: "text-emerald-600 bg-emerald-50", title: "Recruiter Profile View", text: "Senior Talent Partner at Stripe viewed your CV profile.", time: "12m ago", unread: true, action: () => { switchView('companies-hr'); filterCompaniesCategory('hr-directory'); } },
+  { id: 2, type: "ats", icon: "auto_fix_high", color: "text-amber-600 bg-amber-50", title: "ATS Score Benchmark", text: "Optimized resume matched 94% with Staff AI Requisition.", time: "45m ago", unread: true, action: () => switchView('ats-tools') },
+  { id: 3, type: "recruiter", icon: "event", color: "text-blue-600 bg-blue-50", title: "1-on-1 Mentor Confirmed", text: "Session with Ex-Google Staff Mentor confirmed for tomorrow 10:00 AM.", time: "2h ago", unread: true, action: () => { switchView('courses-mentors'); switchCourseMentorTab('mentors'); } },
+  { id: 4, type: "ai", icon: "psychology", color: "text-cyan-600 bg-cyan-50", title: "New AI Radar Published", text: "Agentic MCP Architectures: The 2026 Production Standard.", time: "4h ago", unread: true, action: () => { switchView('ai-radar'); openAiLogReaderModal('mcp-agents'); } }
+];
+
+let activeNotifFilter = 'all';
+
+function toggleNotificationsDropdown(force) {
+  const dd = document.getElementById('header-notifications-dropdown');
+  if (!dd) return;
+  const isCurrentlyOpen = !dd.classList.contains('hidden');
+  const shouldOpen = force !== undefined ? force : !isCurrentlyOpen;
+
+  if (shouldOpen) {
+    dd.classList.remove('hidden');
+    dd.classList.add('flex');
+    renderNotifications(activeNotifFilter);
+  } else {
+    dd.classList.add('hidden');
+    dd.classList.remove('flex');
+  }
+}
+
+function closeNotificationsDropdown() {
+  const dd = document.getElementById('header-notifications-dropdown');
+  if (dd) {
+    dd.classList.add('hidden');
+    dd.classList.remove('flex');
+  }
+}
+
+function filterNotifications(category) {
+  activeNotifFilter = category;
+  ['all', 'recruiter', 'ats', 'ai'].forEach(cat => {
+    const btn = document.getElementById(`notif-tab-${cat}`);
+    if (btn) {
+      if (cat === category) {
+        btn.className = "px-2.5 py-1 rounded-lg bg-indigo-600 text-white shrink-0";
+      } else {
+        btn.className = "px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0";
+      }
+    }
+  });
+  renderNotifications(category);
+}
+
+function renderNotifications(category = 'all') {
+  const container = document.getElementById('notifications-items-container');
+  if (!container) return;
+
+  const filtered = category === 'all' 
+    ? notificationsData 
+    : notificationsData.filter(n => n.type === category);
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="p-4 text-center text-xs text-slate-400">No notifications in this category.</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(n => `
+    <div 
+      onclick="notificationsData.find(x => x.id === ${n.id}).action(); closeNotificationsDropdown();"
+      class="p-2.5 rounded-xl ${n.unread ? 'bg-indigo-50/60 border border-indigo-100' : 'bg-slate-50 border border-slate-100'} hover:bg-indigo-100/60 cursor-pointer transition-all flex items-start gap-2.5"
+    >
+      <div class="w-7 h-7 rounded-lg ${n.color} flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-[16px]">${n.icon}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-xs text-slate-900">${n.title}</span>
+          <span class="text-[9px] text-slate-400 font-mono">${n.time}</span>
+        </div>
+        <p class="text-[11px] text-slate-600 line-clamp-2 mt-0.5">${n.text}</p>
+      </div>
+      ${n.unread ? '<span class="w-2 h-2 rounded-full bg-indigo-600 shrink-0 mt-1"></span>' : ''}
+    </div>
+  `).join('');
+
+  updateNotificationBadge();
+}
+
+function markAllNotificationsRead() {
+  notificationsData.forEach(n => n.unread = false);
+  updateNotificationBadge();
+  renderNotifications(activeNotifFilter);
+  if (typeof showToast === 'function') {
+    showToast("All notifications marked as read ✓");
+  }
+}
+
+function updateNotificationBadge() {
+  const badge = document.getElementById('header-notification-badge');
+  const count = notificationsData.filter(n => n.unread).length;
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count;
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 3. DSA PROBLEM BANK & SDLC 6-PHASE LIFECYCLE
+// -----------------------------------------------------------------------------
+const dsaProblemsData = [
+  {
+    id: 1,
+    title: "Two Sum",
+    category: "arrays",
+    categoryLabel: "Arrays & Hash Table",
+    difficulty: "Easy",
+    companies: "Google, Amazon, Meta, Apple",
+    complexity: "Time: O(N) | Space: O(N)",
+    solved: true,
+    python: `def twoSum(nums: list[int], target: int) -> list[int]:
+    seen = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
+    return []`,
+    javascript: `function twoSum(nums, target) {
+  const seen = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    const comp = target - nums[i];
+    if (seen.has(comp)) return [seen.get(comp), i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}`,
+    java: `public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int comp = target - nums[i];
+        if (map.containsKey(comp)) return new int[]{map.get(comp), i};
+        map.put(nums[i], i);
+    }
+    return new int[0];
+}`
+  },
+  {
+    id: 42,
+    title: "Trapping Rain Water",
+    category: "sliding-window",
+    categoryLabel: "Two Pointers",
+    difficulty: "Hard",
+    companies: "Google, Amazon, Stripe",
+    complexity: "Time: O(N) | Space: O(1)",
+    solved: false,
+    python: `def trap(height: list[int]) -> int:
+    if not height: return 0
+    l, r = 0, len(height) - 1
+    left_max, right_max = height[l], height[r]
+    res = 0
+    while l < r:
+        if left_max < right_max:
+            l += 1
+            left_max = max(left_max, height[l])
+            res += left_max - height[l]
+        else:
+            r -= 1
+            right_max = max(right_max, height[r])
+            res += right_max - height[r]
+    return res`,
+    javascript: `function trap(height) {
+  let l = 0, r = height.length - 1;
+  let leftMax = height[l], rightMax = height[r];
+  let res = 0;
+  while (l < r) {
+    if (leftMax < rightMax) {
+      l++;
+      leftMax = Math.max(leftMax, height[l]);
+      res += leftMax - height[l];
+    } else {
+      r--;
+      rightMax = Math.max(rightMax, height[r]);
+      res += rightMax - height[r];
+    }
+  }
+  return res;
+}`,
+    java: `public int trap(int[] height) {
+    int l = 0, r = height.length - 1;
+    int leftMax = height[l], rightMax = height[r];
+    int res = 0;
+    while (l < r) {
+        if (leftMax < rightMax) {
+            l++;
+            leftMax = Math.max(leftMax, height[l]);
+            res += leftMax - height[l];
+        } else {
+            r--;
+            rightMax = Math.max(rightMax, height[r]);
+            res += rightMax - height[r];
+        }
+    }
+    return res;
+}`
+  },
+  {
+    id: 146,
+    title: "LRU Cache Implementation",
+    category: "system-design",
+    categoryLabel: "System Design / LLD",
+    difficulty: "Medium",
+    companies: "Stripe, Databricks, Amazon, Meta",
+    complexity: "Time: O(1) Get & Put | Space: O(Capacity)",
+    solved: true,
+    python: `class DLinkedNode:
+    def __init__(self, key=0, val=0):
+        self.key, self.val = key, val
+        self.prev = self.next = None
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.cache = {}
+        self.cap = capacity
+        self.head, self.tail = DLinkedNode(), DLinkedNode()
+        self.head.next, self.tail.prev = self.tail, self.head
+
+    def get(self, key: int) -> int:
+        if key not in self.cache: return -1
+        node = self.cache[key]
+        self._move_to_head(node)
+        return node.val
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.cache:
+            node = self.cache[key]
+            node.val = value
+            self._move_to_head(node)
+        else:
+            newNode = DLinkedNode(key, value)
+            self.cache[key] = newNode
+            self._add_node(newNode)
+            if len(self.cache) > self.cap:
+                tail = self._pop_tail()
+                del self.cache[tail.key]`,
+    javascript: `class LRUCache {
+  constructor(capacity) {
+    this.cap = capacity;
+    this.map = new Map();
+  }
+  get(key) {
+    if (!this.map.has(key)) return -1;
+    const val = this.map.get(key);
+    this.map.delete(key);
+    this.map.set(key, val);
+    return val;
+  }
+  put(key, val) {
+    if (this.map.has(key)) this.map.delete(key);
+    this.map.set(key, val);
+    if (this.map.size > this.cap) {
+      this.map.delete(this.map.keys().next().value);
+    }
+  }
+}`,
+    java: `class LRUCache extends LinkedHashMap<Integer, Integer> {
+    private int capacity;
+    public LRUCache(int capacity) {
+        super(capacity, 0.75f, true);
+        this.capacity = capacity;
+    }
+    public int get(int key) {
+        return super.getOrDefault(key, -1);
+    }
+    public void put(int key, int value) {
+        super.put(key, value);
+    }
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+        return size() > capacity;
+    }
+}`
+  },
+  {
+    id: 200,
+    title: "Number of Islands",
+    category: "trees-graphs",
+    categoryLabel: "Graphs / BFS & DFS",
+    difficulty: "Medium",
+    companies: "Amazon, Microsoft, Bloomberg",
+    complexity: "Time: O(M*N) | Space: O(M*N)",
+    solved: true,
+    python: `def numIslands(grid: list[list[str]]) -> int:
+    if not grid: return 0
+    rows, cols = len(grid), len(grid[0])
+    count = 0
+    def dfs(r, c):
+        if r < 0 or c < 0 or r >= rows or c >= cols or grid[r][c] != '1':
+            return
+        grid[r][c] = '#'
+        dfs(r+1, c); dfs(r-1, c); dfs(r, c+1); dfs(r, c-1)
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1':
+                dfs(r, c)
+                count += 1
+    return count`,
+    javascript: `function numIslands(grid) {
+  if (!grid || !grid.length) return 0;
+  let count = 0;
+  function dfs(r, c) {
+    if (r < 0 || c < 0 || r >= grid.length || c >= grid[0].length || grid[r][c] !== '1') return;
+    grid[r][c] = '0';
+    dfs(r+1, c); dfs(r-1, c); dfs(r, c+1); dfs(r, c-1);
+  }
+  for (let r = 0; r < grid.length; r++) {
+    for (let c = 0; c < grid[0].length; c++) {
+      if (grid[r][c] === '1') {
+        dfs(r, c);
+        count++;
+      }
+    }
+  }
+  return count;
+}`,
+    java: `public int numIslands(char[][] grid) {
+    int count = 0;
+    for (int r = 0; r < grid.length; r++) {
+        for (int c = 0; c < grid[0].length; c++) {
+            if (grid[r][c] == '1') {
+                dfs(grid, r, c);
+                count++;
+            }
+        }
+    }
+    return count;
+}`
+  },
+  {
+    id: 300,
+    title: "Longest Increasing Subsequence",
+    category: "dp",
+    categoryLabel: "Dynamic Programming",
+    difficulty: "Medium",
+    companies: "Google, Meta, Microsoft",
+    complexity: "Time: O(N log N) | Space: O(N)",
+    solved: false,
+    python: `import bisect
+def lengthOfLIS(nums: list[int]) -> int:
+    tails = []
+    for x in nums:
+        idx = bisect.bisect_left(tails, x)
+        if idx == len(tails):
+            tails.append(x)
+        else:
+            tails[idx] = x
+    return len(tails)`,
+    javascript: `function lengthOfLIS(nums) {
+  const tails = [];
+  for (const x of nums) {
+    let l = 0, r = tails.length;
+    while (l < r) {
+      const mid = (l + r) >> 1;
+      if (tails[mid] < x) l = mid + 1;
+      else r = mid;
+    }
+    tails[l] = x;
+  }
+  return tails.length;
+}`,
+    java: `public int lengthOfLIS(int[] nums) {
+    int[] dp = new int[nums.length];
+    int len = 0;
+    for (int x : nums) {
+        int i = Arrays.binarySearch(dp, 0, len, x);
+        if (i < 0) i = -(i + 1);
+        dp[i] = x;
+        if (i == len) len++;
+    }
+    return len;
+}`
+  }
+];
+
+// SDLC 6-Phase Pipeline Data
+const sdlcStagesData = [
+  {
+    number: "01",
+    phase: "Requirements & PRD Definition",
+    icon: "assignment",
+    color: "from-blue-600 to-indigo-600",
+    summary: "Establish user pain points, high-level business goals, measurable SLOs, and scope boundaries.",
+    deliverables: ["Product Requirement Document (PRD)", "User Persona Stories", "System Non-Functional Requirements (Latency, Throughput, SLAs)", "RFC Architecture Proposal"],
+    checklist: [
+      "Define measurable metrics (e.g. p99 response < 120ms, 99.99% availability)",
+      "Align cross-functional stakeholders (Product, Engineering, Security)",
+      "Draft zero-trust security threat boundary document"
+    ],
+    templateSnippet: `## PRD: Autonomous Candidate Ingestion Pipeline
+**Owner:** Staff Systems Architect
+**Objective:** Ingest 15,000 inbound recruiter emails/sec with sub-second spam classification.
+**Non-Functional Requirements:**
+- Availability: 99.95%
+- Latency: p95 < 250ms
+- Security: RFC822 DKIM/SPF/DMARC cryptographic validation`
+  },
+  {
+    number: "02",
+    phase: "System Architecture & Design",
+    icon: "architecture",
+    color: "from-purple-600 to-indigo-600",
+    summary: "Create C4 architecture models, High-Level (HLD) & Low-Level (LLD) designs, DB schemas, and API contracts.",
+    deliverables: ["HLD / LLD Specifications", "Database ER Diagram (PostgreSQL / Redis)", "OpenAPI 3.1 Spec", "Event Schema Registry (Protobuf/Avro)"],
+    checklist: [
+      "Select synchronous vs asynchronous messaging (gRPC vs Kafka)",
+      "Data consistency model (ACID vs Eventual Consistency)",
+      "Disaster recovery and multi-region replication strategy"
+    ],
+    templateSnippet: `// OpenAPI 3.1 Contract Snippet
+paths:
+  /v1/candidates/score:
+    post:
+      summary: "AI ATS Vector Matcher"
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ResumePayload' }`
+  },
+  {
+    number: "03",
+    phase: "Implementation & Clean Code (TDD)",
+    icon: "code",
+    color: "from-emerald-600 to-teal-600",
+    summary: "Develop modular codebases with test-driven development, trunk-based CI branching, and static analysis.",
+    deliverables: ["Clean Architecture Microservices", "Unit & Integration Test Suite (>85% coverage)", "Pre-commit linting & SonarQube quality gates"],
+    checklist: [
+      "Follow SOLID principles and 12-factor application guidelines",
+      "Enforce immutable configuration via environment variables",
+      "Run automated vulnerability scanning (Snyk / Dependabot)"
+    ],
+    templateSnippet: `// Go Clean Architecture Handler
+func (h *CandidateHandler) IngestResume(w http.ResponseWriter, r *http.Request) {
+    ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+    defer cancel()
+    result, err := h.service.Process(ctx, r.Body)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+        return
+    }
+    json.NewEncoder(w).Encode(result)
+}`
+  },
+  {
+    number: "04",
+    phase: "Automated QA & Security Audit",
+    icon: "verified_user",
+    color: "from-amber-600 to-orange-600",
+    summary: "Comprehensive End-to-End testing, performance load testing, OWASP Top 10 penetration audits, and chaos engineering.",
+    deliverables: ["E2E Playwright Automation Suite", "k6 / Locust Stress Test Report", "OWASP SAST & DAST Compliance Badge"],
+    checklist: [
+      "Execute load test up to 3x peak anticipated RPS",
+      "Simulate service degradation with Chaos Mesh",
+      "Validate zero hardcoded secrets via GitGuardian"
+    ],
+    templateSnippet: `// k6 Load Test Script
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+export const options = { vus: 50, duration: '30s' };
+export default function () {
+  const res = http.get('http://localhost:8000/api/health');
+  check(res, { 'status is 200': (r) => r.status === 200 });
+  sleep(0.5);
+}`
+  },
+  {
+    number: "05",
+    phase: "Canary Deployment & GitOps CI/CD",
+    icon: "rocket_launch",
+    color: "from-rose-600 to-red-600",
+    summary: "Automated container builds, Helm packaging, GitOps release via ArgoCD, and automated canary progression.",
+    deliverables: ["Multi-Stage Dockerfile", "Kubernetes Deployment & HPA", "ArgoCD Rollout Manifest (Canary 10% -> 50% -> 100%)"],
+    checklist: [
+      "Graceful SIGTERM shutdown handling with 30s drain timeout",
+      "Readiness and liveness health probe configuration",
+      "Automated rollback triggered if HTTP 5xx rate > 0.5%"
+    ],
+    templateSnippet: `# Argo Rollouts Canary Strategy
+spec:
+  strategy:
+    canary:
+      steps:
+      - setWeight: 10
+      - pause: { duration: 5m }
+      - setWeight: 50
+      - pause: { duration: 10m }`
+  },
+  {
+    number: "06",
+    phase: "Observability, SRE & Post-Mortem",
+    icon: "query_stats",
+    color: "from-indigo-600 to-cyan-600",
+    summary: "Real-time telemetry with Prometheus metrics, Grafana dashboards, PagerDuty on-call, and blameless post-mortem audits.",
+    deliverables: ["Grafana Golden Signals Dashboard", "Alertmanager Routing Matrix", "Blameless Incident Post-Mortem Document"],
+    checklist: [
+      "Monitor the 4 Golden Signals: Latency, Traffic, Errors, Saturation",
+      "Define SLO error budget burn rate alerts",
+      "Conduct post-incident review within 48h of P0/P1 incidents"
+    ],
+    templateSnippet: `## Blameless Post-Mortem Template
+**Incident ID:** INC-8492
+**Date:** 2026-11-02
+**Impact:** 4.2% of inbound webhook emails delayed by 4 minutes.
+**Root Cause:** Redis connection pool starvation under unexpected traffic spike.
+**Preventative Actions:**
+1. Increased max idle pool size from 50 to 200.
+2. Implemented circuit breaker with fallback in-memory buffer.`
+  }
+];
+
+let activeDsaCategory = 'all';
+let activeDsaLang = 'python';
+let activeSelectedProblemId = 1;
+
+function initDsaSdlcView() {
+  renderDsaProblemsTable();
+  renderSdlcPipeline();
+  renderSdlcActiveStage(0);
+}
+
+function switchDsaSdlcTab(tab) {
+  const dsaContent = document.getElementById('section-dsa-content');
+  const sdlcContent = document.getElementById('section-sdlc-content');
+  const btnDsa = document.getElementById('tab-btn-dsa');
+  const btnSdlc = document.getElementById('tab-btn-sdlc');
+
+  if (tab === 'dsa') {
+    if (dsaContent) dsaContent.classList.remove('hidden');
+    if (sdlcContent) sdlcContent.classList.add('hidden');
+    if (btnDsa) btnDsa.className = "px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition-all flex items-center gap-1.5";
+    if (btnSdlc) btnSdlc.className = "px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
+  } else {
+    if (dsaContent) dsaContent.classList.add('hidden');
+    if (sdlcContent) sdlcContent.classList.remove('hidden');
+    if (btnDsa) btnDsa.className = "px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
+    if (btnSdlc) btnSdlc.className = "px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition-all flex items-center gap-1.5";
+  }
+}
+
+function filterDsaCategory(category) {
+  activeDsaCategory = category;
+  document.querySelectorAll('.dsa-cat-chip').forEach(chip => {
+    chip.className = "dsa-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0";
+  });
+  const target = event?.target;
+  if (target) target.className = "dsa-cat-chip px-3 py-1.5 rounded-xl bg-indigo-600 text-white shrink-0";
+  renderDsaProblemsTable();
+}
+
+function searchDsaProblems(query) {
+  const q = (query || '').toLowerCase().trim();
+  renderDsaProblemsTable(q);
+}
+
+function renderDsaProblemsTable(searchFilter = '') {
+  const tbody = document.getElementById('dsa-problems-tbody');
+  if (!tbody) return;
+
+  let problems = dsaProblemsData;
+  if (activeDsaCategory !== 'all') {
+    problems = problems.filter(p => p.category === activeDsaCategory);
+  }
+  if (searchFilter) {
+    problems = problems.filter(p => p.title.toLowerCase().includes(searchFilter) || p.companies.toLowerCase().includes(searchFilter));
+  }
+
+  if (!problems.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-xs text-slate-400">No matching DSA problems found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = problems.map(p => {
+    let diffBadge = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    if (p.difficulty === 'Medium') diffBadge = 'bg-amber-50 text-amber-700 border-amber-200';
+    if (p.difficulty === 'Hard') diffBadge = 'bg-rose-50 text-rose-700 border-rose-200';
+
+    return `
+      <tr class="hover:bg-slate-50/80 transition-colors">
+        <td class="py-3 px-4 text-center">
+          <input 
+            type="checkbox" 
+            ${p.solved ? 'checked' : ''} 
+            onchange="toggleDsaProblemSolved(${p.id})" 
+            class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 cursor-pointer"
+          />
+        </td>
+        <td class="py-3 px-4">
+          <div class="font-bold text-slate-900">${p.title}</div>
+          <div class="text-[10px] text-slate-400 font-mono">LeetCode #${p.id}</div>
+        </td>
+        <td class="py-3 px-4">
+          <span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-semibold">${p.categoryLabel}</span>
+        </td>
+        <td class="py-3 px-4">
+          <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${diffBadge}">${p.difficulty}</span>
+        </td>
+        <td class="py-3 px-4">
+          <div class="text-slate-600 text-[11px] font-medium">${p.companies}</div>
+        </td>
+        <td class="py-3 px-4 text-right">
+          <button 
+            type="button" 
+            onclick="openDsaSolutionModal(${p.id})" 
+            class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs inline-flex items-center gap-1 transition-colors"
+          >
+            <span class="material-symbols-outlined text-[16px]">terminal</span>
+            <span>View Solution</span>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function toggleDsaProblemSolved(id) {
+  const prob = dsaProblemsData.find(p => p.id === id);
+  if (prob) {
+    prob.solved = !prob.solved;
+    const solvedCount = dsaProblemsData.filter(p => p.solved).length;
+    const statSolved = document.getElementById('dsa-stat-solved');
+    if (statSolved) statSolved.textContent = `${solvedCount} / ${dsaProblemsData.length}`;
+    if (typeof showToast === 'function') {
+      showToast(prob.solved ? `Marked "${prob.title}" as Solved ✓` : `Marked "${prob.title}" as Todo`);
+    }
+  }
+}
+
+function openDsaSolutionModal(id) {
+  activeSelectedProblemId = id;
+  const prob = dsaProblemsData.find(p => p.id === id) || dsaProblemsData[0];
+  const modal = document.getElementById('modal-dsa-solution');
+  if (!modal) return;
+
+  document.getElementById('dsa-modal-title').textContent = prob.title;
+  document.getElementById('dsa-modal-category').textContent = prob.categoryLabel;
+  document.getElementById('dsa-modal-complexity').textContent = prob.complexity;
+  document.getElementById('dsa-modal-companies').textContent = `Asked at: ${prob.companies}`;
+
+  const diffBadge = document.getElementById('dsa-modal-diff-badge');
+  if (diffBadge) {
+    diffBadge.textContent = prob.difficulty;
+    diffBadge.className = prob.difficulty === 'Easy' 
+      ? 'px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold'
+      : (prob.difficulty === 'Medium' ? 'px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold');
+  }
+
+  switchDsaCodeLang(activeDsaLang);
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeDsaSolutionModal() {
+  const modal = document.getElementById('modal-dsa-solution');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function switchDsaCodeLang(lang) {
+  activeDsaLang = lang;
+  ['python', 'javascript', 'java'].forEach(l => {
+    const btn = document.getElementById(`btn-lang-${l}`);
+    if (btn) {
+      if (l === lang) {
+        btn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white";
+      } else {
+        btn.className = "px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
+      }
+    }
+  });
+
+  const prob = dsaProblemsData.find(p => p.id === activeSelectedProblemId) || dsaProblemsData[0];
+  const codeBody = document.getElementById('dsa-modal-code-body');
+  if (codeBody) {
+    codeBody.textContent = prob[lang] || prob.python;
+  }
+}
+
+function copyDsaCode() {
+  const codeBody = document.getElementById('dsa-modal-code-body');
+  if (codeBody) {
+    navigator.clipboard.writeText(codeBody.textContent).then(() => {
+      if (typeof showToast === 'function') showToast("Code copied to clipboard! 📋");
+    });
+  }
+}
+
+function renderSdlcPipeline() {
+  const container = document.getElementById('sdlc-pipeline-stepper');
+  if (!container) return;
+
+  container.innerHTML = sdlcStagesData.map((stage, idx) => `
+    <div 
+      onclick="renderSdlcActiveStage(${idx})"
+      class="p-4 rounded-2xl border border-slate-200 hover:border-indigo-400 bg-white hover:bg-indigo-50/50 cursor-pointer transition-all space-y-2 group shadow-2xs"
+    >
+      <div class="flex items-center justify-between">
+        <span class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center font-mono">${stage.number}</span>
+        <span class="material-symbols-outlined text-slate-400 group-hover:text-indigo-600 text-[18px]">${stage.icon}</span>
+      </div>
+      <div class="font-bold text-xs text-slate-900 group-hover:text-indigo-600 line-clamp-2">${stage.phase}</div>
+    </div>
+  `).join('');
+}
+
+function renderSdlcActiveStage(idx) {
+  const stage = sdlcStagesData[idx] || sdlcStagesData[0];
+  const viewer = document.getElementById('sdlc-active-stage-viewer');
+  if (!viewer) return;
+
+  viewer.innerHTML = `
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-mono font-bold">Stage ${stage.number} / 06</span>
+          <span class="text-xs text-slate-400 font-semibold">Production SDLC Standard</span>
+        </div>
+        <h4 class="font-display font-black text-xl text-slate-900">${stage.phase}</h4>
+        <p class="text-xs text-slate-600 max-w-2xl">${stage.summary}</p>
+      </div>
+
+      <button type="button" onclick="copySdlcTemplate(${idx})" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center gap-1.5 transition-colors self-start shrink-0">
+        <span class="material-symbols-outlined text-[16px]">content_copy</span>
+        <span>Copy Phase Template</span>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+      <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+        <div class="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-indigo-600 text-[18px]">verified</span>
+          <span>Core Deliverables &amp; Artifacts</span>
+        </div>
+        <ul class="space-y-1.5 text-xs text-slate-600">
+          ${stage.deliverables.map(d => `<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span><span>${d}</span></li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+        <div class="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-emerald-600 text-[18px]">fact_check</span>
+          <span>Quality Gate Checklist</span>
+        </div>
+        <ul class="space-y-1.5 text-xs text-slate-600">
+          ${stage.checklist.map(c => `<li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600 text-[16px]">check_box</span><span>${c}</span></li>`).join('')}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-4 p-4 rounded-2xl bg-slate-950 text-slate-200 space-y-2">
+      <div class="flex items-center justify-between text-xs text-slate-400 font-mono">
+        <span>Production Template / Spec Snippet</span>
+        <span class="text-emerald-400">Ready for Git repository</span>
+      </div>
+      <pre class="text-xs font-mono overflow-x-auto custom-scrollbar p-2 bg-slate-900 rounded-xl leading-relaxed"><code>${stage.templateSnippet}</code></pre>
+    </div>
+  `;
+}
+
+function copySdlcTemplate(idx) {
+  const stage = sdlcStagesData[idx] || sdlcStagesData[0];
+  navigator.clipboard.writeText(stage.templateSnippet).then(() => {
+    if (typeof showToast === 'function') showToast(`Copied ${stage.phase} template! 📋`);
+  });
+}
+
+// -----------------------------------------------------------------------------
+// 4. COMPANIES & VERIFIED HR RECRUITER DIRECTORY
+// -----------------------------------------------------------------------------
+const companiesData = [
+  // Product / MAANG Tier
+  { name: "Google", type: "product", tier: "Tier-1 MAANG", hq: "Mountain View, CA / Remote", rolesCount: 42, salaryRange: "$180k - $340k", rating: 4.5, tech: ["Go", "Python", "Kubernetes", "Borg", "Spanner"], openingsUrl: "#kanban" },
+  { name: "Stripe", type: "product", tier: "Tier-1 Fintech", hq: "San Francisco, CA / Remote", rolesCount: 28, salaryRange: "$190k - $360k", rating: 4.6, tech: ["Ruby", "Go", "Java", "Sorbet", "Kafka"], openingsUrl: "#kanban" },
+  { name: "Databricks", type: "product", tier: "Unicorn / Pre-IPO", hq: "San Francisco, CA / Hybrid", rolesCount: 35, salaryRange: "$210k - $380k", rating: 4.7, tech: ["Scala", "Python", "Spark", "Kubernetes", "AWS"], openingsUrl: "#kanban" },
+  { name: "Microsoft", type: "product", tier: "Tier-1 Tech", hq: "Redmond, WA / Remote", rolesCount: 64, salaryRange: "$165k - $310k", rating: 4.4, tech: ["C#", ".NET", "Azure", "TypeScript", "Python"], openingsUrl: "#kanban" },
+  { name: "Amazon", type: "product", tier: "Tier-1 Tech", hq: "Seattle, WA / Hybrid", rolesCount: 88, salaryRange: "$170k - $320k", rating: 4.2, tech: ["Java", "AWS", "DynamoDB", "C++", "React"], openingsUrl: "#kanban" },
+  { name: "Meta", type: "product", tier: "Tier-1 MAANG", hq: "Menlo Park, CA / Remote", rolesCount: 39, salaryRange: "$195k - $370k", rating: 4.3, tech: ["Hack", "C++", "Python", "PyTorch", "React"], openingsUrl: "#kanban" },
+  { name: "Snowflake", type: "product", tier: "Cloud Data Tier", hq: "Bozeman, MT / Remote", rolesCount: 22, salaryRange: "$185k - $330k", rating: 4.4, tech: ["C++", "Java", "FoundationDB", "AWS", "Go"], openingsUrl: "#kanban" },
+  { name: "Uber", type: "product", tier: "Tier-1 Mobility", hq: "San Francisco, CA / Hybrid", rolesCount: 31, salaryRange: "$175k - $325k", rating: 4.2, tech: ["Go", "Java", "Kafka", "Mesos", "Flink"], openingsUrl: "#kanban" },
+
+  // AI Unicorns
+  { name: "OpenAI", type: "ai", tier: "Frontier AI", hq: "San Francisco, CA", rolesCount: 18, salaryRange: "$250k - $450k", rating: 4.8, tech: ["Python", "PyTorch", "Triton", "Kubernetes", "Azure"], openingsUrl: "#kanban" },
+  { name: "Anthropic", type: "ai", tier: "Frontier AI", hq: "San Francisco, CA", rolesCount: 14, salaryRange: "$260k - $480k", rating: 4.9, tech: ["Python", "JAX", "PyTorch", "AWS", "Rust"], openingsUrl: "#kanban" },
+  { name: "Mistral AI", type: "ai", tier: "European AI", hq: "Paris / Remote", rolesCount: 12, salaryRange: "€140k - €240k", rating: 4.7, tech: ["Python", "C++", "CUDA", "vLLM", "GCP"], openingsUrl: "#kanban" },
+  { name: "Scale AI", type: "ai", tier: "AI Infrastructure", hq: "San Francisco, CA", rolesCount: 20, salaryRange: "$190k - $350k", rating: 4.5, tech: ["Python", "React", "MongoDB", "Kubernetes", "AWS"], openingsUrl: "#kanban" },
+  { name: "Cohere", type: "ai", tier: "Enterprise LLM", hq: "Toronto / San Francisco", rolesCount: 15, salaryRange: "$200k - $360k", rating: 4.6, tech: ["Python", "JAX", "C++", "Kubernetes", "GCP"], openingsUrl: "#kanban" },
+
+  // Service & Consulting Leaders
+  { name: "Tata Consultancy Services (TCS)", type: "service", tier: "Global Consulting", hq: "Mumbai / Global", rolesCount: 120, salaryRange: "₹18L - ₹45L", rating: 4.1, tech: ["Java", "Spring Boot", "Cloud Migration", "SAP", "Angular"], openingsUrl: "#kanban" },
+  { name: "Infosys", type: "service", tier: "Global Consulting", hq: "Bangalore / Global", rolesCount: 95, salaryRange: "₹16L - ₹42L", rating: 4.0, tech: [".NET", "Java", "AWS", "Microservices", "React"], openingsUrl: "#kanban" },
+  { name: "Accenture", type: "service", tier: "Global Consulting", hq: "Dublin / Global", rolesCount: 80, salaryRange: "$130k - $240k", rating: 4.2, tech: ["Salesforce", "Cloud Architecture", "Python", "Data Engineering"], openingsUrl: "#kanban" },
+  { name: "Wipro", type: "service", tier: "Global Consulting", hq: "Bangalore / Global", rolesCount: 65, salaryRange: "₹15L - ₹38L", rating: 3.9, tech: ["Java", "Oracle", "DevOps", "Cybersecurity", "Azure"], openingsUrl: "#kanban" },
+  { name: "Deloitte Digital", type: "service", tier: "Big 4 Consulting", hq: "New York / Global", rolesCount: 50, salaryRange: "$140k - $260k", rating: 4.3, tech: ["Enterprise Strategy", "Cloud Security", "Full-Stack", "AI Transformation"], openingsUrl: "#kanban" }
+];
+
+const hrRecruitersData = [
+  { id: "hr-1", name: "Jessica Campbell", title: "Senior Technical Talent Partner", company: "Stripe", domain: "Engineering & SRE", location: "San Francisco / Remote", email: "jcampbell@stripe.com", linkedin: "https://www.linkedin.com" },
+  { id: "hr-2", name: "Rohit Malhotra", title: "Director of Executive Talent Acquisition", company: "Google", domain: "Staff Architecture & Cloud", location: "Sunnyvale, CA", email: "rmalhotra@google.com", linkedin: "https://www.linkedin.com" },
+  { id: "hr-3", name: "Samantha Vance", title: "Head of Go-To-Market & RevOps Recruiting", company: "Databricks", domain: "Enterprise Sales & Marketing", location: "San Francisco, CA", email: "svance@databricks.com", linkedin: "https://www.linkedin.com" },
+  { id: "hr-4", name: "Alexandre Dupont", title: "Lead AI Research Recruiter", company: "Anthropic", domain: "LLM Safety & Alignment", location: "San Francisco / Remote", email: "adupont@anthropic.com", linkedin: "https://www.linkedin.com" },
+  { id: "hr-5", name: "Pooja Sharma", title: "Global Talent Lead - Digital & Cloud", company: "Tata Consultancy Services", domain: "Enterprise Solutions", location: "Bangalore, India", email: "psharma@tcs.com", linkedin: "https://www.linkedin.com" },
+  { id: "hr-6", name: "Michael Chang", title: "Principal Technical Headhunter", company: "Deloitte Digital", domain: "Executive Engineering", location: "New York, NY", email: "mchang@deloitte.com", linkedin: "https://www.linkedin.com" }
+];
+
+let activeCompanyCat = 'all';
+let activeSelectedRecruiter = hrRecruitersData[0];
+
+function initCompaniesHrView() {
+  renderCompaniesGrid();
+  renderHrRecruitersGrid();
+}
+
+function filterCompaniesCategory(cat) {
+  activeCompanyCat = cat;
+  document.querySelectorAll('.company-cat-chip').forEach(c => {
+    c.className = "company-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0";
+  });
+  const target = event?.target;
+  if (target) target.className = "company-cat-chip px-3 py-1.5 rounded-xl bg-emerald-600 text-white shrink-0";
+
+  const hrSection = document.getElementById('hr-recruiters-section');
+  const compGrid = document.getElementById('companies-cards-grid');
+
+  if (cat === 'hr-directory') {
+    if (compGrid) compGrid.classList.add('hidden');
+    if (hrSection) hrSection.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    if (compGrid) compGrid.classList.remove('hidden');
+    renderCompaniesGrid();
+  }
+}
+
+function filterCompaniesLocation(loc) {
+  renderCompaniesGrid();
+}
+
+function searchCompanies(query) {
+  const q = (query || '').toLowerCase().trim();
+  renderCompaniesGrid(q);
+}
+
+function renderCompaniesGrid(searchFilter = '') {
+  const grid = document.getElementById('companies-cards-grid');
+  if (!grid) return;
+
+  let companies = companiesData;
+  if (activeCompanyCat !== 'all' && activeCompanyCat !== 'hr-directory') {
+    companies = companies.filter(c => c.type === activeCompanyCat);
+  }
+  if (searchFilter) {
+    companies = companies.filter(c => c.name.toLowerCase().includes(searchFilter) || c.tech.some(t => t.toLowerCase().includes(searchFilter)));
+  }
+
+  grid.innerHTML = companies.map(c => `
+    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-4">
+      <div class="space-y-3">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white font-black text-sm flex items-center justify-center shadow-xs">
+              ${c.name.substring(0, 2).toUpperCase()}
+            </div>
+            <div>
+              <div class="font-display font-black text-slate-900 text-sm flex items-center gap-1.5">
+                <span>${c.name}</span>
+                <span class="material-symbols-outlined text-emerald-600 text-[16px]">verified</span>
+              </div>
+              <div class="text-[10px] text-slate-400 font-semibold">${c.tier}</div>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">★ ${c.rating}</span>
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <div class="text-slate-500 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px] text-slate-400">location_on</span>
+            <span>${c.hq}</span>
+          </div>
+          <div class="text-slate-700 font-semibold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px] text-emerald-600">payments</span>
+            <span>Target Comp: ${c.salaryRange}</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-1 pt-1">
+          ${c.tech.map(t => `<span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-medium">${t}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
+        <span class="font-bold text-slate-500">${c.rolesCount} Active Openings</span>
+        <div class="flex items-center gap-1.5">
+          <button 
+            type="button" 
+            onclick="switchView('kanban')" 
+            class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
+          >
+            Pipeline
+          </button>
+          <button 
+            type="button" 
+            onclick="openHrOutreachModal('hr-1')" 
+            class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors"
+          >
+            Reach Out
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderHrRecruitersGrid() {
+  const grid = document.getElementById('hr-recruiters-grid');
+  if (!grid) return;
+
+  grid.innerHTML = hrRecruitersData.map(r => `
+    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-emerald-300 transition-all space-y-3">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-600 text-white font-bold text-xs flex items-center justify-center">
+            ${r.name.split(' ').map(n=>n[0]).join('')}
+          </div>
+          <div>
+            <div class="font-bold text-xs text-slate-900 flex items-center gap-1">
+              <span>${r.name}</span>
+              <span class="material-symbols-outlined text-emerald-600 text-[15px]">verified</span>
+            </div>
+            <div class="text-[10px] text-slate-500">${r.title} @ <strong class="text-slate-800">${r.company}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-[11px] text-slate-600 space-y-0.5">
+        <div><strong>Domain:</strong> ${r.domain}</div>
+        <div><strong>Location:</strong> ${r.location}</div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-1 border-t border-slate-200">
+        <a href="${r.linkedin}" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[10px] flex items-center gap-1">
+          <span>LinkedIn ↗</span>
+        </a>
+        <button type="button" onclick="openHrOutreachModal('${r.id}')" class="flex-1 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] text-center shadow-xs">
+          1-Click Email Template
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openHrOutreachModal(recruiterId) {
+  const r = hrRecruitersData.find(x => x.id === recruiterId) || hrRecruitersData[0];
+  activeSelectedRecruiter = r;
+  const modal = document.getElementById('modal-hr-outreach');
+  if (!modal) return;
+
+  document.getElementById('hr-outreach-modal-title').textContent = `Outreach: ${r.name} @ ${r.company}`;
+  document.getElementById('hr-outreach-modal-sub').textContent = `${r.title} • ${r.domain}`;
+  document.getElementById('hr-outreach-subject').value = `Executive Application / Discussion: Senior Candidate for ${r.company} ${r.domain}`;
+  document.getElementById('hr-outreach-body').value = `Hi ${r.name.split(' ')[0]},
+
+I noticed ${r.company} is actively expanding its ${r.domain} team. With over 8+ years architecting high-scale distributed systems and driving measurable revenue outcomes, I wanted to introduce myself directly.
+
+Key Highlights:
+- Architected core microservices scaling to 2.4M DAU with 99.99% uptime
+- Cut infrastructure p99 latency by 38% via Go & Kafka event streaming
+- Spearheaded cross-functional delivery across 4 continents
+
+I would welcome a brief 10-minute introductory conversation this week.
+
+Best regards,
+Candidate Portfolio (Job Hunt Autopilot Pro)`;
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeHrOutreachModal() {
+  const modal = document.getElementById('modal-hr-outreach');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function openRecruiterLinkedIn() {
+  if (activeSelectedRecruiter && activeSelectedRecruiter.linkedin) {
+    window.open(activeSelectedRecruiter.linkedin, '_blank');
+  }
+}
+
+function copyHrOutreachEmail() {
+  const body = document.getElementById('hr-outreach-body')?.value || '';
+  navigator.clipboard.writeText(body).then(() => {
+    if (typeof showToast === 'function') showToast("Email template copied! Opening mail client... ✉️");
+    window.location.href = `mailto:${activeSelectedRecruiter.email}?subject=${encodeURIComponent(document.getElementById('hr-outreach-subject')?.value || '')}&body=${encodeURIComponent(body)}`;
+  });
+}
+
+// -----------------------------------------------------------------------------
+// 5. FREEMIUM & PREMIUM ATS RESUME & CV SUITE
+// -----------------------------------------------------------------------------
+const sampleResumes = {
+  tech: `ALEX CHEN - STAFF FULL-STACK ARCHITECT
+alex.chen@enterprise.dev | github.com/alexchen | linkedin.com/in/alexchen
+
+SUMMARY:
+Staff Systems Architect with 9+ years experience designing cloud-native microservices, high-throughput message brokers, and developer platforms. Expert in Go, Python, Kubernetes, PostgreSQL, and distributed event architectures.
+
+EXPERIENCE:
+Staff Software Engineer | CloudScale Systems (2022 - Present)
+- Architected 14 resilient REST/gRPC endpoints using Go and PostgreSQL, reducing p99 response times by 38% for 1.8M daily active users.
+- Designed distributed multi-region Kafka ingestion pipeline processing 180,000 events/sec with zero message drop.
+- Mentored 12 senior engineers across CI/CD automation, Kubernetes Helm deployments, and zero-trust mTLS security.
+
+Senior Backend Engineer | DataStream Corp (2018 - 2022)
+- Re-architected monolithic Rails backend into 8 decoupled Go microservices, saving $420,000 annually in AWS compute.
+- Implemented Redis caching tier achieving 94% cache hit ratio and mitigating database connection pool exhaustion.
+
+SKILLS:
+Go, Python, Kubernetes, Docker, PostgreSQL, Redis, Apache Kafka, Distributed Systems, System Design, CI/CD, AWS, Prometheus, Grafana.`,
+
+  sales: `MARCUS VANCE - VP OF ENTERPRISE SALES & REVOPS
+marcus.vance@revops.io | linkedin.com/in/marcusvance
+
+SUMMARY:
+Executive Revenue Leader with 12+ years driving B2B SaaS growth, pipeline velocity, and multi-million enterprise contracts. Track record of growing ARR from $12M to $48M.
+
+EXPERIENCE:
+Vice President of Enterprise Sales | CloudMatrix (2021 - Present)
+- Closed $18.4M in new enterprise ARR across Fortune 500 accounts utilizing MEDDPICC methodology.
+- Scaled field sales organization from 8 to 28 account executives while increasing quota attainment from 64% to 88%.
+- Partnered with RevOps to deploy automated Salesforce scoring pipelines, reducing sales cycle length from 145 days to 82 days.`,
+
+  hr: `SARAH LIN - HEAD OF PEOPLE & TALENT ACQUISITION
+sarah.lin@peopleops.dev | linkedin.com/in/sarahlin
+
+SUMMARY:
+Talent Executive specialized in hyper-growth tech hiring, compensation leveling, and retention programs. Scaled headcount from 80 to 450 across US and EMEA.
+
+EXPERIENCE:
+Director of Talent Acquisition | ScaleGrid (2020 - Present)
+- Built in-house sourcing and recruiting engine hiring 140+ senior technical candidates annually with 92% offer acceptance rate.
+- Reduced agency spend by 68%, saving $1.2M annually while maintaining diversity hiring goals of 44%.`
+};
+
+const sampleJds = {
+  'staff-swe': `STAFF SOFTWARE ENGINEER - DISTRIBUTED PLATFORMS
+Location: Remote / San Francisco, CA | Salary: $210,000 - $310,000 + Equity
+
+ABOUT THE ROLE:
+We are seeking a Staff Software Engineer to lead the architecture of our core financial transaction pipeline. You will be responsible for building highly reliable distributed systems, optimizing database performance, and driving engineering excellence.
+
+QUALIFICATIONS:
+- 8+ years software engineering experience in Go, Python, or Java.
+- Deep expertise in distributed systems, microservices, and database optimization (PostgreSQL, Redis).
+- Proven track record scaling containerized workloads on Kubernetes and Docker.
+- Experience with event streaming technologies (Apache Kafka) and API design (gRPC, GraphQL).
+- Strong communication and mentoring skills with proven ability to influence cross-functional roadmaps.`,
+
+  'vp-sales': `VP OF ENTERPRISE SALES - REVOPS
+Location: New York / Remote | Salary: $200,000 Base / $400,000 OTE
+
+ABOUT THE ROLE:
+Lead our global enterprise sales team closing Tier-1 accounts across banking and retail. Deep experience in MEDDPICC, contract negotiation, and sales cycle acceleration required.`
+};
+
+function initAtsToolsView() {
+  loadSampleResume('tech');
+  loadSampleJd('staff-swe');
+}
+
+function loadSampleResume(type) {
+  const el = document.getElementById('ats-resume-textarea');
+  if (el) el.value = sampleResumes[type] || sampleResumes.tech;
+}
+
+function loadSampleJd(type) {
+  const el = document.getElementById('ats-jd-textarea');
+  if (el) el.value = sampleJds[type] || sampleJds['staff-swe'];
+}
+
+function runAtsResumeScan() {
+  const resume = document.getElementById('ats-resume-textarea')?.value || '';
+  const jd = document.getElementById('ats-jd-textarea')?.value || '';
+
+  if (!resume || !jd) {
+    if (typeof showToast === 'function') showToast("Please paste both Resume text and Job Description.");
+    return;
+  }
+
+  // Calculate heuristic match score based on keyword intersection
+  const keywords = ['python', 'go', 'kubernetes', 'docker', 'postgresql', 'redis', 'kafka', 'distributed systems', 'system design', 'microservices', 'graphql', 'aws', 'ci/cd'];
+  const resumeLower = resume.toLowerCase();
+  const jdLower = jd.toLowerCase();
+
+  const matched = [];
+  const missing = [];
+
+  keywords.forEach(kw => {
+    if (jdLower.includes(kw)) {
+      if (resumeLower.includes(kw)) {
+        matched.push(kw);
+      } else {
+        missing.push(kw);
+      }
+    }
+  });
+
+  const matchRatio = matched.length / (matched.length + missing.length || 1);
+  const score = Math.min(96, Math.max(72, Math.round(matchRatio * 100)));
+
+  const scoreDisplay = document.getElementById('ats-score-display');
+  if (scoreDisplay) scoreDisplay.textContent = `${score}%`;
+
+  const statSkills = document.getElementById('ats-stat-skills');
+  if (statSkills) statSkills.textContent = `${Math.min(98, score + 4)}%`;
+
+  // Update chips
+  const matchedContainer = document.getElementById('ats-matched-chips');
+  if (matchedContainer) {
+    matchedContainer.innerHTML = (matched.length ? matched : ['Python', 'Kubernetes', 'Go', 'Microservices', 'PostgreSQL']).map(m => `
+      <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold capitalize">${m}</span>
+    `).join('');
+  }
+
+  const missingContainer = document.getElementById('ats-missing-chips');
+  if (missingContainer) {
+    missingContainer.innerHTML = (missing.length ? missing : ['GraphQL', 'Apache Kafka']).map(m => `
+      <span class="px-2 py-0.5 rounded-lg bg-rose-100 text-rose-800 text-[11px] font-semibold capitalize">${m}</span>
+    `).join('');
+  }
+
+  if (typeof showToast === 'function') {
+    showToast(`ATS Scan Complete: ${score}% Match Index ✓`);
+  }
+}
+
+function optimizeBulletWithAi() {
+  const bulletDisplay = document.getElementById('ats-optimized-bullet-text');
+  if (bulletDisplay) {
+    bulletDisplay.textContent = "Spearheaded zero-downtime database migration to distributed PostgreSQL, achieving 99.995% uptime and saving $140,000 in monthly failover costs.";
+  }
+  if (typeof showToast === 'function') {
+    showToast("Transformed into Google X-Y-Z formula bullet! ✨");
+  }
+}
+
+function copyOptimizedBullet() {
+  const bulletDisplay = document.getElementById('ats-optimized-bullet-text');
+  if (bulletDisplay) {
+    navigator.clipboard.writeText(bulletDisplay.textContent).then(() => {
+      if (typeof showToast === 'function') showToast("Copied optimized bullet to clipboard! 📋");
+    });
+  }
+}
+
+function generateCoverLetterAi() {
+  const letter = `Dear Hiring Team,
+
+I am writing to express my strong interest in the Staff Software Engineer position at your organization. Having engineered high-throughput distributed microservices for 1.8M daily active users at CloudScale Systems, I am drawn to your team's mission and engineering velocity.
+
+In my previous role, I led the architecture of 14 core Go microservices and a multi-region Kafka pipeline processing 180,000 events/sec. My focus on low latency and automated CI/CD directly aligns with your tech stack requirements.
+
+Thank you for your time and consideration.
+
+Sincerely,
+Alex Chen`;
+  navigator.clipboard.writeText(letter).then(() => {
+    if (typeof showToast === 'function') showToast("Tailored Cover Letter generated & copied to clipboard! 📋");
+  });
+}
+
+function exportAtsResume(format) {
+  if (format === 'pdf') {
+    window.print();
+  } else {
+    const resumeText = document.getElementById('ats-resume-textarea')?.value || sampleResumes.tech;
+    const blob = new Blob([resumeText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "Alex_Chen_ATS_Resume.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+    if (typeof showToast === 'function') showToast("Exported clean ATS .TXT file ✓");
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 6. COURSES & 1-ON-1 MENTORSHIP HUB
+// -----------------------------------------------------------------------------
+const coursesData = [
+  { id: "c-1", title: "DSA Zero to FAANG Staff Masterclass", hours: "65 hours", rating: 4.9, students: 2400, price: "$49 Pro", freeBadge: "Modules 1-3 Free", desc: "Covers Two Pointers, Trees, Graphs, DP, and System Design with Python, JS, and Java solutions.", tags: ["DSA", "LeetCode", "FAANG"] },
+  { id: "c-2", title: "Modern SDLC, Kubernetes & Production SRE", hours: "45 hours", rating: 4.9, students: 1850, price: "$79 Pro", freeBadge: "Module 1 Free", desc: "Hands-on labs on Docker multi-stage builds, Helm charts, ArgoCD canary releases, and Prometheus alerts.", tags: ["DevOps", "SRE", "Kubernetes"] },
+  { id: "c-3", title: "Executive RevOps & Enterprise Sales Engine", hours: "35 hours", rating: 4.8, students: 1200, price: "$59 Pro", freeBadge: "Intro Free", desc: "MEDDPICC enterprise selling, Salesforce pipeline automation, and executive compensation negotiation.", tags: ["Sales", "RevOps", "Leadership"] },
+  { id: "c-4", title: "Generative AI Engineering: Agentic Workflows & MCP", hours: "40 hours", rating: 5.0, students: 3100, price: "$89 Pro", freeBadge: "Overview Free", desc: "Build production autonomous agents using Model Context Protocol (MCP), Gemini 1.5 Flash, and Vector DBs.", tags: ["AI Agents", "MCP", "LLMs"] }
+];
+
+const mentorsData = [
+  { id: "m-1", name: "Aravind Kumar", title: "Staff Software Engineer @ Google", expertise: "System Design, L6+ Loops, Distributed Systems", rating: 4.9, sessions: 180, rate: "$150/hr or 1 Free/mo with Pro" },
+  { id: "m-2", name: "Sarah Jenkins", title: "VP of People & Talent @ ex-Stripe", expertise: "FAANG Executive Loops, Offer Negotiation", rating: 5.0, sessions: 210, rate: "$175/hr or 1 Free/mo with Pro" },
+  { id: "m-3", name: "Marcus Vance", title: "VP of Enterprise Sales @ Databricks", expertise: "B2B SaaS RevOps, Quota Attainment", rating: 4.8, sessions: 95, rate: "$140/hr or 1 Free/mo with Pro" },
+  { id: "m-4", name: "Elena Rostova", title: "Principal PMM @ Figma", expertise: "GTM Messaging, Product Portfolio Critique", rating: 4.9, sessions: 110, rate: "$130/hr or 1 Free/mo with Pro" }
+];
+
+function initCoursesMentorsView() {
+  renderCoursesCards();
+  renderMentorsCards();
+}
+
+function switchCourseMentorTab(tab) {
+  const coursesSec = document.getElementById('section-courses-content');
+  const mentorsSec = document.getElementById('section-mentors-content');
+  const btnCourses = document.getElementById('tab-btn-courses');
+  const btnMentors = document.getElementById('tab-btn-mentors');
+
+  if (tab === 'courses') {
+    if (coursesSec) coursesSec.classList.remove('hidden');
+    if (mentorsSec) mentorsSec.classList.add('hidden');
+    if (btnCourses) btnCourses.className = "px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all flex items-center gap-1.5";
+    if (btnMentors) btnMentors.className = "px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
+  } else {
+    if (coursesSec) coursesSec.classList.add('hidden');
+    if (mentorsSec) mentorsSec.classList.remove('hidden');
+    if (btnCourses) btnCourses.className = "px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
+    if (btnMentors) btnMentors.className = "px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all flex items-center gap-1.5";
+  }
+}
+
+function renderCoursesCards() {
+  const grid = document.getElementById('courses-cards-grid');
+  if (!grid) return;
+
+  grid.innerHTML = coursesData.map(c => `
+    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-4">
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px]">${c.freeBadge}</span>
+          <span class="text-xs text-amber-500 font-bold">★ ${c.rating}</span>
+        </div>
+        <h4 class="font-display font-black text-slate-900 text-sm leading-snug">${c.title}</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">${c.desc}</p>
+        <div class="flex flex-wrap gap-1 pt-1">
+          ${c.tags.map(t => `<span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-semibold">${t}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+        <div>
+          <div class="text-[10px] text-slate-400 font-bold">${c.hours}</div>
+          <div class="font-black text-slate-900">${c.price}</div>
+        </div>
+        <button type="button" onclick="openCourseEnrollModal('${c.id}')" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition-colors">
+          Enroll Now
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderMentorsCards() {
+  const grid = document.getElementById('mentors-cards-grid');
+  if (!grid) return;
+
+  grid.innerHTML = mentorsData.map(m => `
+    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-4">
+      <div class="space-y-3">
+        <div class="flex items-start justify-between">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center">
+            ${m.name.split(' ').map(n=>n[0]).join('')}
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold text-[10px]">★ ${m.rating} (${m.sessions})</span>
+        </div>
+        <div>
+          <h4 class="font-display font-black text-slate-900 text-sm">${m.name}</h4>
+          <div class="text-xs text-slate-500">${m.title}</div>
+        </div>
+        <div class="text-xs text-slate-600">
+          <strong>Focus:</strong> ${m.expertise}
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 space-y-2">
+        <div class="text-[10px] text-slate-500 font-medium">${m.rate}</div>
+        <button type="button" onclick="openMentorBookingModal('${m.id}')" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition-colors">
+          Book 1-on-1 Session
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openCourseEnrollModal(courseId) {
+  const c = coursesData.find(x => x.id === courseId) || coursesData[0];
+  if (typeof showToast === 'function') {
+    showToast(`Enrolled in "${c.title}" Free Preview! 🎉`);
+  }
+}
+
+function openMentorBookingModal(mentorId) {
+  const m = mentorsData.find(x => x.id === mentorId) || mentorsData[0];
+  const modal = document.getElementById('modal-mentor-booking');
+  if (!modal) return;
+
+  document.getElementById('mentor-modal-title').textContent = `Book Session: ${m.name}`;
+  document.getElementById('mentor-modal-subtitle').textContent = m.title;
+
+  const dateInput = document.getElementById('mentor-session-date');
+  if (dateInput) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.value = tomorrow.toISOString().split('T')[0];
+  }
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeMentorBookingModal() {
+  const modal = document.getElementById('modal-mentor-booking');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function confirmMentorBooking() {
+  closeMentorBookingModal();
+  if (typeof showToast === 'function') {
+    showToast("1-on-1 Mentorship confirmed & added to your calendar! 📅");
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 7. SUBSCRIPTIONS & WHOLE WEBSITE PRO PRICING
+// -----------------------------------------------------------------------------
+let isAnnualBilling = true;
+
+function initPricingView() {
+  updatePricingPrices();
+}
+
+function togglePricingBilling() {
+  isAnnualBilling = !isAnnualBilling;
+  const knob = document.getElementById('pricing-toggle-knob');
+  if (knob) {
+    if (isAnnualBilling) {
+      knob.className = "w-5 h-5 bg-white rounded-full transition-transform translate-x-6";
+    } else {
+      knob.className = "w-5 h-5 bg-white rounded-full transition-transform translate-x-0.5";
+    }
+  }
+  updatePricingPrices();
+}
+
+function updatePricingPrices() {
+  const proPrice = document.getElementById('pricing-pro-price');
+  const execPrice = document.getElementById('pricing-exec-price');
+
+  if (proPrice) {
+    proPrice.innerHTML = isAnnualBilling 
+      ? '$29 <span class="text-xs font-normal text-slate-300">/ month ($260/yr)</span>' 
+      : '$39 <span class="text-xs font-normal text-slate-300">/ month</span>';
+  }
+  if (execPrice) {
+    execPrice.innerHTML = isAnnualBilling 
+      ? '$79 <span class="text-xs font-normal text-slate-500">/ month ($710/yr)</span>' 
+      : '$99 <span class="text-xs font-normal text-slate-500">/ month</span>';
+  }
+}
+
+function openSubscriptionCheckout(planId) {
+  const modal = document.getElementById('modal-subscription-checkout');
+  if (!modal) return;
+
+  const nameEl = document.getElementById('checkout-plan-name');
+  const cycleEl = document.getElementById('checkout-billing-cycle');
+
+  if (planId === 'executive') {
+    if (nameEl) nameEl.textContent = "Executive & Switcher Elite Pass";
+    if (cycleEl) cycleEl.textContent = isAnnualBilling ? "Annual ($710 / year)" : "Monthly ($99 / month)";
+  } else {
+    if (nameEl) nameEl.textContent = "Pro Career Hunter Pass";
+    if (cycleEl) cycleEl.textContent = isAnnualBilling ? "Annual ($260 / year)" : "Monthly ($39 / month)";
+  }
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeSubscriptionCheckout() {
+  const modal = document.getElementById('modal-subscription-checkout');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function processSubscriptionPayment() {
+  const btn = document.getElementById('btn-process-checkout');
+  if (btn) btn.textContent = "Verifying Card...";
+
+  setTimeout(() => {
+    closeSubscriptionCheckout();
+    if (btn) btn.textContent = "Activate Subscription 🚀";
+
+    // Set pro status in localStorage
+    localStorage.setItem('autopilot_pro_tier', 'PRO');
+    
+    // Elevate UI user badge
+    const badge = document.getElementById('header-user-avatar');
+    if (badge) badge.textContent = "PRO";
+
+    if (typeof triggerConfetti === 'function') {
+      try { triggerConfetti(); } catch (e) {}
+    }
+
+    if (typeof showToast === 'function') {
+      showToast("Subscription Activated! Unlimited Pro Tools Unlocked 🌟");
+    }
+
+    setTimeout(() => switchView('kanban'), 400);
+  }, 700);
+}
+
+// -----------------------------------------------------------------------------
+// 8. AI & NEW TECH RADAR LOGS
+// -----------------------------------------------------------------------------
+const aiRadarLogsData = [
+  {
+    id: "mcp-agents",
+    title: "Model Context Protocol (MCP): The Universal Bridge for Autonomous Agentic Tooling",
+    tag: "Agentic MCP",
+    readTime: "8 min read",
+    author: "Staff AI Architect",
+    date: "November 2026",
+    excerpt: "Why MCP is replacing ad-hoc REST function calling in enterprise agents, enabling seamless discovery of databases, IDEs, and browser environments.",
+    content: `
+      <p class="font-bold text-slate-900">The Rise of Model Context Protocol</p>
+      <p>As enterprise AI moves from single-turn chat completion to autonomous multi-agent pipelines, tool coordination becomes the primary operational bottleneck. The Model Context Protocol (MCP) establishes an open, JSON-RPC 2.0 based standard for decoupling model inference from localized tools, filesystem sandboxes, and cloud databases.</p>
+      
+      <p class="font-bold text-slate-900 mt-3">Architectural Pillars of MCP:</p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li><strong>Unified Discovery:</strong> Standardized endpoints for inspecting tools, resources, and prompt templates without hardcoding model capabilities.</li>
+        <li><strong>Stateful Sidecars:</strong> Agents connect to local or remote servers over stdio or Streamable HTTP/SSE with end-to-end security envelopes.</li>
+        <li><strong>Safe Autonomy:</strong> Guardrails around destructive operations (accidental data loss prevention, rate limit throttling, and zero-trust credentials).</li>
+      </ul>
+
+      <pre class="bg-slate-900 text-emerald-400 p-3 rounded-xl font-mono text-xs mt-3"><code>// Example MCP Tool Registration
+{
+  "name": "query_recruiter_pipeline",
+  "description": "Searches verified candidate database by match score",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "min_ats_score": { "type": "number" },
+      "role": { "type": "string" }
+    }
+  }
+}</code></pre>
+    `
+  },
+  {
+    id: "gemini-flash",
+    title: "Gemini 1.5 Pro & Flash: Million-Token Multimodal Pipelines in Production",
+    tag: "Gemini & LLMs",
+    readTime: "6 min read",
+    author: "Principal ML Engineer",
+    date: "October 2026",
+    excerpt: "Harnessing 1M+ token context windows for whole-codebase AST parsing, exhaustive resume parsing, and multimodal video interview feedback.",
+    content: `
+      <p class="font-bold text-slate-900">Million-Token Context In Practice</p>
+      <p>Rather than chunking resumes and losing semantic cross-references across a candidate's 10-year career, Gemini 1.5 Flash ingests entire candidate portfolios, GitHub repos, and multi-page patent filings in a single forward pass with near-perfect needle-in-a-haystack recall.</p>
+    `
+  },
+  {
+    id: "ats-embeddings",
+    title: "The 2026 AI-Powered ATS Revolution: How Embeddings Beat Traditional Keyword Matchers",
+    tag: "ATS Algorithms",
+    readTime: "7 min read",
+    author: "Executive Talent Partner",
+    date: "October 2026",
+    excerpt: "How modern applicant tracking systems leverage dense semantic vector embeddings to rank candidates based on capability rather than verbatim keyword stuffing.",
+    content: `
+      <p class="font-bold text-slate-900">Beyond Keyword Stuffing</p>
+      <p>Traditional regex ATS tools look for exact string matches like 'Kubernetes' or 'React'. Modern 2026 enterprise engines project candidate resumes into dense vector spaces, measuring conceptual similarity between project achievements and job requirements.</p>
+    `
+  },
+  {
+    id: "canary-sre",
+    title: "Production SRE: Zero-Downtime Canary Deployments with Kubernetes and Envoy",
+    tag: "DevOps & SRE",
+    readTime: "9 min read",
+    author: "Lead Infrastructure SRE",
+    date: "September 2026",
+    excerpt: "Step-by-step blueprint for deploying high-concurrency microservices with progressive traffic shifting and automated metric rollbacks.",
+    content: `
+      <p class="font-bold text-slate-900">Zero-Downtime Production Engineering</p>
+      <p>Discover how Argo Rollouts and Envoy proxy route 10% of real candidate traffic to canary pods, continuously evaluating p99 latency against Prometheus metrics before promoting to 100%.</p>
+    `
+  }
+];
+
+let activeAiRadarCategory = 'all';
+
+function initAiRadarView() {
+  renderAiRadarCards();
+}
+
+function filterAiRadar(tag) {
+  activeAiRadarCategory = tag;
+  document.querySelectorAll('.ai-cat-chip').forEach(c => {
+    c.className = "ai-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0";
+  });
+  const target = event?.target;
+  if (target) target.className = "ai-cat-chip px-3 py-1.5 rounded-xl bg-cyan-600 text-white shrink-0";
+  renderAiRadarCards();
+}
+
+function searchAiRadar(query) {
+  const q = (query || '').toLowerCase().trim();
+  renderAiRadarCards(q);
+}
+
+function renderAiRadarCards(searchFilter = '') {
+  const grid = document.getElementById('ai-radar-cards-grid');
+  if (!grid) return;
+
+  let logs = aiRadarLogsData;
+  if (activeAiRadarCategory !== 'all') {
+    logs = logs.filter(l => l.tag.toLowerCase().includes(activeAiRadarCategory));
+  }
+  if (searchFilter) {
+    logs = logs.filter(l => l.title.toLowerCase().includes(searchFilter) || l.excerpt.toLowerCase().includes(searchFilter));
+  }
+
+  grid.innerHTML = logs.map(l => `
+    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-4">
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 font-bold text-[10px]">#${l.tag}</span>
+          <span class="text-xs text-slate-400 font-mono">${l.readTime}</span>
+        </div>
+        <h4 class="font-display font-black text-slate-900 text-sm leading-snug">${l.title}</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">${l.excerpt}</p>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+        <span class="text-[10px] text-slate-400">${l.author} • ${l.date}</span>
+        <button type="button" onclick="openAiLogReaderModal('${l.id}')" class="px-3.5 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-800 font-bold text-xs transition-colors">
+          Read Log ↗
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAiLogReaderModal(logId) {
+  const l = aiRadarLogsData.find(x => x.id === logId) || aiRadarLogsData[0];
+  const modal = document.getElementById('modal-ai-log-reader');
+  if (!modal) return;
+
+  document.getElementById('ai-log-modal-title').textContent = l.title;
+  document.getElementById('ai-log-modal-tag').textContent = `#${l.tag}`;
+  document.getElementById('ai-log-modal-time').textContent = `${l.readTime} • ${l.author}`;
+  document.getElementById('ai-log-modal-content').innerHTML = l.content;
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeAiLogReaderModal() {
+  const modal = document.getElementById('modal-ai-log-reader');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 9. EXTENDED HASH ROUTING
+// -----------------------------------------------------------------------------
+const originalCheckAuthHashRouting = window.checkAuthHashRouting;
+function checkExtendedHashRouting() {
+  const hash = (window.location.hash || '').toLowerCase();
+  if (hash === '#dsa' || hash === '#sdlc') {
+    switchView('dsa-sdlc');
+    if (hash === '#sdlc') switchDsaSdlcTab('sdlc');
+  } else if (hash === '#companies' || hash === '#hr' || hash === '#recruiters') {
+    switchView('companies-hr');
+    if (hash === '#hr' || hash === '#recruiters') filterCompaniesCategory('hr-directory');
+  } else if (hash === '#ats' || hash === '#cv') {
+    switchView('ats-tools');
+  } else if (hash === '#courses' || hash === '#mentors') {
+    switchView('courses-mentors');
+    if (hash === '#mentors') switchCourseMentorTab('mentors');
+  } else if (hash === '#pricing' || hash === '#plans' || hash === '#subscription') {
+    switchView('pricing');
+  } else if (hash === '#airadar' || hash === '#ai-radar' || hash === '#techradar') {
+    switchView('ai-radar');
+  } else if (typeof checkAuthHashRouting === 'function') {
+    checkAuthHashRouting();
+  }
+}
+
+window.addEventListener('hashchange', checkExtendedHashRouting);
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    updateNotificationBadge();
+    checkExtendedHashRouting();
+  }, 250);
+});
 

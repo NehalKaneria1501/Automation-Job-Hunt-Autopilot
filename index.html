@@ -64,6 +64,40 @@
   </script>
 
   <style>
+
+    /* Smooth Scrolling & Unified Scrollbar Fixes */
+    html {
+      scroll-behavior: smooth !important;
+      scroll-padding-top: 5rem !important;
+    }
+    body {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    #desktop-app-header {
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+
     body { background-color: #F8F9FF; font-family: 'Manrope', sans-serif; }
     h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
     .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -401,7 +435,74 @@
                 <div class="text-[10px] text-slate-500">RFC822 parser logs &amp; telemetry stream</div>
               </div>
             </button>
-          </div>
+          
+            <!-- New Hubs: DSA/SDLC, Companies/HR, ATS Suite, Courses, Pricing, AI Radar -->
+            <button type="button" onclick="switchView('dsa-sdlc'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">developer_mode</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>DSA &amp; SDLC Lifecycle</span>
+                  <span class="px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 text-[9px] font-bold">New</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Problem bank, solutions &amp; 6-phase engineering lifecycle</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="switchView('companies-hr'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">corporate_fare</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Companies &amp; HR Directory</span>
+                  <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold">50+ Firms</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Product, Service, AI Unicorns &amp; direct recruiter contacts</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="switchView('ats-tools'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">find_in_page</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>ATS &amp; CV Tools</span>
+                  <span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold">Free + Pro</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Resume score scanner, X-Y-Z bullet rewriter &amp; PDF export</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="switchView('courses-mentors'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">school</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Courses &amp; 1-on-1 Mentorship</span>
+                  <span class="px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 text-[9px] font-bold">Top Staff</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Paid/Free masterclasses &amp; 1-on-1 mock interview coaching</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="switchView('pricing'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">loyalty</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Subscriptions &amp; Plans</span>
+                  <span class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 text-[9px] font-bold">Pro / Exec</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Tiered tool suite, unlimited scans &amp; referral passes</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="switchView('ai-radar'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">psychology</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>AI &amp; Tech Radar Logs</span>
+                  <span class="px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 text-[9px] font-bold">Engineering</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Agentic MCP, Gemini Flash, DeepSeek &amp; Modern Architecture</div>
+              </div>
+            </button>
+</div>
         </div>
 
         <!-- DROPDOWN 2: AI Copilot & Tools -->
@@ -494,6 +595,86 @@
       <!-- RIGHT: Action Buttons, Reset Demo, Profile & Viewport Toggle -->
       <div class="flex items-center gap-1.5 sm:gap-2">
         
+        
+        <!-- UNIFIED GLOBAL SEARCH BAR (Desktop) -->
+        <div class="relative hidden xl:flex items-center flex-1 max-w-xs xl:max-w-sm mx-1">
+          <div class="relative w-full">
+            <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+              <span class="material-symbols-outlined text-[17px]">search</span>
+            </span>
+            <input 
+              type="text" 
+              id="header-global-search-input" 
+              onfocus="openGlobalSearchDropdown()" 
+              oninput="handleGlobalSearch(this.value)" 
+              placeholder="Search companies, HR, DSA, tools, courses... (Ctrl+K)" 
+              class="w-full pl-8 pr-14 py-1.5 bg-slate-100 hover:bg-slate-100/80 focus:bg-white text-xs font-medium text-slate-900 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all outline-none"
+            />
+            <span class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+              <kbd class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-slate-400 bg-white border border-slate-200 rounded shadow-2xs">Ctrl K</kbd>
+            </span>
+          </div>
+
+          <!-- Instant Search Suggestions Dropdown Overlay -->
+          <div id="header-search-dropdown" class="hidden absolute top-10 left-0 right-0 z-50 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 max-h-96 overflow-y-auto custom-scrollbar flex-col gap-2">
+            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+              <span>Quick Suggestions</span>
+              <span class="text-[9px] text-indigo-600 font-mono">Real-time</span>
+            </div>
+            <div id="header-search-results-list" class="space-y-1">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Global Search Trigger (Tablet & Mobile) -->
+        <button 
+          type="button" 
+          onclick="openGlobalSearchModal()" 
+          title="Search Cockpit (Ctrl+K)" 
+          class="xl:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[18px]">search</span>
+        </button>
+
+        <!-- HEADER NOTIFICATIONS BELL & LIVE ACTIVITY FEED -->
+        <div class="relative">
+          <button 
+            type="button" 
+            id="header-notification-btn" 
+            onclick="toggleNotificationsDropdown()" 
+            class="relative p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors" 
+            title="Recruiter Activity & System Alerts"
+          >
+            <span class="material-symbols-outlined text-[19px]">notifications</span>
+            <span id="header-notification-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-black flex items-center justify-center border-2 border-white shadow-xs">4</span>
+          </button>
+
+          <!-- Notifications Dropdown Overlay -->
+          <div id="header-notifications-dropdown" class="hidden absolute right-0 top-11 z-50 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3.5 flex-col gap-2.5">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-slate-900 font-display">Recruiter &amp; Career Alerts</span>
+                <span class="px-1.5 py-0.2 rounded-full bg-indigo-50 text-indigo-700 font-bold text-[9px]">Live ⚡</span>
+              </div>
+              <button type="button" onclick="markAllNotificationsRead()" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800">Mark all read</button>
+            </div>
+
+            <!-- Categories -->
+            <div class="flex items-center gap-1 text-[10px] font-bold pb-1 overflow-x-auto">
+              <button type="button" onclick="filterNotifications('all')" id="notif-tab-all" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white shrink-0">All (4)</button>
+              <button type="button" onclick="filterNotifications('recruiter')" id="notif-tab-recruiter" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0">Recruiters</button>
+              <button type="button" onclick="filterNotifications('ats')" id="notif-tab-ats" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0">ATS / CV</button>
+              <button type="button" onclick="filterNotifications('ai')" id="notif-tab-ai" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0">AI Radar</button>
+            </div>
+
+            <!-- Notification Items List -->
+            <div id="notifications-items-container" class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
         <!-- PROMINENT DIRECT "RESET WEBSITE" BUTTON TO ATTRACT PROFESSIONALS -->
         <button 
           type="button" 
@@ -588,14 +769,14 @@
         <div id="header-auth-logged-out" class="hidden items-center gap-2">
           <button 
             type="button" 
-            onclick="openAuthModal('signin')" 
+            onclick="navigateToAuth('signin')" 
             class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all"
           >
             Sign In
           </button>
           <button 
             type="button" 
-            onclick="openAuthModal('signup')" 
+            onclick="navigateToAuth('signup')" 
             class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all active:scale-95"
           >
             Sign Up
@@ -755,11 +936,15 @@
         </div>
 
         <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+          <button type="button" onclick="navigateToAuth('signin'); toggleMobileActionsDrawer(false);" class="flex-1 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 font-bold flex items-center justify-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-[16px] text-indigo-600">badge</span>
+            <span>Candidate Auth</span>
+          </button>
           <button type="button" onclick="openResetWebsiteModal(); toggleMobileActionsDrawer(false);" class="flex-1 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold flex items-center justify-center gap-1.5 transition-colors">
             <span class="material-symbols-outlined text-[16px] text-amber-600">restart_alt</span>
             <span>Reset Demo</span>
           </button>
-          <button type="button" onclick="toggleMobileActionsDrawer(false)" class="flex-1 py-2 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors">
+          <button type="button" onclick="toggleMobileActionsDrawer(false)" class="px-3 py-2 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors">
             Close
           </button>
         </div>
@@ -2694,6 +2879,1263 @@
 
       </div>
 
+
+      <!-- ========================================================================= -->
+      <!-- VIEW: DEDICATED SIGN IN, SIGN OUT & CANDIDATE IDENTITY PORTAL -->
+      
+      <!-- ========================================================================= -->
+      <!-- VIEW: DSA & SDLC ENGINEERING LIFECYCLE HUB -->
+      <!-- ========================================================================= -->
+      <div id="view-dsa-sdlc" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                <span>Engineering Cockpit • v4.2</span>
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">FAANG / MAANG Tested</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black font-display text-white tracking-tight flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[26px] text-purple-400">developer_mode</span>
+              <span>DSA Mastery &amp; Full SDLC Life Cycle Navigator</span>
+            </h1>
+            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Curated Data Structures &amp; Algorithms problem bank with multi-language solutions, alongside the interactive 6-Phase Software Development Life Cycle &amp; SRE pipeline.
+            </p>
+          </div>
+
+          <!-- Quick Toggle between DSA and SDLC -->
+          <div class="flex items-center gap-2 p-1 bg-slate-800/90 rounded-2xl border border-slate-700/80 shrink-0">
+            <button type="button" onclick="switchDsaSdlcTab('dsa')" id="tab-btn-dsa" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition-all flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">psychology</span>
+              <span>DSA Problem Bank</span>
+            </button>
+            <button type="button" onclick="switchDsaSdlcTab('sdlc')" id="tab-btn-sdlc" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">sync_alt</span>
+              <span>SDLC 6-Phase Life Cycle</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SECTION A: DSA PROBLEM BANK (Default) -->
+        <div id="section-dsa-content" class="flex flex-col gap-6">
+          <!-- DSA Progress Stats Bar -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                <span class="material-symbols-outlined">checklist</span>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase text-slate-400">Solved / Total</div>
+                <div class="text-lg font-black text-slate-900" id="dsa-stat-solved">48 / 150</div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm">
+                <span class="material-symbols-outlined">trending_up</span>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase text-slate-400">Easy (Mastered)</div>
+                <div class="text-lg font-black text-emerald-600" id="dsa-stat-easy">24 / 45</div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm">
+                <span class="material-symbols-outlined">speed</span>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase text-slate-400">Medium (Interview)</div>
+                <div class="text-lg font-black text-amber-600" id="dsa-stat-med">18 / 75</div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-sm">
+                <span class="material-symbols-outlined">military_tech</span>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase text-slate-400">Hard (Staff Level)</div>
+                <div class="text-lg font-black text-rose-600" id="dsa-stat-hard">6 / 30</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DSA Filter & Search Toolbar -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 text-xs font-bold custom-scrollbar" id="dsa-category-chips">
+              <button type="button" onclick="filterDsaCategory('all')" class="dsa-cat-chip px-3 py-1.5 rounded-xl bg-indigo-600 text-white shrink-0">All Topics (150)</button>
+              <button type="button" onclick="filterDsaCategory('arrays')" class="dsa-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Arrays &amp; Strings</button>
+              <button type="button" onclick="filterDsaCategory('sliding-window')" class="dsa-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Two Pointers &amp; Sliding Window</button>
+              <button type="button" onclick="filterDsaCategory('trees-graphs')" class="dsa-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Trees &amp; Graphs</button>
+              <button type="button" onclick="filterDsaCategory('dp')" class="dsa-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Dynamic Programming</button>
+              <button type="button" onclick="filterDsaCategory('system-design')" class="dsa-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">System Design (HLD/LLD)</button>
+              <button type="button" onclick="filterDsaCategory('sql')" class="dsa-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">SQL &amp; Database</button>
+            </div>
+
+            <div class="relative w-full md:w-64">
+              <input 
+                type="text" 
+                id="dsa-search-input" 
+                oninput="searchDsaProblems(this.value)" 
+                placeholder="Search problem or company..." 
+                class="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              />
+              <span class="material-symbols-outlined absolute left-2.5 top-2 text-[16px] text-slate-400">search</span>
+            </div>
+          </div>
+
+          <!-- DSA Problems Table -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase font-bold text-[10px] tracking-wider">
+                    <th class="py-3 px-4 w-12 text-center">Status</th>
+                    <th class="py-3 px-4">Problem Name &amp; LeetCode ID</th>
+                    <th class="py-3 px-4">Category</th>
+                    <th class="py-3 px-4">Difficulty</th>
+                    <th class="py-3 px-4">Top Hiring Companies</th>
+                    <th class="py-3 px-4 text-right">Interactive Code Solution</th>
+                  </tr>
+                </thead>
+                <tbody id="dsa-problems-tbody" class="divide-y divide-slate-100">
+                  <!-- Rendered dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION B: SDLC 6-PHASE LIFE CYCLE (Toggled) -->
+        <div id="section-sdlc-content" class="hidden flex-col gap-6">
+          <!-- 6-Phase Pipeline Stepper / Visual Diagram -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-display font-black text-slate-900 text-base flex items-center gap-2">
+                  <span class="material-symbols-outlined text-indigo-600">account_tree</span>
+                  <span>End-to-End Enterprise Software Engineering Life Cycle</span>
+                </h3>
+                <p class="text-xs text-slate-500">Click any stage below to inspect deliverables, architecture checklists, and production templates.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200">Production SRE Compliant</span>
+            </div>
+
+            <!-- Pipeline Visual Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-2" id="sdlc-pipeline-stepper">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Active SDLC Stage Detail Viewer -->
+          <div id="sdlc-active-stage-viewer" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ========================================================================= -->
+      <!-- VIEW: COMPANIES & VERIFIED HR DIRECTORY -->
+      <!-- ========================================================================= -->
+      <div id="view-companies-hr" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>Verified Direct Reachout • 50+ Enterprises</span>
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Zero Agency Spam</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black font-display text-white tracking-tight flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[26px] text-emerald-400">corporate_fare</span>
+              <span>Enterprise Companies &amp; Verified HR Directory</span>
+            </h1>
+            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Explore Tier-1 Product Giants, AI Unicorns, and Global Consulting Leaders with direct links to active openings and verified Talent Acquisition contacts.
+            </p>
+          </div>
+
+          <!-- Quick Stats Badge -->
+          <div class="flex items-center gap-3 bg-slate-800/80 p-3 rounded-2xl border border-slate-700 text-xs shrink-0">
+            <div>
+              <div class="text-[10px] text-slate-400 font-bold uppercase">Open Requisitions</div>
+              <div class="text-base font-black text-emerald-400">1,420+ Roles</div>
+            </div>
+            <div class="w-px h-8 bg-slate-700"></div>
+            <div>
+              <div class="text-[10px] text-slate-400 font-bold uppercase">HR Contacts</div>
+              <div class="text-base font-black text-white">45 Verified</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Bar & Search Toolbar -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 text-xs font-bold custom-scrollbar" id="companies-category-chips">
+            <button type="button" onclick="filterCompaniesCategory('all')" class="company-cat-chip px-3 py-1.5 rounded-xl bg-emerald-600 text-white shrink-0">All Entities (50+)</button>
+            <button type="button" onclick="filterCompaniesCategory('product')" class="company-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Product &amp; MAANG</button>
+            <button type="button" onclick="filterCompaniesCategory('ai')" class="company-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">AI Startups &amp; Unicorns</button>
+            <button type="button" onclick="filterCompaniesCategory('service')" class="company-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Service &amp; Consulting</button>
+            <button type="button" onclick="filterCompaniesCategory('hr-directory')" class="company-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Verified HR Contacts (15)</button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <select id="company-location-select" onchange="filterCompaniesLocation(this.value)" class="bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <option value="all">All Locations</option>
+              <option value="remote">US Remote</option>
+              <option value="india">India (BLR / HYD / PUN)</option>
+              <option value="europe">Europe / UK</option>
+              <option value="singapore">Singapore / APAC</option>
+            </select>
+            <div class="relative w-full md:w-56">
+              <input 
+                type="text" 
+                id="companies-search-input" 
+                oninput="searchCompanies(this.value)" 
+                placeholder="Search firm, recruiter, tech..." 
+                class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+              />
+              <span class="material-symbols-outlined absolute left-2.5 top-2 text-[16px] text-slate-400">search</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Companies Grid Container -->
+        <div id="companies-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Rendered dynamically via JS -->
+        </div>
+
+        <!-- HR Recruiter Directory Section (Toggled or embedded) -->
+        <div id="hr-recruiters-section" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-black text-slate-900 text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-emerald-600">badge</span>
+                <span>Verified Talent Acquisition &amp; Executive Recruiters</span>
+              </h3>
+              <p class="text-xs text-slate-500">Direct 1-click email templates and LinkedIn connections with verified in-house talent teams.</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold text-xs border border-indigo-200">100% Verified In-House</span>
+          </div>
+
+          <div id="hr-recruiters-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-2">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ========================================================================= -->
+      <!-- VIEW: FREEMIUM & PREMIUM ATS RESUME & CV SUITE -->
+      <!-- ========================================================================= -->
+      <div id="view-ats-tools" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-amber-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                <span>AI Resume Intelligence • Free &amp; Pro</span>
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Greenhouse / Lever / Workday Calibrated</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black font-display text-white tracking-tight flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[26px] text-amber-400">find_in_page</span>
+              <span>ATS Resume Scanner &amp; Google X-Y-Z Bullet Optimizer</span>
+            </h1>
+            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Scan your CV against any job requisition in seconds. Analyze keyword gaps, formatting parseability, and transform passive bullet points into quantifiable executive achievements.
+            </p>
+          </div>
+
+          <!-- Free vs Pro Value Pill -->
+          <div class="flex items-center gap-2 bg-slate-800/80 p-2 rounded-2xl border border-slate-700 text-xs shrink-0">
+            <span class="px-2.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 font-bold">Freemium: 3 Scans/Day</span>
+            <span class="px-2.5 py-1 rounded-xl bg-indigo-600 text-white font-bold cursor-pointer hover:bg-indigo-700" onclick="switchView('pricing')">Pro: Unlimited Scans ↗</span>
+          </div>
+        </div>
+
+        <!-- ATS Workbench: Resume Text & Job Description Inputs -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Left: Resume Input -->
+          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <span class="font-display font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-indigo-600 text-[18px]">description</span>
+                <span>Your Resume / CV Content</span>
+              </span>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="loadSampleResume('tech')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold">Tech Sample</button>
+                <button type="button" onclick="loadSampleResume('sales')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold">Sales Sample</button>
+                <button type="button" onclick="loadSampleResume('hr')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold">HR Sample</button>
+              </div>
+            </div>
+            <textarea 
+              id="ats-resume-textarea" 
+              rows="9" 
+              placeholder="Paste your resume markdown, plain text or bullets here..." 
+              class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 custom-scrollbar resize-none"
+            ></textarea>
+          </div>
+
+          <!-- Right: Job Description Input -->
+          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <span class="font-display font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-amber-600 text-[18px]">work</span>
+                <span>Target Job Description (JD)</span>
+              </span>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="loadSampleJd('staff-swe')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold">Staff SWE JD</button>
+                <button type="button" onclick="loadSampleJd('vp-sales')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold">VP Sales JD</button>
+              </div>
+            </div>
+            <textarea 
+              id="ats-jd-textarea" 
+              rows="9" 
+              placeholder="Paste the target job description requirements, qualifications and responsibilities..." 
+              class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 custom-scrollbar resize-none"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex items-center justify-center">
+          <button 
+            type="button" 
+            onclick="runAtsResumeScan()" 
+            class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 via-indigo-600 to-purple-600 hover:from-amber-500 hover:to-purple-500 text-white font-black text-sm shadow-xl shadow-indigo-600/25 flex items-center gap-2.5 transition-all transform active:scale-95"
+          >
+            <span class="material-symbols-outlined text-[20px]">troubleshoot</span>
+            <span>Run Deep ATS Match Audit &amp; Score Calculation</span>
+          </button>
+        </div>
+
+        <!-- Live Scan Results Dashboard -->
+        <div id="ats-results-container" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h3 class="font-display font-black text-slate-900 text-lg flex items-center gap-2">
+                <span class="material-symbols-outlined text-emerald-600">verified</span>
+                <span>ATS Compatibility Scorecard &amp; Keyword Gap Report</span>
+              </h3>
+              <p class="text-xs text-slate-500">Benchmark results calculated using Enterprise ATS heuristic parsers.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="text-right">
+                <div class="text-[10px] font-bold uppercase text-slate-400">Match Index</div>
+                <div class="text-2xl font-black text-emerald-600 font-display" id="ats-score-display">88%</div>
+              </div>
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 font-bold text-lg">
+                <span class="material-symbols-outlined">donut_large</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 Score Breakdown Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                <span>Hard Skills Overlap</span>
+                <span class="text-emerald-600" id="ats-stat-skills">91%</span>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div class="bg-emerald-500 h-2 rounded-full" style="width: 91%"></div>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-2">14 of 16 critical core technologies detected.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                <span>Quantifiable Impact</span>
+                <span class="text-indigo-600" id="ats-stat-impact">85%</span>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div class="bg-indigo-600 h-2 rounded-full" style="width: 85%"></div>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-2">7 metrics ($ revenue, %, latency) present.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                <span>Formatting &amp; Parseability</span>
+                <span class="text-purple-600" id="ats-stat-format">95%</span>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div class="bg-purple-600 h-2 rounded-full" style="width: 95%"></div>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-2">Zero unparseable tables or textboxes.</p>
+            </div>
+          </div>
+
+          <!-- Keywords Analysis Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Matched Skills -->
+            <div class="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-200/60 space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-900">
+                <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-emerald-600 text-[18px]">check_circle</span> Matched Target Skills</span>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px]">14 Found</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5 pt-1" id="ats-matched-chips">
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold">Python</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold">Kubernetes</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold">Distributed Systems</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold">Microservices</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold">System Design</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold">PostgreSQL</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold">CI/CD</span>
+              </div>
+            </div>
+
+            <!-- Missing Skills -->
+            <div class="p-4 rounded-2xl bg-rose-50/50 border border-rose-200/60 space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold text-rose-900">
+                <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-rose-600 text-[18px]">cancel</span> Missing Target Skills (Inject These)</span>
+                <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px]">2 Gaps</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5 pt-1" id="ats-missing-chips">
+                <span class="px-2 py-0.5 rounded-lg bg-rose-100 text-rose-800 text-[11px] font-semibold">GraphQL</span>
+                <span class="px-2 py-0.5 rounded-lg bg-rose-100 text-rose-800 text-[11px] font-semibold">Apache Kafka</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRO Tool: AI Google X-Y-Z Bullet Optimizer -->
+          <div class="bg-gradient-to-r from-indigo-50 via-purple-50 to-indigo-50 p-5 rounded-3xl border border-indigo-200 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-indigo-600 text-white font-bold text-[9px] uppercase tracking-wider">PRO AI Tool</span>
+                <h4 class="font-display font-black text-slate-900 text-sm">Google X-Y-Z Formula Bullet Optimizer</h4>
+              </div>
+              <span class="text-[11px] text-indigo-700 font-bold">"Accomplished [X], as measured by [Y], by doing [Z]"</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div class="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
+                <div class="text-[10px] font-bold uppercase text-slate-400">Before (Weak &amp; Passive)</div>
+                <p class="text-slate-600 italic">"Responsible for managing backend APIs, bug fixes, and improving database queries."</p>
+              </div>
+
+              <div class="p-3 bg-white rounded-xl border border-indigo-300 shadow-xs space-y-1">
+                <div class="text-[10px] font-bold uppercase text-indigo-600 flex items-center justify-between">
+                  <span>After (Executive Google X-Y-Z)</span>
+                  <button type="button" onclick="copyOptimizedBullet()" class="text-indigo-600 hover:text-indigo-800 font-bold text-[10px]">Copy 📋</button>
+                </div>
+                <p class="text-slate-900 font-semibold" id="ats-optimized-bullet-text">"Architected 14 resilient REST/gRPC endpoints using Go and PostgreSQL, reducing p99 response times by 38% for 1.8M daily active users."</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-1">
+              <button type="button" onclick="optimizeBulletWithAi()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">auto_fix_high</span>
+                <span>Optimize My Current Resume Bullets</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Export & Tailored Cover Letter Actions -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <button type="button" onclick="generateCoverLetterAi()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-[16px] text-indigo-600">edit_note</span>
+              <span>Generate 1-Click Tailored Cover Letter</span>
+            </button>
+
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="exportAtsResume('txt')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 transition-colors">
+                <span class="material-symbols-outlined text-[16px]">download</span>
+                <span>Export Clean .TXT</span>
+              </button>
+              <button type="button" onclick="exportAtsResume('pdf')" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1 transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+                <span>Export ATS-Optimized PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ========================================================================= -->
+      <!-- VIEW: COURSES & 1-ON-1 MENTORSHIP HUB -->
+      <!-- ========================================================================= -->
+      <div id="view-courses-mentors" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
+                <span>FAANG &amp; Executive Mentorship • v3.8</span>
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">100% Verified Industry Staff</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black font-display text-white tracking-tight flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[26px] text-blue-400">school</span>
+              <span>Paid &amp; Free Masterclasses and 1-on-1 Industry Mentorship</span>
+            </h1>
+            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Accelerate your hiring velocity with deep-dive courses on DSA, SDLC, RevOps, and Generative AI, or schedule private 1-on-1 mock interviews with Staff Engineers and Talent Directors.
+            </p>
+          </div>
+
+          <!-- Switcher between Courses and Mentors -->
+          <div class="flex items-center gap-2 p-1 bg-slate-800/90 rounded-2xl border border-slate-700/80 shrink-0">
+            <button type="button" onclick="switchCourseMentorTab('courses')" id="tab-btn-courses" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">play_lesson</span>
+              <span>Masterclasses</span>
+            </button>
+            <button type="button" onclick="switchCourseMentorTab('mentors')" id="tab-btn-mentors" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">support_agent</span>
+              <span>1-on-1 Mentors</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SECTION A: COURSES DIRECTORY -->
+        <div id="section-courses-content" class="flex flex-col gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="courses-cards-grid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- SECTION B: 1-ON-1 MENTORS DIRECTORY -->
+        <div id="section-mentors-content" class="hidden flex-col gap-6">
+          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-display font-black text-slate-900 text-base">Verified Industry Mentors (Staff Engineers &amp; Talent Directors)</h3>
+              <p class="text-xs text-slate-500">Includes 45-minute technical mock interview, system design breakdown, and offer negotiation strategy.</p>
+            </div>
+            <div class="px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-xs">
+              Pro Members get 1 Free Session / Month
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="mentors-cards-grid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ========================================================================= -->
+      <!-- VIEW: SUBSCRIPTION PLANS & PRO TOOLS -->
+      <!-- ========================================================================= -->
+      <div id="view-pricing" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Header Banner -->
+        <div class="text-center max-w-3xl mx-auto space-y-3 py-4">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold uppercase tracking-wider">
+            <span>Transparent Career Investment</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-black font-display text-slate-900 tracking-tight">
+            Accelerate Your Job Hunt with Autonomous Pro Tools
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Choose the membership tier tailored to your search velocity. Unlock deep ATS keyword injection, verified recruiter emails, multi-language DSA solutions, and private 1-on-1 mentorship.
+          </p>
+
+          <!-- Billing Toggle (Monthly vs Annual) -->
+          <div class="flex items-center justify-center gap-3 pt-2">
+            <span class="text-xs font-bold text-slate-700" id="pricing-monthly-label">Monthly</span>
+            <button 
+              type="button" 
+              onclick="togglePricingBilling()" 
+              id="pricing-toggle-btn"
+              class="relative w-12 h-6 bg-indigo-600 rounded-full transition-colors focus:outline-none p-0.5"
+            >
+              <div id="pricing-toggle-knob" class="w-5 h-5 bg-white rounded-full transition-transform translate-x-6"></div>
+            </button>
+            <span class="text-xs font-bold text-indigo-600 flex items-center gap-1">
+              <span>Annual</span>
+              <span class="px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black">Save 25%</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- 3 Tier Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          
+          <!-- TIER 1: STARTER / FREEMIUM -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 font-bold text-xs uppercase tracking-wider">Community</span>
+                <span class="text-xs text-slate-400 font-medium">Free Forever</span>
+              </div>
+              <div>
+                <div class="text-3xl font-black text-slate-900 font-display">$0</div>
+                <div class="text-xs text-slate-500">Zero cost, forever accessible</div>
+              </div>
+              <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600 text-[18px]">check</span> 5 active Kanban applications</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600 text-[18px]">check</span> 3 ATS Resume Scans per day</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600 text-[18px]">check</span> Public DSA Problem Roadmaps</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600 text-[18px]">check</span> Free preview of Course modules 1-3</li>
+                <li class="flex items-center gap-2 text-slate-400"><span class="material-symbols-outlined text-slate-300 text-[18px]">close</span> No Verified HR Recruiter Emails</li>
+                <li class="flex items-center gap-2 text-slate-400"><span class="material-symbols-outlined text-slate-300 text-[18px]">close</span> No 1-on-1 Mentorship included</li>
+              </ul>
+            </div>
+            <div class="pt-6">
+              <button type="button" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors cursor-default">
+                Current Default Plan
+              </button>
+            </div>
+          </div>
+
+          <!-- TIER 2: PRO CAREER HUNTER (FEATURED) -->
+          <div class="bg-gradient-to-b from-indigo-900 to-slate-900 rounded-3xl p-6 text-white shadow-2xl border-2 border-indigo-500 flex flex-col justify-between relative transform lg:-translate-y-2">
+            <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-indigo-400 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-md">
+              Most Popular • High Velocity
+            </span>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full bg-indigo-500/30 text-indigo-200 font-bold text-xs uppercase tracking-wider">Pro Career Hunter</span>
+                <span class="text-xs text-indigo-300 font-medium">Billed Annually ($260)</span>
+              </div>
+              <div>
+                <div class="text-3xl font-black text-white font-display" id="pricing-pro-price">$29 <span class="text-xs font-normal text-slate-300">/ month</span></div>
+                <div class="text-xs text-indigo-200">Everything needed to land top offers</div>
+              </div>
+              <ul class="space-y-2.5 text-xs text-slate-200 pt-2 border-t border-slate-700/60">
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span> Unlimited Kanban Applications</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span> Unlimited AI ATS Bullet Optimizer</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span> 50+ Verified HR Recruiter Emails</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span> Full DSA Solutions (Python, JS, Java)</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span> 1 Free 1-on-1 Mentor Session / Month</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span> Access to all AI &amp; Tech Radar Logs</li>
+              </ul>
+            </div>
+            <div class="pt-6">
+              <button type="button" onclick="openSubscriptionCheckout('pro')" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white font-black text-xs shadow-lg shadow-indigo-500/40 transition-all transform active:scale-95">
+                Upgrade to Pro Plan 🚀
+              </button>
+            </div>
+          </div>
+
+          <!-- TIER 3: EXECUTIVE & SWITCHER ELITE -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-800 font-bold text-xs uppercase tracking-wider">Executive Elite</span>
+                <span class="text-xs text-slate-400 font-medium">Billed Annually ($710)</span>
+              </div>
+              <div>
+                <div class="text-3xl font-black text-slate-900 font-display" id="pricing-exec-price">$79 <span class="text-xs font-normal text-slate-500">/ month</span></div>
+                <div class="text-xs text-slate-500">For Directors, Switchers &amp; Staff Leads</div>
+              </div>
+              <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-600 text-[18px]">check_circle</span> Everything in Pro Plan</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-600 text-[18px]">check_circle</span> 3 Private Mock Interview Sessions / Month</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-600 text-[18px]">check_circle</span> White-Glove Referral Matchmaking</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-600 text-[18px]">check_circle</span> Custom Executive Pitch Deck Generator</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-600 text-[18px]">check_circle</span> Direct Priority Alerts on WhatsApp/SMS</li>
+              </ul>
+            </div>
+            <div class="pt-6">
+              <button type="button" onclick="openSubscriptionCheckout('executive')" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-colors shadow-sm">
+                Unlock Executive Elite
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Enterprise Feature Comparison Matrix -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 space-y-4 mt-4">
+          <h3 class="font-display font-black text-slate-900 text-base">Comprehensive Feature Matrix</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 text-slate-500 uppercase font-bold text-[10px] tracking-wider">
+                  <th class="py-3 px-4">Feature / Tool</th>
+                  <th class="py-3 px-4 text-center">Community ($0)</th>
+                  <th class="py-3 px-4 text-center bg-indigo-50/50 text-indigo-900">Pro ($29/mo)</th>
+                  <th class="py-3 px-4 text-center">Executive ($79/mo)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr>
+                  <td class="py-3 px-4 font-semibold">Active Pipeline Applications</td>
+                  <td class="py-3 px-4 text-center">5 Active</td>
+                  <td class="py-3 px-4 text-center bg-indigo-50/50 font-bold text-indigo-700">Unlimited</td>
+                  <td class="py-3 px-4 text-center font-bold">Unlimited</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold">ATS Resume Match Scans</td>
+                  <td class="py-3 px-4 text-center">3 / day</td>
+                  <td class="py-3 px-4 text-center bg-indigo-50/50 font-bold text-indigo-700">Unlimited</td>
+                  <td class="py-3 px-4 text-center font-bold">Unlimited + Human Review</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold">Google X-Y-Z Bullet Optimizer</td>
+                  <td class="py-3 px-4 text-center">Sample Only</td>
+                  <td class="py-3 px-4 text-center bg-indigo-50/50 text-emerald-600 font-bold">✓ Included</td>
+                  <td class="py-3 px-4 text-center text-emerald-600 font-bold">✓ Included</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold">Verified HR &amp; Recruiter Emails</td>
+                  <td class="py-3 px-4 text-center">Locked</td>
+                  <td class="py-3 px-4 text-center bg-indigo-50/50 text-emerald-600 font-bold">✓ Full 50+ Directory</td>
+                  <td class="py-3 px-4 text-center text-emerald-600 font-bold">✓ Direct Introductions</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold">1-on-1 Mentorship Sessions</td>
+                  <td class="py-3 px-4 text-center">Pay-as-you-go</td>
+                  <td class="py-3 px-4 text-center bg-indigo-50/50 font-bold text-indigo-700">1 Session / month</td>
+                  <td class="py-3 px-4 text-center font-bold text-purple-700">3 Sessions / month</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold">AI &amp; New Tech Radar Logs</td>
+                  <td class="py-3 px-4 text-center">Public Logs</td>
+                  <td class="py-3 px-4 text-center bg-indigo-50/50 text-emerald-600 font-bold">✓ Full Engineering Hub</td>
+                  <td class="py-3 px-4 text-center text-emerald-600 font-bold">✓ Full Engineering Hub</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ========================================================================= -->
+      <!-- VIEW: AI & NEW TECH RADAR LOGS -->
+      <!-- ========================================================================= -->
+      <div id="view-ai-radar" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-cyan-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                <span>AI Engineering Radar • 2026 Edition</span>
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Agentic MCP / Gemini Flash / DeepSeek</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black font-display text-white tracking-tight flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[26px] text-cyan-400">psychology</span>
+              <span>AI &amp; New Technology Engineering Logs Radar</span>
+            </h1>
+            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Curated technical teardowns and architecture logs on Model Context Protocol (MCP), million-token LLM pipelines, AI-driven ATS algorithms, and production cloud infrastructure.
+            </p>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="flex items-center gap-3 bg-slate-800/80 p-3 rounded-2xl border border-slate-700 text-xs shrink-0">
+            <div>
+              <div class="text-[10px] text-slate-400 font-bold uppercase">Published Deep Dives</div>
+              <div class="text-base font-black text-cyan-400">12 Technical Logs</div>
+            </div>
+            <div class="w-px h-8 bg-slate-700"></div>
+            <div>
+              <div class="text-[10px] text-slate-400 font-bold uppercase">Latest Topic</div>
+              <div class="text-base font-black text-white">Agentic MCP</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Chips & Search -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 text-xs font-bold custom-scrollbar" id="ai-radar-category-chips">
+            <button type="button" onclick="filterAiRadar('all')" class="ai-cat-chip px-3 py-1.5 rounded-xl bg-cyan-600 text-white shrink-0">All Topics (12)</button>
+            <button type="button" onclick="filterAiRadar('mcp')" class="ai-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Agentic MCP</button>
+            <button type="button" onclick="filterAiRadar('llm')" class="ai-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">Gemini &amp; LLMs</button>
+            <button type="button" onclick="filterAiRadar('ats')" class="ai-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">ATS Algorithms</button>
+            <button type="button" onclick="filterAiRadar('devops')" class="ai-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">DevOps &amp; SRE</button>
+          </div>
+
+          <div class="relative w-full md:w-64">
+            <input 
+              type="text" 
+              id="ai-radar-search-input" 
+              oninput="searchAiRadar(this.value)" 
+              placeholder="Search tech articles..." 
+              class="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+            />
+            <span class="material-symbols-outlined absolute left-2.5 top-2 text-[16px] text-slate-400">search</span>
+          </div>
+        </div>
+
+        <!-- AI Radar Cards Grid -->
+        <div id="ai-radar-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Rendered via JS -->
+        </div>
+
+      </div>
+
+<!-- ========================================================================= -->
+      <div id="view-auth" class="hidden flex-col gap-8 w-full max-w-6xl mx-auto py-8 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Breadcrumb / Header Status -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+          <div class="flex items-center gap-2 text-xs text-slate-500">
+            <button type="button" onclick="switchView('kanban')" class="hover:text-indigo-600 transition-colors flex items-center gap-1 font-medium">
+              <span class="material-symbols-outlined text-[16px]">home</span> Home
+            </button>
+            <span>/</span>
+            <span class="font-bold text-slate-900">Candidate Identity &amp; Auth Portal</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Zero-Trust Guard: ACTIVE</span>
+            </span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px] font-mono">
+              <span>mTLS 1.3 Certified</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Dynamic Sign-Out Confirmation Banner (Shown when user signs out) -->
+        <div id="auth-signed-out-banner" class="hidden p-5 rounded-3xl bg-amber-50 border border-amber-200 shadow-sm flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-300">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold shrink-0 shadow-md shadow-amber-500/20">
+              <span class="material-symbols-outlined text-[26px]">logout</span>
+            </div>
+            <div class="space-y-0.5">
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-slate-900 text-sm sm:text-base">Candidate Session Terminated</h4>
+                <span class="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[9px] font-extrabold uppercase">Logged Out</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                You have securely signed out. All local cryptographic tokens and session cookies have been cleared. Sign back in below or select a demo persona.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" onclick="switchAuthPageTab('signin')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition-colors">
+              Sign In ↗
+            </button>
+            <button type="button" onclick="dismissSignedOutBanner()" class="p-2 rounded-xl hover:bg-amber-100 text-slate-500 transition-colors">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Signed-In Active Card (Shown when candidate is logged in) -->
+        <div id="auth-signed-in-banner" class="hidden p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl border border-slate-800 flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div id="auth-page-active-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-indigo-600 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-500/30">
+              AC
+            </div>
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <h3 id="auth-page-active-name" class="font-display font-black text-lg text-white">Alex Chen</h3>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">Session Active</span>
+              </div>
+              <p id="auth-page-active-email" class="text-xs text-slate-300 font-mono">alex.chen@executive.dev</p>
+              <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-400 pt-1">
+                <span>Role: <strong id="auth-page-active-role" class="text-white">Staff Full-Stack Architect</strong></span>
+                <span>•</span>
+                <span>Target: <strong id="auth-page-active-comp" class="text-emerald-400">$250k - $320k</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button type="button" onclick="switchView('kanban')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-colors flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px]">view_kanban</span>
+              <span>Open Pipeline Kanban</span>
+            </button>
+            <button type="button" onclick="openUserProfileModal()" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-colors flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px]">badge</span>
+              <span>Edit Profile</span>
+            </button>
+            <button type="button" onclick="handleSignOut()" class="px-3.5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm shadow-red-600/30">
+              <span class="material-symbols-outlined text-[18px]">logout</span>
+              <span>Sign Out Now</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2-Column Main Auth Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- LEFT COLUMN: Multi-Persona Quick Logins & Identity Guard (5 Cols) -->
+          <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Persona Switcher Card -->
+            <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-display font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[20px] text-indigo-600">group</span>
+                    <span>1-Click Candidate Logins</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-500">Instantly switch between 5 verified domain profiles.</p>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold text-[9px]">Demo Suite</span>
+              </div>
+
+              <!-- Persona Cards List -->
+              <div class="space-y-2.5 text-xs">
+                
+                <!-- PERSONA 1: Marcus Vance (Sales) -->
+                <button type="button" onclick="loginAsPersona('marcus')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50/80 border border-slate-200 hover:border-indigo-200 text-left transition-all flex items-center justify-between group">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0 shadow-xs">
+                      MV
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-900 group-hover:text-indigo-950 flex items-center gap-1.5">
+                        <span>Marcus Vance</span>
+                        <span class="px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 text-[9px] font-bold">Sales &amp; Rev</span>
+                      </div>
+                      <div class="text-[11px] text-slate-500">VP of Enterprise Sales • $350k OTE</div>
+                    </div>
+                  </div>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all">login</span>
+                </button>
+
+                <!-- PERSONA 2: Elena Rostova (Marketing) -->
+                <button type="button" onclick="loginAsPersona('elena')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-purple-50/80 border border-slate-200 hover:border-purple-200 text-left transition-all flex items-center justify-between group">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-600 text-white font-bold flex items-center justify-center shrink-0 shadow-xs">
+                      ER
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-900 group-hover:text-purple-950 flex items-center gap-1.5">
+                        <span>Elena Rostova</span>
+                        <span class="px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 text-[9px] font-bold">Marketing</span>
+                      </div>
+                      <div class="text-[11px] text-slate-500">Principal PMM • $220k Base</div>
+                    </div>
+                  </div>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all">login</span>
+                </button>
+
+                <!-- PERSONA 3: Sarah Lin (HR & TA) -->
+                <button type="button" onclick="loginAsPersona('sarah')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200 hover:border-emerald-200 text-left transition-all flex items-center justify-between group">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white font-bold flex items-center justify-center shrink-0 shadow-xs">
+                      SL
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-900 group-hover:text-emerald-950 flex items-center gap-1.5">
+                        <span>Sarah Lin</span>
+                        <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold">People / HR</span>
+                      </div>
+                      <div class="text-[11px] text-slate-500">Head of People &amp; Talent • $230k Base</div>
+                    </div>
+                  </div>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all">login</span>
+                </button>
+
+                <!-- PERSONA 4: Alex Chen (Software Engineering) -->
+                <button type="button" onclick="loginAsPersona('alex')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-blue-50/80 border border-slate-200 hover:border-blue-200 text-left transition-all flex items-center justify-between group">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center shrink-0 shadow-xs">
+                      AC
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-900 group-hover:text-blue-950 flex items-center gap-1.5">
+                        <span>Alex Chen</span>
+                        <span class="px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 text-[9px] font-bold">Software SWE</span>
+                      </div>
+                      <div class="text-[11px] text-slate-500">Staff Full-Stack Architect • $285k Total</div>
+                    </div>
+                  </div>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">login</span>
+                </button>
+
+                <!-- PERSONA 5: David Miller (Career Switcher) -->
+                <button type="button" onclick="loginAsPersona('david')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-amber-50/80 border border-slate-200 hover:border-amber-200 text-left transition-all flex items-center justify-between group">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-600 text-white font-bold flex items-center justify-center shrink-0 shadow-xs">
+                      DM
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-900 group-hover:text-amber-950 flex items-center gap-1.5">
+                        <span>David Miller</span>
+                        <span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold">Career Pivot</span>
+                      </div>
+                      <div class="text-[11px] text-slate-500">Solutions Architect • Lateral Transition</div>
+                    </div>
+                  </div>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all">login</span>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Zero-Trust Security Specs Card -->
+            <div class="p-5 rounded-3xl bg-slate-900 text-white border border-slate-800 space-y-3 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Identity Security Specs</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[9px] font-bold">SEC-HARDENED</span>
+              </div>
+              <ul class="space-y-2 text-slate-300 text-[11px]">
+                <li class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-emerald-400">lock</span>
+                  <span>FIDO2 / WebAuthn &amp; PBKDF2 Password Hashing</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-emerald-400">verified_user</span>
+                  <span>Autonomous 6-Digit Zero-Trust OTP Handshake</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-emerald-400">terminal</span>
+                  <span>mTLS 1.3 End-to-End Session Guard</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: Interactive Tabbed Form (Sign In, Sign Up, Forgot, OTP) (7 Cols) -->
+          <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col">
+            
+            <!-- Auth Form Tabs -->
+            <div class="flex border-b border-slate-200 bg-slate-50 text-xs font-bold select-none overflow-x-auto">
+              <button type="button" onclick="switchAuthPageTab('signin')" id="page-tab-btn-signin" class="page-auth-tab flex-1 py-3.5 px-4 text-center border-b-2 border-indigo-600 text-indigo-600 transition-all shrink-0">
+                Sign In
+              </button>
+              <button type="button" onclick="switchAuthPageTab('signup')" id="page-tab-btn-signup" class="page-auth-tab flex-1 py-3.5 px-4 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition-all shrink-0">
+                Create Account (Sign Up)
+              </button>
+              <button type="button" onclick="switchAuthPageTab('forgot')" id="page-tab-btn-forgot" class="page-auth-tab flex-1 py-3.5 px-4 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition-all shrink-0">
+                Forgot Password
+              </button>
+              <button type="button" onclick="switchAuthPageTab('otp')" id="page-tab-btn-otp" class="page-auth-tab flex-1 py-3.5 px-4 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition-all shrink-0">
+                Verify OTP Code
+              </button>
+            </div>
+
+            <!-- Form Container -->
+            <div class="p-6 sm:p-8 space-y-6 text-xs">
+              
+              <!-- TAB 1: SIGN IN -->
+              <div id="page-auth-view-signin" class="space-y-5">
+                <div>
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900 font-display">Sign In to Candidate Cockpit</h3>
+                  <p class="text-xs text-slate-500">Access your job applications, inbound recruiter triage, and AI ATS matcher.</p>
+                </div>
+
+                <form onsubmit="handlePageSignInSubmit(event)" class="space-y-4">
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1.5 flex items-center justify-between">
+                      <span>Candidate Email Address</span>
+                      <span class="text-[10px] text-indigo-600 font-normal">Executive or Personal</span>
+                    </label>
+                    <div class="relative">
+                      <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">mail</span>
+                      <input 
+                        type="email" 
+                        id="page-signin-email" 
+                        required 
+                        placeholder="alex.chen@executive.dev" 
+                        value="alex.chen@executive.dev"
+                        class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                      <label class="block text-slate-700 font-bold">Security Password</label>
+                      <button type="button" onclick="switchAuthPageTab('forgot')" class="text-[11px] text-indigo-600 hover:underline font-semibold">Forgot Password?</button>
+                    </div>
+                    <div class="relative">
+                      <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">lock</span>
+                      <input 
+                        type="password" 
+                        id="page-signin-password" 
+                        required 
+                        placeholder="••••••••••••" 
+                        value="StitchAutopilot2026!"
+                        class="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                      />
+                      <button type="button" onclick="togglePasswordVisibility('page-signin-password')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
+                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-[11px] pt-1">
+                    <label class="flex items-center gap-2 text-slate-600 cursor-pointer select-none">
+                      <input type="checkbox" id="page-signin-remember" checked class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
+                      <span>Keep workstation logged in for 30 days</span>
+                    </label>
+                    <span class="text-emerald-600 font-bold">2FA Protected</span>
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    id="btn-page-signin-submit"
+                    class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">login</span>
+                    <span>Sign In to Autopilot</span>
+                  </button>
+                </form>
+
+                <!-- Quick Actions Strip -->
+                <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                  <span class="text-slate-500">Need a candidate profile?</span>
+                  <button type="button" onclick="switchAuthPageTab('signup')" class="text-indigo-600 font-bold hover:underline">
+                    Create New Candidate Account ↗
+                  </button>
+                </div>
+              </div>
+
+              <!-- TAB 2: SIGN UP -->
+              <div id="page-auth-view-signup" class="hidden space-y-5">
+                <div>
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900 font-display">Create Your Candidate Profile</h3>
+                  <p class="text-xs text-slate-500">Zero-trust registration with automated 2FA verification.</p>
+                </div>
+
+                <form onsubmit="handlePageSignUpSubmit(event)" class="space-y-3.5">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-slate-700 font-bold mb-1">Full Legal / Display Name</label>
+                      <input type="text" id="page-signup-name" required placeholder="Alex Chen" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                    </div>
+                    <div>
+                      <label class="block text-slate-700 font-bold mb-1">Email Address</label>
+                      <input type="email" id="page-signup-email" required placeholder="candidate@domain.com" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1">Domain Persona</label>
+                    <select id="page-signup-persona" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                      <option value="tech">Software Engineering &amp; AI Architecture</option>
+                      <option value="sales">Enterprise Sales &amp; Revenue Operations (MEDDPICC)</option>
+                      <option value="marketing">Product Marketing (PMM) &amp; Growth</option>
+                      <option value="hr">People Ops &amp; Talent Acquisition Lead</option>
+                      <option value="switchers">Career Switcher &amp; Lateral Transition</option>
+                    </select>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-slate-700 font-bold mb-1">Password</label>
+                      <input type="password" id="page-signup-password" required minlength="6" placeholder="Min 6 characters" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                    </div>
+                    <div>
+                      <label class="block text-slate-700 font-bold mb-1">Confirm Password</label>
+                      <input type="password" id="page-signup-confirm" required minlength="6" placeholder="Re-enter password" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                    </div>
+                  </div>
+
+                  <div class="p-3 bg-indigo-50/70 border border-indigo-200 rounded-2xl flex items-start gap-2">
+                    <input type="checkbox" id="page-signup-2fa" checked class="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500">
+                    <label for="page-signup-2fa" class="text-[11px] text-indigo-900 leading-snug cursor-pointer select-none">
+                      <strong>Enable Zero-Trust OTP 2FA</strong> (Generates 6-digit confirmation token on device).
+                    </label>
+                  </div>
+
+                  <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-1.5">
+                    <span>Create Profile &amp; Verify Code ↗</span>
+                  </button>
+                </form>
+
+                <p class="text-center text-xs text-slate-500 pt-2 border-t border-slate-100">
+                  Already registered? 
+                  <button type="button" onclick="switchAuthPageTab('signin')" class="text-indigo-600 font-bold hover:underline">Sign In Instead</button>
+                </p>
+              </div>
+
+              <!-- TAB 3: FORGOT PASSWORD -->
+              <div id="page-auth-view-forgot" class="hidden space-y-5">
+                <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3">
+                  <span class="material-symbols-outlined text-amber-600 text-[24px] shrink-0">lock_reset</span>
+                  <div class="text-xs text-amber-900 leading-relaxed">
+                    <strong>Zero-Trust Account Recovery:</strong> Enter your candidate email. We will generate and dispatch a cryptographic 6-digit one-time recovery token.
+                  </div>
+                </div>
+
+                <form onsubmit="handlePageForgotPasswordSubmit(event)" class="space-y-4">
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1.5">Registered Email</label>
+                    <input type="email" id="page-forgot-email" required placeholder="alex.chen@executive.dev" value="alex.chen@executive.dev" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                  </div>
+
+                  <button type="submit" class="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md shadow-amber-600/20 transition-all flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">send</span>
+                    <span>Dispatch 6-Digit Recovery OTP</span>
+                  </button>
+                </form>
+
+                <p class="text-center text-xs text-slate-500 pt-2 border-t border-slate-100">
+                  Remembered your password? 
+                  <button type="button" onclick="switchAuthPageTab('signin')" class="text-indigo-600 font-bold hover:underline">Return to Sign In</button>
+                </p>
+              </div>
+
+              <!-- TAB 4: VERIFY OTP -->
+              <div id="page-auth-view-otp" class="hidden space-y-5">
+                <div class="text-center space-y-1">
+                  <div class="inline-flex w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 items-center justify-center mb-1">
+                    <span class="material-symbols-outlined text-[26px]">pin</span>
+                  </div>
+                  <h4 class="font-display font-bold text-base text-slate-900">Enter Verification Code</h4>
+                  <p class="text-xs text-slate-500">
+                    Dispatched to: <strong id="page-otp-target-email" class="text-indigo-700 font-mono">alex.chen@executive.dev</strong>
+                  </p>
+                </div>
+
+                <!-- Simulation Code Display -->
+                <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs">
+                  <div>
+                    <span class="text-[10px] text-emerald-800 uppercase font-bold block">Live Simulation Code</span>
+                    <span id="page-otp-demo-display" class="font-mono font-bold text-base text-emerald-700">742918</span>
+                  </div>
+                  <button type="button" onclick="autoFillPageDemoOtp()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-xs active:scale-95 transition-all">
+                    Auto-fill Code
+                  </button>
+                </div>
+
+                <!-- 6 Digit Input Boxes -->
+                <div class="flex items-center justify-center gap-2 sm:gap-3 py-3">
+                  <input type="text" maxlength="1" id="page-otp-1" oninput="handlePageOtpInput(1)" onkeydown="handlePageOtpBackspace(event, 1)" class="w-11 sm:w-12 h-12 text-center text-lg font-mono font-black border-2 border-slate-200 focus:border-indigo-600 rounded-xl bg-slate-50 focus:bg-white focus:outline-none transition-all" autofocus />
+                  <input type="text" maxlength="1" id="page-otp-2" oninput="handlePageOtpInput(2)" onkeydown="handlePageOtpBackspace(event, 2)" class="w-11 sm:w-12 h-12 text-center text-lg font-mono font-black border-2 border-slate-200 focus:border-indigo-600 rounded-xl bg-slate-50 focus:bg-white focus:outline-none transition-all" />
+                  <input type="text" maxlength="1" id="page-otp-3" oninput="handlePageOtpInput(3)" onkeydown="handlePageOtpBackspace(event, 3)" class="w-11 sm:w-12 h-12 text-center text-lg font-mono font-black border-2 border-slate-200 focus:border-indigo-600 rounded-xl bg-slate-50 focus:bg-white focus:outline-none transition-all" />
+                  <span class="text-slate-300 font-bold">-</span>
+                  <input type="text" maxlength="1" id="page-otp-4" oninput="handlePageOtpInput(4)" onkeydown="handlePageOtpBackspace(event, 4)" class="w-11 sm:w-12 h-12 text-center text-lg font-mono font-black border-2 border-slate-200 focus:border-indigo-600 rounded-xl bg-slate-50 focus:bg-white focus:outline-none transition-all" />
+                  <input type="text" maxlength="1" id="page-otp-5" oninput="handlePageOtpInput(5)" onkeydown="handlePageOtpBackspace(event, 5)" class="w-11 sm:w-12 h-12 text-center text-lg font-mono font-black border-2 border-slate-200 focus:border-indigo-600 rounded-xl bg-slate-50 focus:bg-white focus:outline-none transition-all" />
+                  <input type="text" maxlength="1" id="page-otp-6" oninput="handlePageOtpInput(6)" onkeydown="handlePageOtpBackspace(event, 6)" class="w-11 sm:w-12 h-12 text-center text-lg font-mono font-black border-2 border-slate-200 focus:border-indigo-600 rounded-xl bg-slate-50 focus:bg-white focus:outline-none transition-all" />
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-500">
+                  <span id="page-otp-timer-text">Resend in <strong id="page-otp-timer-seconds">59</strong>s</span>
+                  <button type="button" id="btn-page-resend-otp" onclick="resendPageOtpCode()" disabled class="text-slate-400 font-bold disabled:cursor-not-allowed">Resend Code</button>
+                </div>
+
+                <button type="button" onclick="handlePageOtpVerifySubmit()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-1.5">
+                  <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                  <span>Verify OTP &amp; Authenticate Session</span>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
       <!-- ========================================================================= -->
       <!-- MODAL: FBI IC3 DOCKET & THREAT ACTOR TELEMETRY INSPECTOR (Stitch Screen b7f0bcda381843029c4be1aaa7f1ed3d) -->
       <!-- ========================================================================= -->
@@ -2835,10 +4277,11 @@
           <div class="space-y-3">
             <h4 class="font-display font-bold text-white text-xs uppercase tracking-wider">Identity &amp; Security</h4>
             <ul class="space-y-2 text-xs">
-              <li><button type="button" onclick="openAuthModal('signin')" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-indigo-400">login</span>Sign In</button></li>
-              <li><button type="button" onclick="openAuthModal('signup')" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-indigo-400">person_add</span>Create Account (Sign Up)</button></li>
-              <li><button type="button" onclick="openAuthModal('forgot')" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-amber-400">lock_reset</span>Forgot Password</button></li>
-              <li><button type="button" onclick="openAuthModal('otp')" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-400">pin</span>2FA / OTP Verification</button></li>
+              <li><button type="button" onclick="navigateToAuth('signin')" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-indigo-400">login</span>Sign In Portal</button></li>
+              <li><button type="button" onclick="navigateToAuth('signup')" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-indigo-400">person_add</span>Create Account (Sign Up)</button></li>
+              <li><button type="button" onclick="navigateToAuth('forgot')" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-amber-400">lock_reset</span>Forgot Password</button></li>
+              <li><button type="button" onclick="navigateToAuth('otp')" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-400">pin</span>2FA / OTP Verification</button></li>
+              <li><button type="button" onclick="handleSignOut()" class="hover:text-red-400 transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-red-400">logout</span>Sign Out / Switch Persona</button></li>
               <li><button type="button" onclick="openUserProfileModal()" class="hover:text-white transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-purple-400">badge</span>Candidate Profile</button></li>
             </ul>
           </div>
@@ -3912,10 +5355,15 @@
             </div>
             <p id="auth-modal-subtitle" class="text-[11px] text-slate-300">Executive Candidate Access &amp; Session Guard</p>
           </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeAuthModal(); navigateToAuth();" title="Open Full Screen Portal" class="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold transition-colors flex items-center gap-1">
+            <span>Full Portal</span>
+            <span class="material-symbols-outlined text-[13px]">open_in_new</span>
+          </button>
+          <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
         </div>
-        <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
       </div>
 
       <!-- Tab Navigation Switcher -->
@@ -4533,5 +5981,253 @@
 
   <!-- Scripts -->
   <script src="app.js"></script>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: GLOBAL SEARCH (Ctrl+K) -->
+  <!-- ========================================================================= -->
+  <div id="modal-global-search" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-start justify-center pt-20 p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-4 border-b border-slate-200 flex items-center gap-3">
+        <span class="material-symbols-outlined text-[22px] text-indigo-600">search</span>
+        <input 
+          type="text" 
+          id="modal-search-input" 
+          oninput="handleGlobalSearch(this.value)" 
+          placeholder="Search companies, HR recruiters, DSA, tools, courses, jobs..." 
+          class="w-full text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none"
+        />
+        <button type="button" onclick="closeGlobalSearchModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <div id="modal-search-results-list" class="max-h-96 overflow-y-auto custom-scrollbar p-3 space-y-1">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="p-3 bg-slate-50 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
+        <span>Navigation: <kbd class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono font-bold text-[9px]">ESC</kbd> to close</span>
+        <span class="text-indigo-600 font-bold">Job Hunt Autopilot Global Index</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: DSA INTERACTIVE CODE SOLUTION VIEWER -->
+  <!-- ========================================================================= -->
+  <div id="modal-dsa-solution" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+        <div class="space-y-0.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold" id="dsa-modal-diff-badge">Medium</span>
+            <span class="text-xs text-slate-400 font-mono" id="dsa-modal-category">Arrays &amp; Strings</span>
+          </div>
+          <h3 class="font-display font-black text-lg text-white" id="dsa-modal-title">Two Sum</h3>
+        </div>
+        <button type="button" onclick="closeDsaSolutionModal()" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-4 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="switchDsaCodeLang('python')" id="btn-lang-python" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">Python</button>
+          <button type="button" onclick="switchDsaCodeLang('javascript')" id="btn-lang-javascript" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white">JavaScript</button>
+          <button type="button" onclick="switchDsaCodeLang('java')" id="btn-lang-java" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white">Java</button>
+        </div>
+        <div class="text-[11px] font-mono text-emerald-400" id="dsa-modal-complexity">Time: O(N) | Space: O(N)</div>
+      </div>
+
+      <div class="p-4 bg-slate-950 text-slate-200 overflow-y-auto custom-scrollbar flex-1">
+        <pre><code id="dsa-modal-code-body" class="text-xs font-mono leading-relaxed"># Solution code</code></pre>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <div class="text-xs text-slate-500" id="dsa-modal-companies">Asked at: Google, Amazon, Meta, Apple</div>
+        <button type="button" onclick="copyDsaCode()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm">
+          <span class="material-symbols-outlined text-[16px]">content_copy</span>
+          <span>Copy Solution</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: 1-ON-1 MENTOR SESSION BOOKING -->
+  <!-- ========================================================================= -->
+  <div id="modal-mentor-booking" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 class="font-display font-black text-slate-900 text-base" id="mentor-modal-title">Book 1-on-1 Mentorship</h3>
+          <p class="text-xs text-slate-500" id="mentor-modal-subtitle">Staff Software Engineer @ Google</p>
+        </div>
+        <button type="button" onclick="closeMentorBookingModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Session Type</label>
+          <select id="mentor-session-type" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800">
+            <option value="mock-technical">Technical Mock Interview (System Design / DSA) - 45 min</option>
+            <option value="resume-critique">Deep Resume &amp; Portfolio Audit - 30 min</option>
+            <option value="offer-negotiation">FAANG Offer &amp; Compensation Negotiation - 30 min</option>
+            <option value="career-pivot">Career Pivot Strategy for Switchers - 45 min</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Date</label>
+            <input type="date" id="mentor-session-date" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Time Slot</label>
+            <select id="mentor-session-time" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800">
+              <option value="10:00 AM">10:00 AM EST</option>
+              <option value="02:00 PM">02:00 PM EST</option>
+              <option value="06:00 PM">06:00 PM EST</option>
+              <option value="09:00 PM">09:00 PM EST</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Target Role / Interview Focus</label>
+          <input type="text" id="mentor-session-notes" placeholder="e.g. Staff Full-Stack at Stripe, System Design Round..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800" />
+        </div>
+
+        <div class="p-3 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-between text-xs">
+          <span class="font-bold text-indigo-900">Total Investment:</span>
+          <span class="font-black text-indigo-700 text-sm" id="mentor-session-cost">Free with Pro Pass</span>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeMentorBookingModal()" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-200 transition-colors">Cancel</button>
+        <button type="button" onclick="confirmMentorBooking()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition-colors">Confirm &amp; Add to Calendar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: SUBSCRIPTION CHECKOUT (PRO / EXECUTIVE) -->
+  <!-- ========================================================================= -->
+  <div id="modal-subscription-checkout" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-indigo-900 to-slate-900 text-white">
+        <div>
+          <h3 class="font-display font-black text-base" id="checkout-plan-name">Pro Career Hunter Pass</h3>
+          <p class="text-xs text-indigo-200" id="checkout-plan-sub">Instant Access to All Autonomous Tools</p>
+        </div>
+        <button type="button" onclick="closeSubscriptionCheckout()" class="p-1 rounded-lg text-slate-300 hover:text-white">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="p-3 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-700">Billing Cycle</span>
+          <span class="text-xs font-black text-indigo-700" id="checkout-billing-cycle">Annual ($260 / year)</span>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700">Payment Simulation (Stripe / Razorpay Demo)</label>
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+            <input type="text" value="4242 •••• •••• 4242" readonly class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-slate-700" />
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" value="12/28" readonly class="bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-slate-700" />
+              <input type="text" value="CVC: 888" readonly class="bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-slate-700" />
+            </div>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-slate-500 leading-relaxed">
+          🔒 Secure 256-bit encrypted checkout. Clicking "Activate Subscription" simulates instant confirmation and elevates your candidate session across the website.
+        </p>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeSubscriptionCheckout()" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-200">Cancel</button>
+        <button type="button" onclick="processSubscriptionPayment()" id="btn-process-checkout" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/30">
+          Activate Subscription 🚀
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: AI & TECH RADAR LOG READER -->
+  <!-- ========================================================================= -->
+  <div id="modal-ai-log-reader" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold" id="ai-log-modal-tag">#AgenticAI</span>
+            <span class="text-xs text-slate-400 font-mono" id="ai-log-modal-time">8 min read</span>
+          </div>
+          <h3 class="font-display font-black text-lg text-white" id="ai-log-modal-title">Engineering Log</h3>
+        </div>
+        <button type="button" onclick="closeAiLogReaderModal()" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4 text-slate-800 text-xs leading-relaxed" id="ai-log-modal-content">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <span class="text-xs text-slate-500">Autonomous Job Hunt Cockpit Engineering Radar</span>
+        <button type="button" onclick="closeAiLogReaderModal()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs">
+          Close Article
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: HR DIRECT OUTREACH EMAIL GENERATOR -->
+  <!-- ========================================================================= -->
+  <div id="modal-hr-outreach" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 class="font-display font-black text-slate-900 text-base" id="hr-outreach-modal-title">Direct In-House Recruiter Outreach</h3>
+          <p class="text-xs text-slate-500" id="hr-outreach-modal-sub">Personalized Executive Template</p>
+        </div>
+        <button type="button" onclick="closeHrOutreachModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Subject Line</label>
+          <input type="text" id="hr-outreach-subject" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Personalized Email Body</label>
+          <textarea id="hr-outreach-body" rows="8" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-800 custom-scrollbar resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <button type="button" onclick="openRecruiterLinkedIn()" id="btn-hr-linkedin-outreach" class="px-3 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs flex items-center gap-1.5 transition-colors">
+          <span>Open LinkedIn Profile ↗</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeHrOutreachModal()" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-200">Cancel</button>
+          <button type="button" onclick="copyHrOutreachEmail()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-sm">
+            <span class="material-symbols-outlined text-[16px]">content_copy</span>
+            <span>Copy &amp; Open Mail</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
