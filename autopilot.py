@@ -642,6 +642,17 @@ class AutopilotRequestHandler(SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(emails, indent=2).encode("utf-8"))
             return
 
+        if path == "/api/automate/sync-status":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            try:
+                import automation_engine
+                self.wfile.write(json.dumps(automation_engine.sync_worker.get_status()).encode("utf-8"))
+            except Exception as e:
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+            return
+
         if path == "/":
             self.path = "/index.html"
 
@@ -723,6 +734,60 @@ class AutopilotRequestHandler(SimpleHTTPRequestHandler):
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps(response).encode("utf-8"))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+                return
+
+        if path == "/api/automate/scrape-job":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            try:
+                payload = json.loads(body)
+                import automation_engine
+                res = automation_engine.scrape_job_details(url=payload.get("url"), html=payload.get("html"))
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+                return
+
+        if path == "/api/automate/resume-match":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            try:
+                payload = json.loads(body)
+                import ai_engine
+                res = ai_engine.critique_resume_for_job(payload.get("resume_text", ""), payload.get("job_description", ""))
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+                return
+
+        if path == "/api/automate/trigger-sync":
+            try:
+                import automation_engine
+                res = automation_engine.sync_worker.trigger_immediate_sync()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
                 return
             except Exception as e:
                 self.send_response(500)
