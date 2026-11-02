@@ -816,10 +816,19 @@ def start_server(port=8000, max_retries=10):
                 print(f"❌ Could not bind to any port from {port} to {current_port}: {e}")
                 return
 
-    print(f"🚀 Job Hunt Autopilot running at http://localhost:{current_port}")
-    print(f"   Database: SQLite (autopilot.db)")
-    print(f"   REST APIs: /api/triage, /api/db/status, /api/db/applications, /api/db/reset")
-    print(f"   AI Chatbot: POST /api/chat (Python Career Copilot + Gemini API)")
+    print("\n" + "=" * 68)
+    print(f" 🚀 Job Hunt Autopilot is LIVE & RUNNING at http://localhost:{current_port}")
+    print("=" * 68)
+    print(f" 👉 Open in your browser : http://localhost:{current_port}")
+    print(f" 📊 Database             : SQLite (autopilot.db)")
+    print(f" 🤖 AI Career Copilot    : POST /api/chat (Gemini SDK & Heuristics)")
+    print(f" 🧠 AI Resume Matcher    : POST /api/automate/resume-match")
+    print(f" 🌐 Job Scraper (BS4)    : POST /api/automate/scrape-job")
+    print(f" ⚡ Auto-Sync Poller     : GET /api/automate/sync-status (APScheduler)")
+    print("-" * 68)
+    print(" 💡 This server is active and listening for web requests.")
+    print("    Press CTRL+C anytime in this terminal to stop the server.")
+    print("=" * 68 + "\n")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

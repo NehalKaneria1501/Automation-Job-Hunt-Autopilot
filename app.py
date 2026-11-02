@@ -27,11 +27,21 @@ def main():
     # Launch FastAPI + Uvicorn modern web server
     try:
         import server
-        print(f"🚀 Starting FastAPI & Uvicorn Server at http://localhost:{port}")
-        print(f"   Interactive Swagger Docs: http://localhost:{port}/docs")
-        print(f"   Interactive ReDoc Docs:   http://localhost:{port}/redoc")
-        print(f"   AI Engine: Google GenAI SDK & Heuristics")
-        print(f"   Automation: BeautifulSoup4 & APScheduler")
+        print("\n" + "=" * 68)
+        print(f" 🚀 Job Hunt Autopilot is LIVE & RUNNING at http://localhost:{port}")
+        print("=" * 68)
+        print(f" 👉 Open in your browser : http://localhost:{port}")
+        print(f" 📖 Interactive Swagger  : http://localhost:{port}/docs")
+        print(f" 📄 ReDoc Documentation  : http://localhost:{port}/redoc")
+        print(f" 📊 Database             : SQLite (autopilot.db)")
+        print(f" 🤖 AI Career Copilot    : POST /api/chat (Gemini SDK & Heuristics)")
+        print(f" 🧠 AI Resume Matcher    : POST /api/automate/resume-match")
+        print(f" 🌐 Job Scraper (BS4)    : POST /api/automate/scrape-job")
+        print(f" ⚡ Auto-Sync Poller     : GET /api/automate/sync-status (APScheduler)")
+        print("-" * 68)
+        print(" 💡 This server is active and listening for web requests.")
+        print("    Press CTRL+C anytime in this terminal to stop the server.")
+        print("=" * 68 + "\n")
         server.run_fastapi(port=port)
     except Exception as e:
         print(f"⚠️ FastAPI runner fallback ({e}), launching standard HTTP server...")
