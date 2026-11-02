@@ -479,6 +479,7 @@ async function initAutopilot() {
   filteredEmails = [...allEmails];
   renderAll();
   safeCreateIcons();
+  initChatWidget();
 }
 
 /**
@@ -1750,6 +1751,298 @@ function exportDatabaseBackup() {
   a.download = `autopilot-${dbEngine}-backup.json`;
   a.click();
   showToast(`Exported ${allEmails.length} database records to JSON!`);
+}
+
+/* ==========================================================================
+   AI CAREER COPILOT CHATBOT (PYTHON BACKEND + CLIENT FALLBACK)
+   ========================================================================== */
+
+let chatHistory = [];
+let isChatOpen = false;
+
+function toggleChatWidget(forceState) {
+  const drawer = document.getElementById('ai-chat-drawer');
+  if (!drawer) return;
+  
+  if (typeof forceState === 'boolean') {
+    isChatOpen = forceState;
+  } else {
+    isChatOpen = !isChatOpen;
+  }
+  
+  drawer.setAttribute('data-open', isChatOpen ? 'true' : 'false');
+  if (isChatOpen) {
+    if (chatHistory.length === 0) {
+      initChatWidget();
+    }
+    const input = document.getElementById('chat-input');
+    if (input) setTimeout(() => input.focus(), 150);
+  }
+}
+
+function initChatWidget() {
+  const container = document.getElementById('chat-messages-container');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  const welcomeText = 
+    `👋 **Hello! I am your AI Career Copilot**, connected to your live **Python backend** (\`autopilot.py\`) and **SQLite database** (\`autopilot.db\`).\n\n` +
+    `I can help you navigate your search and secure an offer:\n` +
+    `• 📊 **Pipeline Status**: Real-time briefing on applications, interviews & latency\n` +
+    `• 🎙️ **Stripe Round 2 Prep**: Systems architecture & idempotency coaching\n` +
+    `• 🛡️ **Scam Radar**: Forensic breakdown of the 4 quarantined fraud offers\n` +
+    `• ✍️ **Nudge Generator**: 7-day silence latency follow-up emails\n` +
+    `• 💰 **Offer Negotiation**: Datadog $300k TC compensation counter-strategy\n\n` +
+    `*Select a quick prompt above or ask any question!*`;
+
+  appendChatMessage('assistant', welcomeText, dbEngine === 'sqlite' ? 'Python • SQLite' : 'Client Intelligence');
+}
+
+function clearChatHistory() {
+  chatHistory = [];
+  initChatWidget();
+  showToast("AI Copilot conversation history reset.");
+}
+
+function sendQuickPrompt(promptText) {
+  const input = document.getElementById('chat-input');
+  if (!input) return;
+  input.value = promptText;
+  handleChatSubmit(new Event('submit'));
+}
+
+async function handleChatSubmit(event) {
+  if (event && event.preventDefault) event.preventDefault();
+  
+  const input = document.getElementById('chat-input');
+  if (!input) return;
+  
+  const message = input.value.trim();
+  if (!message) return;
+  
+  // Clear input
+  input.value = '';
+  
+  // Append user bubble
+  appendChatMessage('user', message);
+  chatHistory.push({ role: 'user', content: message, timestamp: new Date() });
+  
+  // Show typing indicator
+  showChatTypingIndicator();
+  
+  let replyText = "";
+  let sourceBadge = "Python Engine";
+  
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: message, history: chatHistory })
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      replyText = data.reply || "No response received.";
+      sourceBadge = data.source === 'gemini-api' ? 'Gemini 2.5 Flash' : 'Python • SQLite';
+    } else {
+      throw new Error(`HTTP ${res.status}`);
+    }
+  } catch (err) {
+    console.warn("Python backend /api/chat unreachable, using resilient client intelligence:", err);
+    const fallback = generateClientFallbackChatReply(message);
+    replyText = fallback.reply;
+    sourceBadge = "Client Intelligence";
+  }
+  
+  hideChatTypingIndicator();
+  appendChatMessage('assistant', replyText, sourceBadge);
+  chatHistory.push({ role: 'assistant', content: replyText, timestamp: new Date() });
+}
+
+function appendChatMessage(role, text, sourceBadge = null) {
+  const container = document.getElementById('chat-messages-container');
+  if (!container) return;
+  
+  const isUser = role === 'user';
+  const bubbleWrapper = document.createElement('div');
+  bubbleWrapper.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} gap-1 max-w-[92%] ${isUser ? 'ml-auto' : 'mr-auto'}`;
+  
+  const bubble = document.createElement('div');
+  if (isUser) {
+    bubble.className = "px-4 py-2.5 rounded-2xl rounded-tr-none bg-indigo-600 text-white font-medium text-xs shadow-sm leading-relaxed whitespace-pre-wrap break-words";
+    bubble.textContent = text;
+  } else {
+    bubble.className = "p-3.5 rounded-2xl rounded-tl-none bg-white text-slate-800 border border-slate-200/90 shadow-xs text-xs leading-relaxed break-words space-y-2";
+    bubble.innerHTML = formatChatMarkdown(text);
+  }
+  
+  bubbleWrapper.appendChild(bubble);
+  
+  const meta = document.createElement('div');
+  meta.className = "text-[10px] text-slate-400 flex items-center gap-1.5 px-1 font-mono";
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  if (isUser) {
+    meta.innerHTML = `<span>${timeStr}</span>`;
+  } else {
+    meta.innerHTML = `
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+      <span class="font-bold text-slate-500">${sourceBadge || 'AI Copilot'}</span>
+      <span>•</span>
+      <span>${timeStr}</span>
+    `;
+  }
+  bubbleWrapper.appendChild(meta);
+  
+  container.appendChild(bubbleWrapper);
+  container.scrollTop = container.scrollHeight;
+  safeCreateIcons();
+}
+
+function showChatTypingIndicator() {
+  hideChatTypingIndicator();
+  const container = document.getElementById('chat-messages-container');
+  if (!container) return;
+  
+  const indicator = document.createElement('div');
+  indicator.id = 'chat-typing-bubble';
+  indicator.className = 'flex items-center gap-2 p-3 rounded-2xl rounded-tl-none bg-slate-100/80 border border-slate-200/60 max-w-[120px] shadow-2xs';
+  indicator.innerHTML = `
+    <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style="animation-delay: 0ms;"></span>
+    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 150ms;"></span>
+    <span class="w-2 h-2 rounded-full bg-indigo-600 animate-bounce" style="animation-delay: 300ms;"></span>
+    <span class="text-[10px] font-mono text-slate-400 font-bold ml-1">Thinking</span>
+  `;
+  container.appendChild(indicator);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideChatTypingIndicator() {
+  const indicator = document.getElementById('chat-typing-bubble');
+  if (indicator) indicator.remove();
+}
+
+/**
+ * Lightweight safe Markdown renderer for Chat messages
+ */
+function formatChatMarkdown(text) {
+  if (!text) return "";
+  
+  let escaped = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+    
+  escaped = escaped.replace(/```([a-z]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+    return `<div class="my-2 p-2.5 bg-slate-900 text-slate-100 rounded-xl font-mono text-[11px] overflow-x-auto border border-slate-800 leading-snug">${code.trim()}</div>`;
+  });
+  
+  escaped = escaped.replace(/^### (.*$)/gim, '<h4 class="font-bold text-slate-900 text-xs mt-2 mb-1 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>$1</h4>');
+  escaped = escaped.replace(/^#### (.*$)/gim, '<h5 class="font-bold text-slate-800 text-[11px] mt-1.5 mb-0.5">$1</h5>');
+  
+  escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
+  escaped = escaped.replace(/\*(.*?)\*/g, '<em class="italic text-slate-700">$1</em>');
+  
+  escaped = escaped.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-slate-100 text-indigo-700 rounded font-mono text-[10px] font-semibold">$1</code>');
+  
+  escaped = escaped.replace(/^- (.*$)/gim, '<div class="flex items-start gap-1.5 my-1 ml-1"><span class="text-indigo-500 font-bold shrink-0">•</span><span>$1</span></div>');
+  
+  escaped = escaped.replace(/\n\n/g, '<div class="h-1.5"></div>');
+  escaped = escaped.replace(/\n/g, '<br/>');
+  
+  return escaped;
+}
+
+/**
+ * Client-Side Career Copilot Intelligence Engine
+ * Used when running statically (GitHub Pages) or if python server is disconnected
+ */
+function generateClientFallbackChatReply(msg) {
+  const msgLower = (msg || "").toLowerCase().trim();
+  
+  const stats = {
+    total: allEmails.length,
+    interview: allEmails.filter(e => !e.isScam && e.evaluatedStatus === 'interview').length,
+    offer: allEmails.filter(e => !e.isScam && e.evaluatedStatus === 'offer').length,
+    rejected: allEmails.filter(e => !e.isScam && e.evaluatedStatus === 'rejected').length,
+    scams: allEmails.filter(e => e.isScam).length,
+    followUpsDue: allEmails.filter(e => !e.isScam && e.followUpDue).length
+  };
+  
+  if (msgLower.includes("pipeline") || msgLower.includes("status") || msgLower.includes("briefing") || msgLower.includes("summary")) {
+    return {
+      reply: `### 📊 Live Career Pipeline Briefing\n\n` +
+        `Client Intelligence calculated from current active dataset:\n\n` +
+        `- **Total Applications**: ${stats.total}\n` +
+        `- **🎯 Active Interviews (${stats.interview})**: Stripe (Staff Full-Stack), Airbnb (Staff Eng), Datadog (Senior Distributed Systems)\n` +
+        `- **🎉 Confirmed Offer (${stats.offer})**: Datadog ($210k base + $90k equity = **$300,000 TC**)\n` +
+        `- **⏰ Follow-ups Overdue (${stats.followUpsDue})**: Figma (8d), Canva (10d), Ramp (12d), Brex (9d)\n` +
+        `- **🛡️ Quarantined Scams (${stats.scams})**: 4 hostile campaigns blocked\n` +
+        `- **❌ Rejections Logged (${stats.rejected})**: 8 closed applications\n\n` +
+        `**Recommended Focus:** Prepare technical prep for **Stripe Round 2** with David Zhang.`
+    };
+  }
+  
+  if (msgLower.includes("stripe") || msgLower.includes("david") || msgLower.includes("prep") || msgLower.includes("architecture")) {
+    return {
+      reply: `### 🎙️ Technical Interview Briefing: Stripe\n\n` +
+        `**Role:** Staff Full-Stack Engineer\n` +
+        `**Round:** Round 2 — Systems Architecture & Idempotency\n` +
+        `**Interviewer:** David Zhang (Director of Engineering, Core Billing)\n\n` +
+        `#### Key Pillars to Cover:\n` +
+        `- **Idempotency Keys in Payment APIs**:\n  Redis distributed locks with 120s TTL and Transactional Outbox pattern.\n` +
+        `- **Event-Driven Retries & Webhooks**:\n  Exponential backoff with decorrelated jitter to prevent thundering herds.\n` +
+        `- **Zero-Downtime Schema Migrations**:\n  Expand/Contract (Parallel Run) strategy for live database tables.\n\n` +
+        `#### 💡 Coaching Tip:\n` +
+        `Mention that client requests submit a UUIDv4 in the \`Idempotency-Key\` header to prevent double billing.`
+    };
+  }
+  
+  if (msgLower.includes("scam") || msgLower.includes("apex") || msgLower.includes("fraud") || msgLower.includes("fake")) {
+    return {
+      reply: `### 🛡️ Autonomous Scam Radar Report\n\n` +
+        `4 fraudulent phishing and extortion campaigns were quarantined:\n\n` +
+        `- **Apex Global**: Demanded ₹4,500 / $5,000 mandatory training & onboarding fee.\n` +
+        `- **Global Tech**: Recruiter sent email from \`google.recruiter.hr@gmail.com\` free-mail.\n` +
+        `- **NexaCorp**: Demanded immediate upload of PAN card & Aadhaar before any interview.\n` +
+        `- **Swift Logistics**: Demanded $500 crypto deposit for home workstation equipment.\n\n` +
+        `**Golden Rule:** Legitimate technology employers never charge candidates money for interviews or laptops!`
+    };
+  }
+  
+  if (msgLower.includes("follow") || msgLower.includes("nudge") || msgLower.includes("figma") || msgLower.includes("canva")) {
+    return {
+      reply: `### ✍️ Generated Follow-Up Nudge: Figma\n\n` +
+        `- **Role:** Senior Frontend Systems Engineer\n` +
+        `- **Status:** 8 days of recruiter silence (Latency SLA breached)\n\n` +
+        `**Subject:** \`Following up on application: Senior Frontend Systems Engineer — Alex Chen\`\n\n` +
+        `\`\`\`text\nDear Figma Hiring Team,\n\nI hope your week is off to a great start.\n\nI am following up on my application for the Senior Frontend Systems Engineer role submitted 8 days ago. I remain passionate about Figma's collaborative canvas performance and would love to discuss how my distributed systems experience can contribute to the team.\n\nThank you for your time and consideration.\n\nBest regards,\nAlex Chen\n\`\`\``
+    };
+  }
+  
+  if (msgLower.includes("offer") || msgLower.includes("datadog") || msgLower.includes("salary") || msgLower.includes("negotiat")) {
+    return {
+      reply: `### 💰 Offer Analysis & Negotiation Strategy: Datadog\n\n` +
+        `- **Role:** Senior Distributed Systems Engineer\n` +
+        `- **Package:** $210,000 Base + $90,000 Equity/yr = **$300,000 TC**\n\n` +
+        `#### 🎯 Recommended Counter-Offer:\n` +
+        `1. Counter at **$225,000 Base** (+7.1%) citing competitive peer banding.\n` +
+        `2. Request a **$30,000 Sign-on Bonus** to offset unvested equity from your recent layoff.\n` +
+        `3. Leverage your active **Stripe Round 2** interview loop for timeline extension.`
+    };
+  }
+  
+  return {
+    reply: `### 💡 Career Telemetry Analysis\n\n` +
+      `Here is your live search snapshot:\n` +
+      `- **🎯 Active Interviews (${stats.interview})**: Stripe, Airbnb, Datadog\n` +
+      `- **⏰ Overdue Applications (${stats.followUpsDue})**: Figma, Canva, Ramp, Brex\n` +
+      `- **🎉 Confirmed Offer**: Datadog ($300k TC)\n` +
+      `- **🛡️ Neutralized Scams**: 4 malicious attacks blocked\n\n` +
+      `Try asking: *"Prep me for Stripe"*, *"Why was Apex Global flagged?"*, or *"Draft a follow-up for Figma"*!`
+  };
 }
 
 // Kick off initialization on DOM ready
