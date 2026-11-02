@@ -1030,6 +1030,14 @@ function switchView(viewName) {
 
   syncMobileNavActiveTab();
   
+  // Auto-scroll active tab into view inside sticky header navigation bar
+  const activeTabBtn = document.getElementById(`tab-${viewName}`);
+  if (activeTabBtn) {
+    try {
+      activeTabBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    } catch (e) {}
+  }
+  
   // Reset scroll position to top on view switch
   const scrollViewport = document.getElementById('device-scroll-viewport');
   if (isMobileViewport && scrollViewport) {
@@ -8172,3 +8180,12 @@ window.addEventListener('DOMContentLoaded', () => {
   }, 250);
 });
 
+
+
+function scrollNavTabs(direction) {
+  const container = document.getElementById('header-nav-tabs-scroll');
+  if (container) {
+    const scrollAmount = direction === 'left' ? -260 : 260;
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  }
+}
