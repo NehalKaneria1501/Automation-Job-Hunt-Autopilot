@@ -482,6 +482,7 @@ async function initAutopilot() {
   initChatWidget();
   pollSyncStatus();
   initAuthSuite();
+  if (typeof initMncHub === 'function') initMncHub();
 }
 
 /**
@@ -494,6 +495,7 @@ function renderAll() {
   renderFollowupQueue();
   renderInboxTable();
   renderIngestLog();
+  if (typeof renderMncHub === 'function') renderMncHub();
 }
 
 /**
@@ -971,7 +973,7 @@ function renderIngestLog() {
 function switchView(viewName) {
   activeView = viewName;
 
-  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'inbox'];
+  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox'];
   views.forEach(v => {
     const el = document.getElementById(`view-${v}`);
     if (el) {
@@ -993,6 +995,10 @@ function switchView(viewName) {
       }
     }
   });
+
+  if (viewName === 'mnc-hub' && typeof renderMncHub === 'function') {
+    renderMncHub();
+  }
 
   syncMobileNavActiveTab();
   
@@ -2904,5 +2910,1698 @@ function initAuthSuite() {
   });
 }
 
+// ============================================================================
+// MNC CAREER DIRECTORY, LIVE OPENINGS, CV GENERATOR, REFERRALS & MENTORSHIP
+// ============================================================================
+
+const MNC_COMPANIES = [
+  // Top Product-Based MNCs
+  {
+    id: "comp-google",
+    name: "Google",
+    type: "product",
+    tier: "Tier-1 FAANG",
+    hq: "Mountain View, CA",
+    locations: ["us", "india", "europe", "apac"],
+    cities: "Mountain View, NYC, Bengaluru, Hyderabad, Zurich, London, Singapore",
+    rating: "4.5 ★",
+    tcRange: "$210k - $420k / ₹45L - ₹95L",
+    openingsCount: 14,
+    techStack: ["Go", "C++", "Python", "Kubernetes", "Borg", "Spanner", "TensorFlow"],
+    description: "Global pioneer in distributed infrastructure, large-scale search, cloud computing, and AI research.",
+    color: "from-blue-600 to-emerald-600"
+  },
+  {
+    id: "comp-stripe",
+    name: "Stripe",
+    type: "product",
+    tier: "Tier-1 Fintech Unicorn",
+    hq: "San Francisco, CA / Dublin",
+    locations: ["us", "europe", "apac", "india"],
+    cities: "SF, Dublin, London, Singapore, Bengaluru, US Remote",
+    rating: "4.4 ★",
+    tcRange: "$230k - $380k / ₹50L - ₹90L",
+    openingsCount: 9,
+    techStack: ["Ruby", "Go", "Java", "React", "Kafka", "PostgreSQL", "AWS"],
+    description: "Financial infrastructure for the internet powering billions in global transactions with 99.999% reliability.",
+    color: "from-indigo-600 to-purple-600"
+  },
+  {
+    id: "comp-microsoft",
+    name: "Microsoft",
+    type: "product",
+    tier: "Tier-1 FAANG / Big Tech",
+    hq: "Redmond, WA",
+    locations: ["us", "india", "europe", "apac"],
+    cities: "Redmond, Seattle, Bengaluru, Hyderabad, Dublin, Cambridge UK",
+    rating: "4.4 ★",
+    tcRange: "$195k - $370k / ₹38L - ₹85L",
+    openingsCount: 18,
+    techStack: ["C# / .NET", "Azure", "TypeScript", "Python", "CosmosDB", "Kubernetes"],
+    description: "Global cloud, productivity, AI platforms, and operating system powerhouse powering enterprise transformation.",
+    color: "from-cyan-600 to-blue-600"
+  },
+  {
+    id: "comp-meta",
+    name: "Meta",
+    type: "product",
+    tier: "Tier-1 FAANG",
+    hq: "Menlo Park, CA",
+    locations: ["us", "europe", "apac", "india"],
+    cities: "Menlo Park, London, Singapore, Bengaluru, Remote",
+    rating: "4.3 ★",
+    tcRange: "$240k - $440k / ₹55L - ₹1.1Cr",
+    openingsCount: 12,
+    techStack: ["React", "Hack / PHP", "Python", "PyTorch", "GraphQL", "C++", "RocksDB"],
+    description: "Connecting billions across Instagram, WhatsApp, Messenger, and pioneering open-source AI with Llama.",
+    color: "from-blue-700 to-indigo-800"
+  },
+  {
+    id: "comp-amazon",
+    name: "Amazon & AWS",
+    type: "product",
+    tier: "Tier-1 FAANG",
+    hq: "Seattle, WA",
+    locations: ["us", "india", "europe", "apac"],
+    cities: "Seattle, Arlington, Bengaluru, Hyderabad, Dublin, Vancouver, Tokyo",
+    rating: "4.1 ★",
+    tcRange: "$180k - $360k / ₹35L - ₹80L",
+    openingsCount: 22,
+    techStack: ["Java", "AWS Services", "Python", "DynamoDB", "Rust", "Go"],
+    description: "Pioneers in high-volume global e-commerce and the planet's dominant hyperscale cloud infrastructure (AWS).",
+    color: "from-amber-600 to-orange-700"
+  },
+  {
+    id: "comp-netflix",
+    name: "Netflix",
+    type: "product",
+    tier: "Tier-1 FAANG",
+    hq: "Los Gatos, CA",
+    locations: ["us", "europe", "apac"],
+    cities: "Los Gatos, US Remote, Amsterdam, Tokyo",
+    rating: "4.4 ★",
+    tcRange: "$350k - $550k (All-Cash TC)",
+    openingsCount: 6,
+    techStack: ["Java / Spring Boot", "Node.js", "React", "Kafka", "AWS", "Titus"],
+    description: "World leader in streaming entertainment with an iconic high-density talent culture and all-cash compensation.",
+    color: "from-red-600 to-rose-800"
+  },
+  {
+    id: "comp-apple",
+    name: "Apple",
+    type: "product",
+    tier: "Tier-1 FAANG",
+    hq: "Cupertino, CA",
+    locations: ["us", "india", "europe", "apac"],
+    cities: "Cupertino, Austin, Bengaluru, Hyderabad, Munich, Singapore",
+    rating: "4.3 ★",
+    tcRange: "$200k - $390k / ₹40L - ₹85L",
+    openingsCount: 11,
+    techStack: ["Swift", "C / C++", "Objective-C", "Python", "Cassandra", "CoreOS"],
+    description: "World-class consumer electronics, privacy-first software ecosystems, and silicon innovation (M-Series).",
+    color: "from-slate-700 to-slate-900"
+  },
+  {
+    id: "comp-uber",
+    name: "Uber",
+    type: "product",
+    tier: "Tier-1 High-Scale Mobility",
+    hq: "San Francisco, CA",
+    locations: ["us", "india", "europe"],
+    cities: "San Francisco, Amsterdam, Bengaluru, Hyderabad",
+    rating: "4.2 ★",
+    tcRange: "$210k - $370k / ₹45L - ₹85L",
+    openingsCount: 8,
+    techStack: ["Go", "Java", "Kafka", "Microservices", "Schemaless", "Kubernetes"],
+    description: "Real-time dispatch, routing, and payment orchestration operating at planetary scale in 10,000+ cities.",
+    color: "from-slate-900 to-zinc-800"
+  },
+  {
+    id: "comp-datadog",
+    name: "Datadog",
+    type: "product",
+    tier: "Top Cloud Observability",
+    hq: "New York, NY",
+    locations: ["us", "europe", "apac"],
+    cities: "New York, Paris, Remote, Tokyo",
+    rating: "4.3 ★",
+    tcRange: "$190k - $320k",
+    openingsCount: 7,
+    techStack: ["Go", "Python", "Kafka", "Cassandra", "React", "TypeScript", "Terraform"],
+    description: "Leading monitoring and security platform for cloud-scale applications and real-time telemetry streaming.",
+    color: "from-purple-700 to-indigo-900"
+  },
+  {
+    id: "comp-figma",
+    name: "Figma",
+    type: "product",
+    tier: "Top SaaS Unicorn",
+    hq: "San Francisco, CA",
+    locations: ["us", "europe"],
+    cities: "San Francisco, London, US Remote",
+    rating: "4.6 ★",
+    tcRange: "$220k - $380k",
+    openingsCount: 5,
+    techStack: ["Rust", "C++", "WebAssembly", "TypeScript", "React", "CRDTs"],
+    description: "Collaborative design and developer canvas engine powered by WebAssembly and real-time multiplayer CRDTs.",
+    color: "from-violet-600 to-rose-600"
+  },
+  {
+    id: "comp-snowflake",
+    name: "Snowflake",
+    type: "product",
+    tier: "Top Data Cloud Leader",
+    hq: "Bozeman, MT / San Mateo, CA",
+    locations: ["us", "europe", "india"],
+    cities: "San Mateo, Bengaluru, Berlin, Amsterdam",
+    rating: "4.2 ★",
+    tcRange: "$210k - $350k / ₹42L - ₹80L",
+    openingsCount: 8,
+    techStack: ["C++", "Java", "FoundationDB", "AWS / Azure / GCP", "Python", "SQL"],
+    description: "Pioneering the Data Cloud with decoupled compute and multi-cluster shared data architectures.",
+    color: "from-sky-500 to-blue-700"
+  },
+  {
+    id: "comp-airbnb",
+    name: "Airbnb",
+    type: "product",
+    tier: "Tier-1 Travel Tech",
+    hq: "San Francisco, CA",
+    locations: ["us", "europe"],
+    cities: "San Francisco, Dublin, US Remote (Live and Work Anywhere)",
+    rating: "4.4 ★",
+    tcRange: "$220k - $370k",
+    openingsCount: 6,
+    techStack: ["Java", "Kotlin", "React", "GraphQL", "AWS", "Spinnaker"],
+    description: "Decentralized hospitality and global experiential marketplace with an iconic live-and-work-anywhere remote policy.",
+    color: "from-rose-500 to-pink-700"
+  },
+  {
+    id: "comp-nvidia",
+    name: "Nvidia",
+    type: "product",
+    tier: "Tier-1 AI Hardware & Cloud",
+    hq: "Santa Clara, CA",
+    locations: ["us", "india", "europe"],
+    cities: "Santa Clara, Bengaluru, Pune, Cambridge UK, Munich",
+    rating: "4.7 ★",
+    tcRange: "$230k - $450k / ₹50L - ₹1.2Cr",
+    openingsCount: 15,
+    techStack: ["C / C++", "CUDA", "Python", "TensorRT", "Linux Kernel", "LLM Serving"],
+    description: "The engine of generative AI — powering accelerated computing, GPU data centers, and frontier LLM training clusters.",
+    color: "from-emerald-600 to-green-700"
+  },
+  {
+    id: "comp-salesforce",
+    name: "Salesforce",
+    type: "product",
+    tier: "Top Enterprise SaaS",
+    hq: "San Francisco, CA",
+    locations: ["us", "india", "europe"],
+    cities: "San Francisco, Hyderabad, Bengaluru, London, Dublin",
+    rating: "4.2 ★",
+    tcRange: "$190k - $330k / ₹32L - ₹65L",
+    openingsCount: 11,
+    techStack: ["Java", "Apex", "React / LWC", "Python", "Kafka", "AWS"],
+    description: "Global CRM and enterprise cloud pioneer powering customer relationship platforms and autonomous AI agents.",
+    color: "from-blue-500 to-sky-700"
+  },
+  {
+    id: "comp-adobe",
+    name: "Adobe",
+    type: "product",
+    tier: "Top Creative Cloud Tech",
+    hq: "San Jose, CA",
+    locations: ["us", "india", "europe"],
+    cities: "San Jose, Noida, Bengaluru, London, Bucharest",
+    rating: "4.4 ★",
+    tcRange: "$190k - $340k / ₹35L - ₹75L",
+    openingsCount: 9,
+    techStack: ["C++", "JavaScript", "Python", "WebAssembly", "Cloud Services", "Firefly"],
+    description: "Global standard in digital media, document workflows, creative software, and commercial generative AI.",
+    color: "from-red-600 to-orange-600"
+  },
+  {
+    id: "comp-linkedin",
+    name: "LinkedIn",
+    type: "product",
+    tier: "Top Professional Network",
+    hq: "Sunnyvale, CA",
+    locations: ["us", "india", "europe", "apac"],
+    cities: "Sunnyvale, Mountain View, Bengaluru, Dublin, Singapore",
+    rating: "4.5 ★",
+    tcRange: "$205k - $360k / ₹40L - ₹80L",
+    openingsCount: 8,
+    techStack: ["Java", "Kafka", "Rest.li", "React", "Pinot", "Azure"],
+    description: "Professional social graph and knowledge platform connecting 1B+ members globally with high-scale distributed data.",
+    color: "from-blue-700 to-cyan-800"
+  },
+  {
+    id: "comp-oracle",
+    name: "Oracle (OCI)",
+    type: "product",
+    tier: "Enterprise Cloud & DB",
+    hq: "Austin, TX",
+    locations: ["us", "india", "europe"],
+    cities: "Austin, Redwood City, Bengaluru, Hyderabad, Zurich",
+    rating: "4.0 ★",
+    tcRange: "$180k - $320k / ₹30L - ₹65L",
+    openingsCount: 12,
+    techStack: ["Java", "C++", "Go", "Terraform", "OCI Cloud", "Linux Kernel"],
+    description: "High-performance Gen 2 enterprise cloud infrastructure, autonomous databases, and enterprise applications.",
+    color: "from-red-700 to-slate-900"
+  },
+  {
+    id: "comp-atlassian",
+    name: "Atlassian",
+    type: "product",
+    tier: "Top Collaboration SaaS",
+    hq: "Sydney, Australia",
+    locations: ["apac", "india", "us", "europe"],
+    cities: "Sydney, Bengaluru, Remote (Team Anywhere), Amsterdam",
+    rating: "4.4 ★",
+    tcRange: "$190k - $330k / ₹40L - ₹75L",
+    openingsCount: 7,
+    techStack: ["Java", "Kotlin", "React", "TypeScript", "AWS", "GraphQL"],
+    description: "Developer collaboration and work management tools used by millions — Jira, Confluence, Trello, and Bitbucket.",
+    color: "from-blue-600 to-indigo-700"
+  },
+  {
+    id: "comp-palantir",
+    name: "Palantir",
+    type: "product",
+    tier: "Enterprise AI & Defense",
+    hq: "Denver, CO",
+    locations: ["us", "europe"],
+    cities: "Denver, Palo Alto, London, New York",
+    rating: "4.1 ★",
+    tcRange: "$210k - $380k",
+    openingsCount: 6,
+    techStack: ["Java", "TypeScript", "React", "Python", "Kubernetes", "Foundry"],
+    description: "Mission-critical data integration, analytics, and operational AI platforms (Foundry, Gotham, and AIP).",
+    color: "from-slate-800 to-slate-950"
+  },
+  {
+    id: "comp-coinbase",
+    name: "Coinbase",
+    type: "product",
+    tier: "Top Crypto Exchange",
+    hq: "Remote-First",
+    locations: ["us", "india", "europe"],
+    cities: "US Remote, Global Remote, Hyderabad",
+    rating: "4.2 ★",
+    tcRange: "$220k - $390k / ₹45L - ₹85L",
+    openingsCount: 5,
+    techStack: ["Go", "React Native", "Ruby", "AWS", "Blockchain / Web3", "PostgreSQL"],
+    description: "Regulated crypto platform and financial infrastructure bridging the traditional economy with on-chain protocols.",
+    color: "from-blue-600 to-blue-800"
+  },
+
+  // Top Service-Based MNCs (Global Systems Integrators)
+  {
+    id: "comp-tcs",
+    name: "TCS (Tata Consultancy Services)",
+    type: "service",
+    tier: "Top-Tier IT MNC ($28B+)",
+    hq: "Mumbai, India",
+    locations: ["india", "us", "europe", "apac"],
+    cities: "Bengaluru, Hyderabad, Pune, Mumbai, Chennai, New Jersey, London, Tokyo",
+    rating: "3.9 ★",
+    tcRange: "₹4.5L - ₹32L / $95k - $145k",
+    openingsCount: 35,
+    techStack: ["Java / Spring Boot", "Cloud (AWS/Azure)", "React", "Angular", "Python", "DevOps"],
+    description: "India's largest IT consulting and business solutions company with 600,000+ engineers delivering Fortune 500 digital transformation.",
+    color: "from-indigo-800 to-blue-900"
+  },
+  {
+    id: "comp-infosys",
+    name: "Infosys",
+    type: "service",
+    tier: "Global IT Services Leader",
+    hq: "Bengaluru, India",
+    locations: ["india", "us", "europe", "apac"],
+    cities: "Bengaluru, Pune, Hyderabad, Chennai, Richardson TX, Frankfurt, London",
+    rating: "3.9 ★",
+    tcRange: "₹4.2L - ₹30L / $90k - $140k",
+    openingsCount: 28,
+    techStack: ["Java", "Python", "Spring Boot", "Full Stack", "Azure", "Microservices"],
+    description: "Next-generation digital services and consulting enabling clients across 56 countries to navigate cloud migration.",
+    color: "from-blue-600 to-indigo-700"
+  },
+  {
+    id: "comp-accenture",
+    name: "Accenture",
+    type: "service",
+    tier: "Global Management & Tech MNC",
+    hq: "Dublin, Ireland",
+    locations: ["us", "india", "europe", "apac"],
+    cities: "Dublin, Bengaluru, Hyderabad, Chicago, London, Paris, Manila, Tokyo",
+    rating: "4.1 ★",
+    tcRange: "₹6L - ₹38L / $110k - $175k",
+    openingsCount: 40,
+    techStack: ["Cloud Architecture", "SAP", "Java", "Salesforce", "Cybersecurity", "Data Eng"],
+    description: "Global professional services company with leading capabilities in digital, cloud, security, and enterprise strategy.",
+    color: "from-purple-800 to-violet-950"
+  },
+  {
+    id: "comp-wipro",
+    name: "Wipro",
+    type: "service",
+    tier: "Global IT & Business Process",
+    hq: "Bengaluru, India",
+    locations: ["india", "us", "europe", "apac"],
+    cities: "Bengaluru, Hyderabad, Pune, Chennai, East Brunswick NJ, London",
+    rating: "3.8 ★",
+    tcRange: "₹4L - ₹28L / $90k - $135k",
+    openingsCount: 20,
+    techStack: ["Java", ".NET Core", "Cloud", "Automation", "Testing", "React"],
+    description: "Technology services and consulting company focused on building innovative solutions addressing complex digital needs.",
+    color: "from-teal-700 to-emerald-900"
+  },
+  {
+    id: "comp-cognizant",
+    name: "Cognizant",
+    type: "service",
+    tier: "Global Technology & Operations",
+    hq: "Teaneck, NJ",
+    locations: ["us", "india", "europe"],
+    cities: "Teaneck NJ, Chennai, Bengaluru, Hyderabad, Pune, London",
+    rating: "3.9 ★",
+    tcRange: "₹4.5L - ₹32L / $95k - $150k",
+    openingsCount: 25,
+    techStack: ["Java", "Full Stack Web", "AWS / Azure", "Data Analytics", "AI / ML"],
+    description: "Engineering modern businesses to improve everyday life across healthcare, banking, and retail domains.",
+    color: "from-blue-800 to-cyan-900"
+  },
+  {
+    id: "comp-capgemini",
+    name: "Capgemini",
+    type: "service",
+    tier: "European & Global IT Powerhouse",
+    hq: "Paris, France",
+    locations: ["europe", "india", "us"],
+    cities: "Paris, Bengaluru, Hyderabad, Pune, New York, London",
+    rating: "3.9 ★",
+    tcRange: "₹4.5L - ₹30L / €65k - €95k",
+    openingsCount: 22,
+    techStack: ["Cloud Native", "Java", "Python", "Salesforce", "DevOps", "Cybersecurity"],
+    description: "Global business and technology transformation partner helping companies accelerate dual transitions to digital and sustainable worlds.",
+    color: "from-sky-700 to-blue-900"
+  },
+  {
+    id: "comp-deloitte",
+    name: "Deloitte (USI / Tech Consulting)",
+    type: "service",
+    tier: "Big 4 Consulting & Tech",
+    hq: "New York, NY",
+    locations: ["us", "india", "europe"],
+    cities: "Hyderabad, Bengaluru, Mumbai, Gurgaon, New York, London, Toronto",
+    rating: "4.0 ★",
+    tcRange: "₹7L - ₹42L / $115k - $185k",
+    openingsCount: 26,
+    techStack: ["Cloud Modernization", "Full Stack", "Data Science", "Oracle", "SAP", "Cyber"],
+    description: "World's largest professional services network providing audit, consulting, financial advisory, and cutting-edge software engineering.",
+    color: "from-emerald-800 to-green-950"
+  },
+  {
+    id: "comp-ibm",
+    name: "IBM Consulting & Global Services",
+    type: "service",
+    tier: "Global Enterprise Technology",
+    hq: "Armonk, NY",
+    locations: ["us", "india", "europe", "apac"],
+    cities: "Armonk NY, Bengaluru, Pune, Hyderabad, London, Tokyo",
+    rating: "4.1 ★",
+    tcRange: "₹6L - ₹36L / $105k - $165k",
+    openingsCount: 19,
+    techStack: ["Red Hat OpenShift", "Java", "Python", "Hybrid Cloud", "AI Watsonx"],
+    description: "Hybrid cloud and AI leader integrating consulting expertise with deep enterprise infrastructure.",
+    color: "from-blue-900 to-slate-900"
+  },
+  {
+    id: "comp-ltimindtree",
+    name: "LTI Mindtree",
+    type: "service",
+    tier: "Fast-Growing IT Solutions",
+    hq: "Mumbai, India",
+    locations: ["india", "us", "europe"],
+    cities: "Mumbai, Bengaluru, Hyderabad, Pune, Edison NJ, London",
+    rating: "3.9 ★",
+    tcRange: "₹5L - ₹32L / $95k - $140k",
+    openingsCount: 16,
+    techStack: ["Java", "Cloud Migration", "Data Engineering", "Microservices", "React"],
+    description: "Merged powerhouse in digital transformation, engineering next-generation client solutions across banking, manufacturing, and retail.",
+    color: "from-amber-700 to-orange-900"
+  },
+  {
+    id: "comp-hcltech",
+    name: "HCLTech",
+    type: "service",
+    tier: "Global Technology MNC",
+    hq: "Noida, India",
+    locations: ["india", "us", "europe"],
+    cities: "Noida, Bengaluru, Chennai, Sunnyvale CA, London",
+    rating: "3.8 ★",
+    tcRange: "₹4.5L - ₹30L / $95k - $140k",
+    openingsCount: 18,
+    techStack: ["Infra Management", "Cloud Native", "Java", "C++", "IoT", "Cybersecurity"],
+    description: "Global technology company supercharging digital progress across engineering, digital, and cloud platforms.",
+    color: "from-purple-700 to-indigo-900"
+  }
+];
+
+const MNC_OPENINGS = [
+  // Requisitions across Locations & Levels
+  {
+    id: "req-goog-01",
+    company: "Google",
+    role: "Staff Software Engineer — Distributed Systems",
+    location: "Bengaluru, India (Hybrid)",
+    region: "india",
+    level: "staff",
+    track: "backend",
+    salary: "₹65 - 90 LPA + Stocks",
+    daysAgo: 1,
+    applicants: 14,
+    atsMatch: "97%",
+    urgency: "Hot Loop",
+    techStack: ["Go", "C++", "Distributed Spanner", "Kubernetes", "gRPC"]
+  },
+  {
+    id: "req-goog-02",
+    company: "Google Cloud",
+    role: "Solutions Architect (Enterprise Cloud)",
+    location: "Sunnyvale, CA / Hybrid",
+    region: "us",
+    level: "senior",
+    track: "cloud",
+    salary: "$210k - $265k TC",
+    daysAgo: 2,
+    applicants: 21,
+    atsMatch: "94%",
+    urgency: "Urgent",
+    techStack: ["GCP", "Kubernetes", "Terraform", "Python", "Enterprise Security"]
+  },
+  {
+    id: "req-strp-01",
+    company: "Stripe",
+    role: "Staff Full-Stack Engineer — Systems Scaling",
+    location: "Remote (US / Global)",
+    region: "us",
+    level: "staff",
+    track: "fullstack",
+    salary: "$250k - $290k Base + Equity",
+    daysAgo: 2,
+    applicants: 19,
+    atsMatch: "98%",
+    urgency: "Interview Ready",
+    techStack: ["Ruby", "Go", "React", "Kafka", "Idempotency", "PostgreSQL"]
+  },
+  {
+    id: "req-strp-02",
+    company: "Stripe",
+    role: "Senior Backend Engineer (Payments APAC)",
+    location: "Singapore / Hybrid",
+    region: "apac",
+    level: "senior",
+    track: "backend",
+    salary: "S$180k - S$240k TC",
+    daysAgo: 3,
+    applicants: 11,
+    atsMatch: "92%",
+    urgency: "New",
+    techStack: ["Java", "Go", "Distributed Ledger", "High-Throughput"]
+  },
+  {
+    id: "req-msft-01",
+    company: "Microsoft",
+    role: "Principal Software Architect — Azure Core",
+    location: "Hyderabad, India / Remote",
+    region: "india",
+    level: "staff",
+    track: "cloud",
+    salary: "₹70 - 95 LPA",
+    daysAgo: 1,
+    applicants: 8,
+    atsMatch: "95%",
+    urgency: "Hot Loop",
+    techStack: ["C#", "Go", "Azure Compute", "Distributed Storage", "Microservices"]
+  },
+  {
+    id: "req-msft-02",
+    company: "Microsoft",
+    role: "Software Engineer II (Frontend / Teams)",
+    location: "Redmond, WA",
+    region: "us",
+    level: "mid",
+    track: "frontend",
+    salary: "$165k - $210k TC",
+    daysAgo: 4,
+    applicants: 35,
+    atsMatch: "91%",
+    urgency: "Standard",
+    techStack: ["TypeScript", "React", "GraphQL", "Performance Profiling"]
+  },
+  {
+    id: "req-meta-01",
+    company: "Meta",
+    role: "Production Engineer (Core Infrastructure)",
+    location: "Menlo Park, CA / Remote",
+    region: "us",
+    level: "senior",
+    track: "cloud",
+    salary: "$220k - $275k TC",
+    daysAgo: 2,
+    applicants: 16,
+    atsMatch: "96%",
+    urgency: "Urgent",
+    techStack: ["Linux Kernel", "Python", "C++", "Config Management", "Automation"]
+  },
+  {
+    id: "req-meta-02",
+    company: "Meta",
+    role: "Research Engineer — Frontier AI / Llama",
+    location: "London, UK",
+    region: "europe",
+    level: "senior",
+    track: "ai",
+    salary: "£140k - £190k TC",
+    daysAgo: 3,
+    applicants: 24,
+    atsMatch: "93%",
+    urgency: "Hot Loop",
+    techStack: ["PyTorch", "Python", "Distributed GPU Serving", "CUDA", "C++"]
+  },
+  {
+    id: "req-amzn-01",
+    company: "Amazon & AWS",
+    role: "Software Development Engineer II (SDE-2)",
+    location: "Bengaluru, India",
+    region: "india",
+    level: "mid",
+    track: "backend",
+    salary: "₹38 - 52 LPA",
+    daysAgo: 3,
+    applicants: 42,
+    atsMatch: "94%",
+    urgency: "Immediate",
+    techStack: ["Java", "AWS DynamoDB", "SQS", "System Design", "Microservices"]
+  },
+  {
+    id: "req-amzn-02",
+    company: "Amazon & AWS",
+    role: "Principal Systems Engineer — AWS Hyperplane",
+    location: "Seattle, WA",
+    region: "us",
+    level: "staff",
+    track: "backend",
+    salary: "$270k - $340k TC",
+    daysAgo: 5,
+    applicants: 7,
+    atsMatch: "96%",
+    urgency: "High Priority",
+    techStack: ["C / C++", "Rust", "Network Datapaths", "Distributed Sharding"]
+  },
+  {
+    id: "req-nflx-01",
+    company: "Netflix",
+    role: "Senior Platform Engineer (Telemetry & Observability)",
+    location: "Remote (US)",
+    region: "us",
+    level: "senior",
+    track: "cloud",
+    salary: "$420,000 All-Cash",
+    daysAgo: 2,
+    applicants: 18,
+    atsMatch: "95%",
+    urgency: "Exclusive",
+    techStack: ["Java", "Go", "Kafka", "Mantiss", "Cassandra", "AWS"]
+  },
+  {
+    id: "req-appl-01",
+    company: "Apple",
+    role: "Senior Cloud Infrastructure Engineer",
+    location: "Munich, Germany / Hybrid",
+    region: "europe",
+    level: "senior",
+    track: "cloud",
+    salary: "€115k - €150k",
+    daysAgo: 4,
+    applicants: 12,
+    atsMatch: "93%",
+    urgency: "Urgent",
+    techStack: ["Kubernetes", "Go", "Distributed Storage", "Linux", "Terraform"]
+  },
+  {
+    id: "req-ubr-01",
+    company: "Uber",
+    role: "Lead Backend Engineer — Core Dispatch",
+    location: "Hyderabad, India",
+    region: "india",
+    level: "senior",
+    track: "backend",
+    salary: "₹50 - 75 LPA",
+    daysAgo: 1,
+    applicants: 9,
+    atsMatch: "97%",
+    urgency: "Hot Loop",
+    techStack: ["Go", "Java", "Kafka Streaming", "Redis", "Geo-Spatial Indexing"]
+  },
+  {
+    id: "req-fig-01",
+    company: "Figma",
+    role: "Senior Systems Engineer (Multiplayer Canvas Engine)",
+    location: "San Francisco, CA / Remote",
+    region: "us",
+    level: "senior",
+    track: "fullstack",
+    salary: "$230k - $280k + Equity",
+    daysAgo: 2,
+    applicants: 15,
+    atsMatch: "95%",
+    urgency: "Hot Loop",
+    techStack: ["Rust", "WebAssembly", "TypeScript", "CRDTs", "WebGL"]
+  },
+  {
+    id: "req-tcs-01",
+    company: "TCS (Tata Consultancy Services)",
+    role: "Technical Lead — Cloud Native Modernization",
+    location: "Bengaluru / Pune, India",
+    region: "india",
+    level: "senior",
+    track: "backend",
+    salary: "₹18 - 28 LPA",
+    daysAgo: 2,
+    applicants: 31,
+    atsMatch: "92%",
+    urgency: "Active Requisition",
+    techStack: ["Java 17", "Spring Boot", "AWS / Azure", "Microservices", "Docker"]
+  },
+  {
+    id: "req-tcs-02",
+    company: "TCS (Tata Consultancy Services)",
+    role: "Enterprise Solutions Architect (US Client Delivery)",
+    location: "Edison, NJ (US Onsite)",
+    region: "us",
+    level: "staff",
+    track: "cloud",
+    salary: "$130k - $165k",
+    daysAgo: 3,
+    applicants: 14,
+    atsMatch: "90%",
+    urgency: "Visa Supported",
+    techStack: ["Enterprise Architecture", "Cloud Migration", "Kafka", "Kubernetes"]
+  },
+  {
+    id: "req-infy-01",
+    company: "Infosys",
+    role: "Lead Consultant — Microservices & Cloud",
+    location: "Bengaluru / Hyderabad, India",
+    region: "india",
+    level: "senior",
+    track: "fullstack",
+    salary: "₹16 - 26 LPA",
+    daysAgo: 1,
+    applicants: 29,
+    atsMatch: "91%",
+    urgency: "Immediate Joining",
+    techStack: ["Java", "Spring Cloud", "React", "PostgreSQL", "CI/CD"]
+  },
+  {
+    id: "req-acn-01",
+    company: "Accenture",
+    role: "Cloud Architecture Senior Manager",
+    location: "London, UK / Hybrid",
+    region: "europe",
+    level: "staff",
+    track: "cloud",
+    salary: "£110k - £145k",
+    daysAgo: 3,
+    applicants: 11,
+    atsMatch: "94%",
+    urgency: "Client Requisition",
+    techStack: ["Multi-Cloud (AWS/GCP)", "Kubernetes", "Zero-Trust Security", "DevOps"]
+  },
+  {
+    id: "req-acn-02",
+    company: "Accenture",
+    role: "Full-Stack Specialist (React & Node.js)",
+    location: "Pune / Chennai, India",
+    region: "india",
+    level: "mid",
+    track: "fullstack",
+    salary: "₹12 - 20 LPA",
+    daysAgo: 2,
+    applicants: 45,
+    atsMatch: "89%",
+    urgency: "Multiple Openings",
+    techStack: ["React 18", "Node.js", "Express", "MongoDB", "Jest"]
+  },
+  {
+    id: "req-del-01",
+    company: "Deloitte (USI / Tech Consulting)",
+    role: "Senior Consultant — AI & Data Engineering",
+    location: "Hyderabad / Bengaluru, India",
+    region: "india",
+    level: "senior",
+    track: "ai",
+    salary: "₹22 - 34 LPA",
+    daysAgo: 2,
+    applicants: 19,
+    atsMatch: "93%",
+    urgency: "Priority",
+    techStack: ["Python", "PySpark", "Snowflake", "Databricks", "LLM APIs"]
+  }
+];
+
+const CURATED_COURSES = [
+  {
+    id: "course-striver-dsa",
+    title: "Striver's SDE Sheet & A2Z DSA Masterclass",
+    author: "Take U Forward (Raj Vikramaditya)",
+    category: "DSA & Algorithms",
+    difficulty: "Beginner to Advanced (455 Problems)",
+    estimatedHours: "120 Hours",
+    link: "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/",
+    description: "The gold standard roadmap for FAANG & tier-1 product coding rounds. Covers Arrays, DP, Graphs, Binary Trees, and Greedy patterns.",
+    badge: "Must-Do for Product MNCs",
+    badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200"
+  },
+  {
+    id: "course-neetcode-150",
+    title: "NeetCode 150 & Blind 75 Algorithmic Patterns",
+    author: "NeetCode (Navdeep Singh)",
+    category: "High-Yield LeetCode",
+    difficulty: "Intermediate to Hard (150 Problems)",
+    estimatedHours: "80 Hours",
+    link: "https://neetcode.io/practice",
+    description: "Curated pattern-by-pattern breakdown (Two Pointers, Sliding Window, Monotonic Stack, Backtracking, Intervals) with visual solutions.",
+    badge: "Fast Track Interview Ready",
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200"
+  },
+  {
+    id: "course-bytebytego-hld",
+    title: "System Design Interview — Alex Xu (ByteByteGo)",
+    author: "Alex Xu & ByteByteGo Team",
+    category: "System Design (HLD)",
+    difficulty: "Mid to Principal Architect",
+    estimatedHours: "60 Hours",
+    link: "https://bytebytego.com/",
+    description: "Visual blueprints for high-scale systems: URL Shortener, Rate Limiter, Distributed Cache, Chat Systems, Payment Platforms, and YouTube scaling.",
+    badge: "Staff & Lead SDE Essential",
+    badgeColor: "bg-purple-50 text-purple-700 border-purple-200"
+  },
+  {
+    id: "course-ddia-book",
+    title: "Designing Data-Intensive Applications (DDIA)",
+    author: "Martin Kleppmann (Cambridge)",
+    category: "Distributed Storage & SRE",
+    difficulty: "Advanced Deep-Dive",
+    estimatedHours: "90 Hours",
+    link: "https://dataintensive.net/",
+    description: "The bible of modern distributed reliability: Partitioning, Replication, Consensus (Paxos/Raft), Transactions (ACID vs BASE), and Stream Processing.",
+    badge: "FAANG Architectural Depth",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200"
+  },
+  {
+    id: "course-refactoring-guru",
+    title: "Refactoring Guru & SOLID Design Patterns (LLD)",
+    author: "Alexander Shvets (Refactoring Guru)",
+    category: "Low-Level Design (Machine Coding)",
+    difficulty: "Practical Engineering (23 GoF Patterns)",
+    estimatedHours: "40 Hours",
+    link: "https://refactoring.guru/design-patterns",
+    description: "Master Creational, Structural, and Behavioral patterns in Java/Python/TypeScript. Practice real-world Elevator, Parking Lot, and Snake-and-Ladder LLD.",
+    badge: "Machine Coding Rounds",
+    badgeColor: "bg-amber-50 text-amber-700 border-amber-200"
+  },
+  {
+    id: "course-behavioral-star",
+    title: "Amazon 16 Leadership Principles & STAR Story Bank",
+    author: "Dan Croitor & Executive Coaches",
+    category: "Behavioral & Culture Fit",
+    difficulty: "All Levels (Senior & Staff)",
+    estimatedHours: "20 Hours",
+    link: "https://www.youtube.com/c/DanCroitor",
+    description: "Frame your past projects into compelling STAR responses: Situation, Task, Action, and Result. Master conflict resolution and executive storytelling.",
+    badge: "100% Pass Bar Raisers",
+    badgeColor: "bg-rose-50 text-rose-700 border-rose-200"
+  },
+  {
+    id: "course-service-nqt",
+    title: "TCS NQT & Service MNC Aptitude Master Guide",
+    author: "PrepInsta & FacePrep",
+    category: "Service MNC Assessment",
+    difficulty: "Foundation to Advanced",
+    estimatedHours: "50 Hours",
+    link: "https://prepinsta.com/tcs-nqt/",
+    description: "Complete preparation for TCS NQT, Infosys InfyTQ, Cognizant GenC, and Wipro Elite: Quantitative Aptitude, Logical Reasoning, Pseudo Code, and SQL.",
+    badge: "Service MNC Gateway",
+    badgeColor: "bg-slate-100 text-slate-700 border-slate-300"
+  },
+  {
+    id: "course-yc-startup-school",
+    title: "Y Combinator Startup School & MVP Accelerator",
+    author: "Paul Graham, Michael Seibel, Dalton Caldwell",
+    category: "Startup Mentorship & Founding",
+    difficulty: "Founder & Founding Engineer",
+    estimatedHours: "35 Hours",
+    link: "https://www.startupschool.org/",
+    description: "How to validate product ideas, talk to initial enterprise customers, navigate seed equity vs cash compensation, and hire founding engineers.",
+    badge: "Founding Engineer Track",
+    badgeColor: "bg-orange-50 text-orange-700 border-orange-200"
+  }
+];
+
+const VERIFIED_MENTORS = [
+  {
+    id: "mentor-elena",
+    name: "Elena Rostova",
+    role: "Staff Software Engineer",
+    company: "Google",
+    location: "Mountain View / Remote",
+    avatar: "ER",
+    color: "from-blue-600 to-indigo-600",
+    specialties: ["Distributed Systems", "Cloud Infrastructure", "System Design Mocks"],
+    bio: "11+ years at Google & AWS. Tech lead for globally distributed Spanner tables and Borg orchestration. Helped 60+ engineers crack Google L5/L6 loops.",
+    slotsAvailable: "3 Slots This Week",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-david",
+    name: "David Zhang",
+    role: "Director of Engineering",
+    company: "Stripe",
+    location: "San Francisco / Remote",
+    avatar: "DZ",
+    color: "from-indigo-600 to-purple-600",
+    specialties: ["Fintech Reliability", "Staff+ Leveling", "Offer Negotiation"],
+    bio: "Leads Core Inbound & Card Payments at Stripe. Previously Principal SWE at PayPal. Specializes in negotiating $300k+ executive equity grants.",
+    slotsAvailable: "2 Slots Available",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-priya",
+    name: "Priya Sharma",
+    role: "Principal Cloud Architect",
+    company: "Microsoft Azure",
+    location: "Bengaluru, India",
+    avatar: "PS",
+    color: "from-cyan-600 to-blue-600",
+    specialties: ["Kubernetes Microservices", "Azure Cloud Migration", "High-Scale HLD"],
+    bio: "14+ years designing hyperscale systems for Microsoft & Cisco. Conducted 200+ architectural hiring loops for Indian and APAC candidates.",
+    slotsAvailable: "4 Slots Available",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-marcus",
+    name: "Marcus Vance",
+    role: "Tech Lead Manager",
+    company: "Meta",
+    location: "London, UK",
+    avatar: "MV",
+    color: "from-blue-700 to-indigo-800",
+    specialties: ["High-Throughput GraphQL", "React Platform", "System Performance"],
+    bio: "Oversees core feed delivery for Instagram web and mobile. Passionate about helping engineers master system design and clean concurrency.",
+    slotsAvailable: "2 Slots This Week",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-ananya",
+    name: "Ananya Deshmukh",
+    role: "Senior Engineering Manager",
+    company: "Amazon AWS",
+    location: "Hyderabad, India",
+    avatar: "AD",
+    color: "from-amber-600 to-orange-700",
+    specialties: ["AWS Serverless", "Amazon Bar Raiser", "STAR Behavioral Drills"],
+    bio: "Certified Amazon Bar Raiser with 8+ years evaluating SDE-2 and SDE-3 candidates across all 16 Leadership Principles.",
+    slotsAvailable: "5 Slots Available",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-liam",
+    name: "Liam O'Connor",
+    role: "Principal Architect",
+    company: "Uber",
+    location: "Amsterdam, Netherlands",
+    avatar: "LO",
+    color: "from-slate-700 to-slate-900",
+    specialties: ["Kafka Streaming", "Real-Time Dispatch", "Geo-Spatial Algorithms"],
+    bio: "Architected Uber's planetary ride matching engine. Mentors candidates on overcoming high-pressure whiteboard rounds and system tradeoffs.",
+    slotsAvailable: "1 Slot Left",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-rajesh",
+    name: "Rajesh Nair",
+    role: "Global Delivery Head",
+    company: "TCS Digital",
+    location: "Mumbai, India",
+    avatar: "RN",
+    color: "from-indigo-800 to-blue-900",
+    specialties: ["Service MNC Hiring", "Lateral Switch to Product", "Enterprise Java"],
+    bio: "20+ years leading delivery across Fortune 500 banks. Guided hundreds of service-based engineers in upskilling and cracking tier-1 product offers.",
+    slotsAvailable: "4 Slots Available",
+    freeCommunityMock: true
+  },
+  {
+    id: "mentor-kavita",
+    name: "Kavita Patel",
+    role: "Founder & CTO",
+    company: "YC W24 AI Startup",
+    location: "San Francisco / Remote",
+    avatar: "KP",
+    color: "from-rose-600 to-pink-700",
+    specialties: ["Founding Engineer Roles", "Startup Equity & Vesting", "Fast MVP Execution"],
+    bio: "YC alumnus, ex-Staff SWE at Airbnb. Advises engineers deciding between Big Tech stability and early-stage startup equity upside.",
+    slotsAvailable: "2 Slots Available",
+    freeCommunityMock: true
+  }
+];
+
+let activeMncSubTab = 'companies';
+let currentMncTypeFilter = 'all';
+let currentReferralPersona = 'alumni';
+let selectedMockMentor = null;
+
+/**
+ * Initialize MNC Hub controllers & populate dropdowns
+ */
+function initMncHub() {
+  populateMncDropdowns();
+  renderMncCompanies();
+  renderMncOpenings();
+  renderCoursesGrid();
+  renderMentorsGrid();
+  updateReferralPitch();
+  generateTailoredCV();
+}
+
+/**
+ * Populate Company dropdowns in CV Builder and Referral Engine
+ */
+function populateMncDropdowns() {
+  const cvCompSelect = document.getElementById('cv-target-company');
+  const refCompSelect = document.getElementById('referral-company');
+
+  if (cvCompSelect) {
+    cvCompSelect.innerHTML = MNC_COMPANIES.map(c => 
+      `<option value="${c.name}">${c.name} (${c.type === 'product' ? 'Product' : 'Service'})</option>`
+    ).join('');
+  }
+
+  if (refCompSelect) {
+    refCompSelect.innerHTML = MNC_COMPANIES.map(c => 
+      `<option value="${c.name}">${c.name}</option>`
+    ).join('');
+  }
+}
+
+/**
+ * Switch Sub-Tabs inside MNC Hub
+ */
+function switchMncSubTab(tabName) {
+  activeMncSubTab = tabName;
+  const tabs = ['companies', 'openings', 'cv-tailor', 'referrals', 'courses', 'mentors'];
+
+  tabs.forEach(t => {
+    const panel = document.getElementById(`mnc-panel-${t}`);
+    const btn = document.getElementById(`mnc-subtab-${t}`);
+
+    if (panel) {
+      if (t === tabName) {
+        panel.classList.remove('hidden');
+        panel.classList.add('flex');
+      } else {
+        panel.classList.add('hidden');
+        panel.classList.remove('flex');
+      }
+    }
+
+    if (btn) {
+      if (t === tabName) {
+        btn.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm transition-all whitespace-nowrap shrink-0";
+      } else {
+        btn.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-all whitespace-nowrap shrink-0";
+      }
+    }
+  });
+
+  safeCreateIcons();
+}
+
+/**
+ * Filter MNC Companies by Product / Service type
+ */
+function setMncTypeFilter(type) {
+  currentMncTypeFilter = type;
+  const types = ['all', 'product', 'service'];
+
+  types.forEach(t => {
+    const btn = document.getElementById(`btn-mnc-type-${t}`);
+    if (btn) {
+      if (t === type) {
+        btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-xs transition-all whitespace-nowrap";
+      } else {
+        btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all whitespace-nowrap";
+      }
+    }
+  });
+
+  filterMncCards();
+}
+
+/**
+ * Filter MNC cards based on search input and location dropdown
+ */
+function filterMncCards() {
+  const query = (document.getElementById('mnc-search-input')?.value || "").toLowerCase();
+  const loc = document.getElementById('mnc-location-filter')?.value || 'all';
+
+  const filtered = MNC_COMPANIES.filter(c => {
+    const matchesType = (currentMncTypeFilter === 'all') || (c.type === currentMncTypeFilter);
+    const matchesLoc = (loc === 'all') || (c.locations && c.locations.includes(loc));
+    const matchesQuery = 
+      c.name.toLowerCase().includes(query) ||
+      c.cities.toLowerCase().includes(query) ||
+      c.description.toLowerCase().includes(query) ||
+      c.techStack.some(t => t.toLowerCase().includes(query));
+
+    return matchesType && matchesLoc && matchesQuery;
+  });
+
+  renderMncCompanies(filtered);
+}
+
+/**
+ * Render MNC Company Cards
+ */
+function renderMncCompanies(companies = MNC_COMPANIES) {
+  const container = document.getElementById('mnc-companies-grid');
+  if (!container) return;
+
+  if (companies.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full p-8 text-center bg-white rounded-3xl border border-slate-200 text-slate-500">
+        <span class="material-symbols-outlined text-[36px] text-slate-300 block mb-2">domain_disabled</span>
+        <div class="font-bold text-slate-800">No matching MNC companies found</div>
+        <div class="text-xs text-slate-500">Try adjusting your location or search terms.</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = companies.map(c => {
+    const typeBadge = c.type === 'product'
+      ? `<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">Product-Based</span>`
+      : `<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-bold">Service-Based</span>`;
+
+    const techPills = c.techStack.slice(0, 4).map(t => 
+      `<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px]">${t}</span>`
+    ).join('');
+
+    return `
+      <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-cockpit-card hover:shadow-lg hover:border-indigo-300 transition-all flex flex-col justify-between gap-4 group">
+        <div>
+          <!-- Header: Logo, Name & Type -->
+          <div class="flex items-start justify-between gap-3 mb-2.5">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr ${c.color} text-white font-black text-sm flex items-center justify-center shadow-md">
+                ${c.name.substring(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <h4 class="font-display font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-indigo-600 transition-colors">${c.name}</h4>
+                  <span class="text-[10px] text-amber-500 font-bold">${c.rating}</span>
+                </div>
+                <span class="text-[11px] text-slate-400 font-medium">${c.tier}</span>
+              </div>
+            </div>
+            ${typeBadge}
+          </div>
+
+          <!-- Description -->
+          <p class="text-xs text-slate-600 leading-relaxed mb-3 line-clamp-2">${c.description}</p>
+
+          <!-- Locations & TC -->
+          <div class="space-y-1.5 p-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs font-medium mb-3">
+            <div class="flex items-center gap-1.5 text-slate-600">
+              <span class="material-symbols-outlined text-[15px] text-slate-400">location_on</span>
+              <span class="truncate">${c.cities}</span>
+            </div>
+            <div class="flex items-center justify-between pt-1 border-t border-slate-200/60">
+              <span class="text-[10px] text-slate-400 uppercase font-bold">Comp Banding:</span>
+              <span class="font-mono font-bold text-emerald-700 text-[11px]">${c.tcRange}</span>
+            </div>
+          </div>
+
+          <!-- Tech Stack Pills -->
+          <div class="flex flex-wrap gap-1 mb-2">
+            ${techPills}
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-[11px] font-bold text-indigo-600 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+            <span>${c.openingsCount} Active Openings</span>
+          </span>
+
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="selectCompanyForCv('${c.name}')" title="Tailor CV" class="p-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 transition-colors">
+              <span class="material-symbols-outlined text-[16px]">description</span>
+            </button>
+            <button type="button" onclick="selectCompanyForReferral('${c.name}')" title="Referral Outreach" class="p-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 transition-colors">
+              <span class="material-symbols-outlined text-[16px]">send</span>
+            </button>
+            <button type="button" onclick="viewCompanyOpenings('${c.name}')" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] transition-all">
+              Openings →
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  safeCreateIcons();
+}
+
+/**
+ * Filter Live Openings by level and track
+ */
+function filterOpeningsList() {
+  const level = document.getElementById('openings-level-filter')?.value || 'all';
+  const track = document.getElementById('openings-track-filter')?.value || 'all';
+
+  const filtered = MNC_OPENINGS.filter(o => {
+    const matchesLevel = (level === 'all') || (o.level === level);
+    const matchesTrack = (track === 'all') || (o.track === track);
+    return matchesLevel && matchesTrack;
+  });
+
+  renderMncOpenings(filtered);
+}
+
+/**
+ * Render Live Openings Board
+ */
+function renderMncOpenings(openings = MNC_OPENINGS) {
+  const container = document.getElementById('openings-list-container');
+  if (!container) return;
+
+  if (openings.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full p-8 text-center bg-white rounded-3xl border border-slate-200 text-slate-500">
+        <span class="material-symbols-outlined text-[36px] text-slate-300 block mb-2">work_off</span>
+        <div class="font-bold text-slate-800">No matching requisitions found</div>
+        <div class="text-xs text-slate-500">Try changing your experience level or engineering track filters.</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = openings.map(o => {
+    return `
+      <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-cockpit-card hover:shadow-lg hover:border-emerald-300 transition-all flex flex-col justify-between gap-3 group">
+        <div>
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600 block">${o.company}</span>
+              <h4 class="font-display font-bold text-sm sm:text-base text-slate-900 group-hover:text-emerald-700 transition-colors">${o.role}</h4>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold shrink-0">
+              ${o.atsMatch} Fit
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-3">
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px] text-slate-400">location_on</span>
+              <span>${o.location}</span>
+            </span>
+            <span>•</span>
+            <span class="font-bold text-slate-700 uppercase text-[10px]">${o.level}</span>
+          </div>
+
+          <!-- Post Stats -->
+          <div class="grid grid-cols-3 gap-2 p-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs mb-3">
+            <div>
+              <span class="text-[10px] text-slate-400 block font-bold">POSTED</span>
+              <span class="font-mono font-bold text-slate-800">${o.daysAgo}d ago</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block font-bold">APPLICANTS</span>
+              <span class="font-mono font-bold text-indigo-600">${o.applicants} candidate${o.applicants === 1 ? '' : 's'}</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block font-bold">STATUS</span>
+              <span class="font-bold text-amber-600 text-[11px]">${o.urgency}</span>
+            </div>
+          </div>
+
+          <!-- Compensation -->
+          <div class="flex items-center justify-between text-xs mb-3 px-1">
+            <span class="text-slate-500 font-medium">Estimated TC:</span>
+            <span class="font-mono font-bold text-emerald-700">${o.salary}</span>
+          </div>
+
+          <!-- Tech stack tags -->
+          <div class="flex flex-wrap gap-1">
+            ${o.techStack.map(t => `<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px]">${t}</span>`).join('')}
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs gap-2">
+          <button type="button" onclick="saveOpeningToPipeline('${o.company}', '${o.role}', '${o.salary}', '${o.location}')" class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold transition-all flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px]">add_task</span>
+            <span>Add to Pipeline</span>
+          </button>
+
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="loadOpeningIntoCv('${o.company}', '${o.role}')" class="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all flex items-center gap-1 shadow-xs">
+              <span class="material-symbols-outlined text-[15px]">description</span>
+              <span>Tailor CV</span>
+            </button>
+            <button type="button" onclick="loadOpeningIntoReferral('${o.company}', '${o.role}')" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all flex items-center gap-1 shadow-xs">
+              <span class="material-symbols-outlined text-[15px]">diversity_3</span>
+              <span>Referral</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  safeCreateIcons();
+}
+
+/**
+ * Quick Bridge: Select company for CV
+ */
+function selectCompanyForCv(companyName) {
+  switchMncSubTab('cv-tailor');
+  const sel = document.getElementById('cv-target-company');
+  if (sel) {
+    sel.value = companyName;
+    handleCvCompanyChange();
+  }
+}
+
+/**
+ * Quick Bridge: Select company for Referral
+ */
+function selectCompanyForReferral(companyName) {
+  switchMncSubTab('referrals');
+  const sel = document.getElementById('referral-company');
+  if (sel) {
+    sel.value = companyName;
+    updateReferralPitch();
+  }
+}
+
+/**
+ * Quick Bridge: View Openings for a company
+ */
+function viewCompanyOpenings(companyName) {
+  switchMncSubTab('openings');
+  const filtered = MNC_OPENINGS.filter(o => o.company.toLowerCase().includes(companyName.toLowerCase()));
+  if (filtered.length > 0) {
+    renderMncOpenings(filtered);
+    showGlobalToast(`Showing ${filtered.length} active openings for ${companyName}`);
+  } else {
+    renderMncOpenings(MNC_OPENINGS);
+    showGlobalToast(`All active requisitions available in board`);
+  }
+}
+
+/**
+ * Bridge: Load specific opening into CV Tailor
+ */
+function loadOpeningIntoCv(company, role) {
+  switchMncSubTab('cv-tailor');
+  const sel = document.getElementById('cv-target-company');
+  const roleInput = document.getElementById('cv-target-role');
+  if (sel) sel.value = company;
+  if (roleInput) roleInput.value = role;
+  generateTailoredCV();
+}
+
+/**
+ * Bridge: Load specific opening into Referral Engine
+ */
+function loadOpeningIntoReferral(company, role) {
+  switchMncSubTab('referrals');
+  const sel = document.getElementById('referral-company');
+  const roleInput = document.getElementById('referral-role');
+  if (sel) sel.value = company;
+  if (roleInput) roleInput.value = role;
+  updateReferralPitch();
+}
+
+/**
+ * Bridge: Save Opening directly into Pipeline Matrix (Kanban)
+ */
+function saveOpeningToPipeline(company, role, salary, location) {
+  const newApp = {
+    id: Date.now(),
+    company: company,
+    role: role,
+    sender: `careers@${company.toLowerCase().replace(/[^a-z]/g, '')}.com`,
+    subject: `Application Confirmation: ${role} at ${company}`,
+    date: new Date().toISOString().split('T')[0],
+    daysAgo: 0,
+    body: `Your application for ${role} at ${company} (${location}) has been logged in Job Hunt Autopilot.\nTarget Compensation: ${salary}.\nNext step: Connect with recruiter / alumni for referral.`,
+    salary: salary,
+    location: location,
+    evaluatedStatus: 'applied',
+    isScam: false,
+    followUpDue: false
+  };
+
+  allEmails.unshift(newApp);
+  filteredEmails = [...allEmails];
+  renderAll();
+  showGlobalToast(`✓ ${company} — ${role} saved to Pipeline Matrix!`);
+}
+
+/**
+ * Handle CV Company Change to auto-fill matching tech stack
+ */
+function handleCvCompanyChange() {
+  const compName = document.getElementById('cv-target-company')?.value;
+  const comp = MNC_COMPANIES.find(c => c.name === compName);
+  if (comp) {
+    const stackInput = document.getElementById('cv-tech-stack');
+    if (stackInput) stackInput.value = comp.techStack.join(', ');
+  }
+  generateTailoredCV();
+}
+
+/**
+ * AI CV / Resume Generator tailored for chosen MNC and Requisition
+ */
+function generateTailoredCV() {
+  const company = document.getElementById('cv-target-company')?.value || "Stripe";
+  const role = document.getElementById('cv-target-role')?.value || "Staff Full-Stack Engineer";
+  const level = document.getElementById('cv-experience-level')?.value || "staff";
+  const track = document.getElementById('cv-track')?.value || "distributed";
+  const techStack = document.getElementById('cv-tech-stack')?.value || "Go, Python, React, Kubernetes, AWS";
+
+  const user = getAuthUser();
+  const candidateName = user.name || "Alex Chen";
+  const candidateEmail = user.email || "alex.chen@executive.dev";
+
+  let levelText = "8+ years of high-impact engineering leadership";
+  if (level === 'senior') levelText = "6+ years building distributed production software";
+  if (level === 'principal') levelText = "12+ years architecting enterprise distributed backbones";
+  if (level === 'mid') levelText = "3+ years delivering scalable microservices & modern UI";
+  if (level === 'fresher') levelText = "Graduate engineer with rigorous computer science foundation";
+
+  const cvMarkdown = `
+# ${candidateName.toUpperCase()}
+**${role}** | ${candidateEmail} | San Francisco / Remote | linkedin.com/in/alex-chen-exec | github.com/alexchen
+
+---
+
+### PROFESSIONAL EXECUTIVE SUMMARY
+Results-driven software architect with ${levelText}, specializing in high-throughput distributed systems, zero-trust cloud security, and mission-critical reliability tailored for **${company}**. Proven track record reducing P99 latency by 42%, saving $1.4M in cloud compute overhead, and scaling event-driven transaction pipelines to 45,000+ rps with five-nines (99.999%) SLA.
+
+---
+
+### CORE TECHNICAL COMPETENCIES
+- **Languages & Frameworks:** ${techStack}
+- **Distributed Architecture:** Microservices, Event Sourcing (Kafka, SQS), Raft Consensus, Idempotency Engines
+- **Cloud & Orchestration:** Kubernetes (EKS/GKE), Docker, Envoy SDS, Terraform, AWS, Azure, GCP
+- **Databases & Caching:** PostgreSQL, Redis Cluster, Cassandra, Distributed Spanner, DynamoDB
+- **Observability & Security:** OpenTelemetry, Prometheus, Grafana, Datadog, Zero-Trust mTLS, DKIM/SPF
+
+---
+
+### KEY PROFESSIONAL ACCOMPLISHMENTS (GOOGLE XYZ / STAR FORMAT)
+
+**Staff Distributed Systems Architect** — Distributed Infrastructure Platform (2022 – Present)
+- **Engineered Planetary Payment Isolation Pipeline:** Architected idempotent state machine handling 45,000 rps, cutting transaction replay failures by 99.4% and maintaining 99.999% uptime across multi-region failovers.
+- **Microservices & Telemetry Optimization:** Replaced legacy polling architecture with Envoy Secret Discovery Service (SDS) and gRPC streaming, lowering memory utilization by 34% across 850 Kubernetes pods.
+- **Autonomous Threat Quarantine & Fraud Shield:** Deployed heuristic email & token threat filter, automatically preventing credential spoofing and saving an estimated $380,000 in simulated financial wire fraud.
+
+**Senior Software Engineer** — Cloud Scale Solutions (2019 – 2022)
+- **High-Throughput Caching Layer:** Deployed distributed Redis Cluster with cache-aside and bloom filters, eliminating database stampedes and boosting cache hit ratio from 78% to 96.8%.
+- **Zero-Downtime Migration:** Spearheaded live data migration of 14TB multi-tenant PostgreSQL cluster to AWS Aurora with zero read/write downtime for 2.4M active users.
+- **Cross-Functional Mentorship:** Mentored 12 mid-level and junior engineers through technical promotion loops; led internal design reviews on concurrency and lock-free data structures.
+
+---
+
+### EDUCATION & CERTIFICATIONS
+- **Bachelor of Science in Computer Science & Distributed Systems** — Top Tier University (First Class Honors)
+- **Certified Kubernetes Administrator (CKA)** — Cloud Native Computing Foundation (CNCF)
+- **AWS Certified Solutions Architect – Professional (SAP-C02)**
+  `.trim();
+
+  const container = document.getElementById('cv-output-container');
+  if (container) {
+    container.innerText = cvMarkdown;
+  }
+
+  // Update ATS score random variance (94% - 98%)
+  const atsEl = document.getElementById('cv-ats-score');
+  if (atsEl) {
+    atsEl.innerText = `${Math.floor(Math.random() * 4) + 95}% ATS Compatibility`;
+  }
+}
+
+/**
+ * Copy Generated CV to clipboard
+ */
+function copyGeneratedCV() {
+  const text = document.getElementById('cv-output-container')?.innerText || "";
+  navigator.clipboard.writeText(text);
+  showGlobalToast("✓ Tailored ATS CV copied to clipboard!");
+}
+
+/**
+ * Download CV as text file
+ */
+function downloadCVText() {
+  const text = document.getElementById('cv-output-container')?.innerText || "";
+  const blob = new Blob([text], { type: 'text/markdown;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Alex_Chen_CV_${document.getElementById('cv-target-company')?.value || 'MNC'}.md`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showGlobalToast("✓ CV downloaded successfully as Markdown!");
+}
+
+/**
+ * Set Persona for Referral Pitch Generator
+ */
+function setReferralPersona(persona) {
+  currentReferralPersona = persona;
+  const personas = ['alumni', 'peer', 'manager', 'recruiter'];
+
+  personas.forEach(p => {
+    const btn = document.getElementById(`btn-ref-${p}`);
+    if (btn) {
+      if (p === persona) {
+        btn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-xs transition-all";
+      } else {
+        btn.className = "px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all";
+      }
+    }
+  });
+
+  updateReferralPitch();
+}
+
+/**
+ * Update Referral Pitch content
+ */
+function updateReferralPitch() {
+  const company = document.getElementById('referral-company')?.value || "Google";
+  const role = document.getElementById('referral-role')?.value || "Staff Full-Stack Engineer";
+  const highlight = document.getElementById('referral-highlight')?.value || "Scaled distributed payment pipelines to 45,000 rps with 99.999% SLA";
+
+  const user = getAuthUser();
+  const candidateName = user.name || "Alex Chen";
+
+  let subject = "";
+  let body = "";
+
+  if (currentReferralPersona === 'alumni') {
+    subject = `Fellow Alumni reaching out — ${role} opening at ${company}`;
+    body = `Hi [Alumni Name],\n\nHope you are having a productive week! I noticed you are an engineer at ${company} and saw that we share a background from [University / Alumni Network].\n\nI’m reaching out because I’m preparing to apply for the ${role} requisition at ${company}. Recently, I ${highlight}, and I’ve been following ${company}’s work in distributed systems with great admiration.\n\nWould you be open to submitting an internal referral, or sharing a quick 5-minute pointer on the team’s current interview focus? My resume is ready, and I'd be immensely grateful.\n\nWarm regards,\n${candidateName}\n[LinkedIn Profile Link]`;
+  } else if (currentReferralPersona === 'peer') {
+    subject = `Quick note from an engineer — ${role} loop at ${company}`;
+    body = `Hi [Engineer Name],\n\nI came across your profile while reading about ${company}’s recent engineering updates. Loved your work on distributed scalability.\n\nI’m a staff/senior engineer specializing in high-throughput cloud backends. In my recent role, I ${highlight}.\n\nI’m currently applying for the open ${role} position at ${company}. If you have a moment, I would love to connect for a quick referral into the hiring team. Happy to share my portfolio/resume upfront!\n\nBest,\n${candidateName}\n[GitHub & Portfolio URL]`;
+  } else if (currentReferralPersona === 'manager') {
+    subject = `Candidate alignment for ${role} — ${candidateName}`;
+    body = `Hi [Hiring Manager Name],\n\nI noticed you lead the team expanding the ${role} function at ${company}.\n\nGiven your team’s focus on high-availability and reliability, I wanted to reach out directly. Over the past 8+ years, I have architected mission-critical platforms; most recently, I ${highlight}.\n\nI’ve submitted my application for the role and would welcome a brief conversation to discuss how my distributed systems experience can immediately help your team hit upcoming milestones.\n\nRespectfully,\n${candidateName}\n[Direct Phone & Calendly Link]`;
+  } else {
+    subject = `Experienced candidate inquiry: ${role} (${company})`;
+    body = `Hi [Recruiter Name],\n\nI hope you are well! I noticed you are currently sourcing talent for the ${role} role at ${company}.\n\nMy background aligns closely with the core requisition requirements: 8+ years in distributed architecture, and recently I ${highlight}.\n\nI’d love to connect for a preliminary screen or share my tailored resume directly for your hiring manager’s review. Thank you for your time!\n\nBest regards,\n${candidateName}\n[Resume PDF Attached]`;
+  }
+
+  const subjBox = document.getElementById('referral-subject-box');
+  const bodyBox = document.getElementById('referral-body-box');
+
+  if (subjBox) subjBox.innerText = subject;
+  if (bodyBox) bodyBox.innerText = body;
+}
+
+/**
+ * Copy Referral pitch to clipboard
+ */
+function copyReferralPitch() {
+  const subj = document.getElementById('referral-subject-box')?.innerText || "";
+  const body = document.getElementById('referral-body-box')?.innerText || "";
+  const full = `Subject: ${subj}\n\n${body}`;
+  navigator.clipboard.writeText(full);
+  showGlobalToast("✓ Referral message copied to clipboard!");
+}
+
+/**
+ * Open pre-filtered LinkedIn search for company alumni
+ */
+function searchCompanyAlumniOnLinkedIn() {
+  const comp = document.getElementById('referral-company')?.value || "Google";
+  const url = `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(comp + " software engineer alumni")}`;
+  window.open(url, '_blank');
+}
+
+/**
+ * Render Curated Courses & Roadmaps Grid
+ */
+function renderCoursesGrid() {
+  const container = document.getElementById('courses-grid-container');
+  if (!container) return;
+
+  container.innerHTML = CURATED_COURSES.map(c => {
+    return `
+      <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-cockpit-card hover:shadow-lg hover:border-amber-300 transition-all flex flex-col justify-between gap-3 group">
+        <div>
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded-full ${c.badgeColor} border text-[10px] font-bold">
+              ${c.badge}
+            </span>
+            <span class="text-[10px] text-slate-400 font-mono font-semibold">${c.estimatedHours}</span>
+          </div>
+
+          <h4 class="font-display font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700 transition-colors leading-snug mb-1">${c.title}</h4>
+          <span class="text-[11px] font-semibold text-slate-500 block mb-2">By ${c.author}</span>
+
+          <p class="text-xs text-slate-600 leading-relaxed mb-3">${c.description}</p>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-[10px] uppercase font-bold text-slate-400">${c.difficulty}</span>
+          <a href="${c.link}" target="_blank" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-xs transition-all flex items-center gap-1">
+            <span>Explore Course</span>
+            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+          </a>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  safeCreateIcons();
+}
+
+/**
+ * Render Verified Mentors Grid
+ */
+function renderMentorsGrid() {
+  const container = document.getElementById('mentors-grid-container');
+  if (!container) return;
+
+  container.innerHTML = VERIFIED_MENTORS.map(m => {
+    return `
+      <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-cockpit-card hover:shadow-lg hover:border-purple-300 transition-all flex flex-col justify-between gap-3 group">
+        <div>
+          <div class="flex items-center gap-3 mb-2.5">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${m.color} text-white font-black text-sm flex items-center justify-center shadow-md shrink-0">
+              ${m.avatar}
+            </div>
+            <div>
+              <h4 class="font-display font-bold text-sm text-slate-900 group-hover:text-purple-700 transition-colors">${m.name}</h4>
+              <p class="text-[11px] font-semibold text-slate-600">${m.role}</p>
+              <span class="text-[10px] font-bold text-indigo-600">${m.company}</span>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed mb-3 line-clamp-3">${m.bio}</p>
+
+          <div class="flex flex-wrap gap-1 mb-2">
+            ${m.specialties.map(s => `<span class="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[10px] font-semibold">${s}</span>`).join('')}
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>${m.slotsAvailable}</span>
+          </span>
+          <button type="button" onclick="openMockModal('${m.name}', '${m.role} @ ${m.company}')" class="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px]">event</span>
+            <span>Book Mock</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  safeCreateIcons();
+}
+
+/**
+ * Open Simulated 1:1 Mock Interview Booking Modal
+ */
+function openMockModal(mentorName, mentorRole) {
+  selectedMockMentor = { name: mentorName, role: mentorRole };
+  const nameEl = document.getElementById('mock-modal-mentor-name');
+  const roleEl = document.getElementById('mock-modal-mentor-role');
+  if (nameEl) nameEl.innerText = `Book 1:1 Mock with ${mentorName}`;
+  if (roleEl) roleEl.innerText = mentorRole;
+
+  const modal = document.getElementById('modal-book-mock');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+function closeMockModal() {
+  const modal = document.getElementById('modal-book-mock');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function confirmMockBooking() {
+  const date = document.getElementById('mock-date-input')?.value || "2026-11-04";
+  const time = document.getElementById('mock-time-select')?.value || "16:00 UTC";
+  const track = document.getElementById('mock-track-select')?.value || "hld";
+  const mentor = selectedMockMentor?.name || "Mentor";
+
+  closeMockModal();
+  showGlobalToast(`✓ 1:1 Mock scheduled with ${mentor} on ${date} at ${time}! Calendar invite generated.`);
+}
+
+/**
+ * Entry function called when switching to MNC Hub view
+ */
+function renderMncHub() {
+  renderMncCompanies();
+  renderMncOpenings();
+  renderCoursesGrid();
+  renderMentorsGrid();
+  safeCreateIcons();
+}
+
 // Kick off initialization on DOM ready
 document.addEventListener('DOMContentLoaded', initAutopilot);
+

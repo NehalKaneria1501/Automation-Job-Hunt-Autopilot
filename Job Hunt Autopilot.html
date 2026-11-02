@@ -551,6 +551,12 @@
             <span>Grafana &amp; Retro</span>
           </button>
 
+          <button id="tab-mnc-hub" type="button" onclick="switchView('mnc-hub')" class="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-emerald-800 hover:bg-emerald-50 transition-all whitespace-nowrap shrink-0">
+            <span class="material-symbols-outlined text-[18px] text-emerald-600">domain</span>
+            <span>MNCs &amp; Mentors</span>
+            <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-mono font-bold">50+ Openings</span>
+          </button>
+
           <button id="tab-inbox" type="button" onclick="switchView('inbox')" class="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all whitespace-nowrap shrink-0">
             <i data-lucide="inbox" class="w-4 h-4"></i>
             <span>Synced Inbox (20)</span>
@@ -1167,6 +1173,435 @@
             <tbody id="inbox-table-body" class="divide-y divide-slate-100"></tbody>
           </table>
         </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 7: MNC DIRECTORY, LIVE OPENINGS, CV BUILDER, REFERRALS & MENTORS HUB -->
+      <!-- ========================================================================= -->
+      <div id="view-mnc-hub" class="hidden flex-col gap-6">
+
+        <!-- Executive Hero Banner -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+          <div class="absolute -right-16 -top-16 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-16 -bottom-16 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="space-y-3 max-w-2xl">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-xs font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Global Requisition Intelligence • 50+ Top MNCs</span>
+              </div>
+              <h2 class="font-display font-black text-2xl sm:text-3xl text-white tracking-tight leading-tight">
+                MNC Career Directory &amp; Mentorship Cockpit
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Explore verified Product-based (FAANG &amp; Tier-1) and Service-based (Global IT Giants) MNCs with live opening stats across all global locations (US, India, Europe, APAC). Instantly generate tailored ATS CVs, draft high-conversion referral pitches, conquer curated interview courses, and book 1:1 mocks with FAANG &amp; startup mentors.
+              </p>
+            </div>
+
+            <!-- Key Telemetry Badges -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 shrink-0">
+              <div class="p-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
+                <span class="text-[10px] text-slate-400 uppercase font-bold block">Product MNCs</span>
+                <span class="text-lg font-black text-white font-mono">34 Companies</span>
+              </div>
+              <div class="p-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
+                <span class="text-[10px] text-slate-400 uppercase font-bold block">Service MNCs</span>
+                <span class="text-lg font-black text-indigo-300 font-mono">18 Companies</span>
+              </div>
+              <div class="p-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
+                <span class="text-[10px] text-slate-400 uppercase font-bold block">Active Openings</span>
+                <span class="text-lg font-black text-emerald-400 font-mono">50+ Verified</span>
+              </div>
+              <div class="p-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
+                <span class="text-[10px] text-slate-400 uppercase font-bold block">1:1 Mentors</span>
+                <span class="text-lg font-black text-amber-300 font-mono">12 Mentors</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- MNC Hub Sub-Navigation Tabs Bar -->
+          <div class="mt-8 pt-6 border-t border-white/10 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <button type="button" onclick="switchMncSubTab('companies')" id="mnc-subtab-companies" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm transition-all whitespace-nowrap shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-indigo-600">apartment</span>
+              <span>All MNCs Directory</span>
+            </button>
+            <button type="button" onclick="switchMncSubTab('openings')" id="mnc-subtab-openings" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-all whitespace-nowrap shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-emerald-400">work</span>
+              <span>Live Openings &amp; Stats</span>
+              <span class="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-1.5 py-0.5 rounded-full font-bold">50+</span>
+            </button>
+            <button type="button" onclick="switchMncSubTab('cv-tailor')" id="mnc-subtab-cv-tailor" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-all whitespace-nowrap shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-purple-400">description</span>
+              <span>AI CV &amp; Tailored Resume</span>
+            </button>
+            <button type="button" onclick="switchMncSubTab('referrals')" id="mnc-subtab-referrals" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-all whitespace-nowrap shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-blue-400">diversity_3</span>
+              <span>Job Referral Engine</span>
+            </button>
+            <button type="button" onclick="switchMncSubTab('courses')" id="mnc-subtab-courses" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-all whitespace-nowrap shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-amber-400">menu_book</span>
+              <span>Interview Prep Courses</span>
+            </button>
+            <button type="button" onclick="switchMncSubTab('mentors')" id="mnc-subtab-mentors" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-all whitespace-nowrap shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-rose-400">record_voice_over</span>
+              <span>1:1 Mentors &amp; Startup Hub</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-SECTION 1: MNC DIRECTORY (PRODUCT VS SERVICE, LOCATIONS, TC) -->
+        <!-- =================================================================== -->
+        <div id="mnc-panel-companies" class="flex flex-col gap-6">
+          <!-- Filter Controls -->
+          <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-cockpit-card flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <!-- Company Type Selector -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none shrink-0">
+              <button type="button" onclick="setMncTypeFilter('all')" id="btn-mnc-type-all" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-xs transition-all whitespace-nowrap">
+                All MNCs (52)
+              </button>
+              <button type="button" onclick="setMncTypeFilter('product')" id="btn-mnc-type-product" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all whitespace-nowrap">
+                Product-Based (34)
+              </button>
+              <button type="button" onclick="setMncTypeFilter('service')" id="btn-mnc-type-service" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all whitespace-nowrap">
+                Service-Based (18)
+              </button>
+            </div>
+
+            <!-- Location & Search Filters -->
+            <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5 flex-1 max-w-xl justify-end">
+              <select id="mnc-location-filter" onchange="filterMncCards()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                <option value="all">🌍 All Locations (US, India, EU, APAC)</option>
+                <option value="us">🇺🇸 US (Remote / SF / NYC / Seattle / Austin)</option>
+                <option value="india">🇮🇳 India (Bengaluru / Hyderabad / Pune / NCR)</option>
+                <option value="europe">🇪🇺 Europe (London / Berlin / Dublin / Amsterdam)</option>
+                <option value="apac">🌏 APAC (Singapore / Tokyo / Sydney)</option>
+              </select>
+
+              <div class="relative flex-1 min-w-[160px]">
+                <span class="material-symbols-outlined text-[18px] absolute left-3 top-2.5 text-slate-400">search</span>
+                <input 
+                  type="text" 
+                  id="mnc-search-input" 
+                  onkeyup="filterMncCards()" 
+                  placeholder="Search company, tech stack..." 
+                  class="w-full pl-9 pr-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- MNC Companies Grid -->
+          <div id="mnc-companies-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            <!-- Dynamic MNC company cards will be injected by app.js -->
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-SECTION 2: LIVE OPENINGS BOARD & POST STATS -->
+        <!-- =================================================================== -->
+        <div id="mnc-panel-openings" class="hidden flex-col gap-6">
+          <!-- Openings Control Bar -->
+          <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-cockpit-card flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-display font-bold text-base text-slate-900">Live Requisition Stream &amp; Post Stats</h3>
+              <p class="text-xs text-slate-500">Real-time candidate metrics: Days posted, applicant count, compensation band, ATS match rate</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2.5">
+              <select id="openings-level-filter" onchange="filterOpeningsList()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700">
+                <option value="all">All Experience Levels</option>
+                <option value="fresher">Fresher / Graduate (0-2y)</option>
+                <option value="mid">Mid-Level (2-5y)</option>
+                <option value="senior">Senior (5-8y)</option>
+                <option value="staff">Staff / Lead / Principal (8+y)</option>
+              </select>
+
+              <select id="openings-track-filter" onchange="filterOpeningsList()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700">
+                <option value="all">All Engineering Tracks</option>
+                <option value="backend">Backend &amp; Distributed Systems</option>
+                <option value="frontend">Frontend &amp; Platform Web</option>
+                <option value="fullstack">Full-Stack Architect</option>
+                <option value="cloud">Cloud, SRE &amp; DevOps</option>
+                <option value="ai">AI / ML / Data Science</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Openings List Container -->
+          <div id="openings-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Openings cards will be rendered dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-SECTION 3: AI CV & TAILORED RESUME BUILDER -->
+        <!-- =================================================================== -->
+        <div id="mnc-panel-cv-tailor" class="hidden flex-col gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Input Configuration Panel (Col 5) -->
+            <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200 shadow-cockpit-card space-y-4">
+              <div class="border-b border-slate-100 pb-3">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-bold uppercase tracking-wider mb-2">
+                  <span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                  <span>ATS-Optimized Engine</span>
+                </div>
+                <h3 class="font-display font-bold text-base text-slate-900">Tailor CV for Requisition</h3>
+                <p class="text-xs text-slate-500">Injects Google XYZ bullet points, quantifiable impact, and matching ATS keywords</p>
+              </div>
+
+              <div class="space-y-3.5 text-xs">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Target MNC Company</label>
+                  <select id="cv-target-company" onchange="handleCvCompanyChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20">
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Target Opening Role</label>
+                  <input type="text" id="cv-target-role" value="Staff Full-Stack Engineer" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Experience Level</label>
+                    <select id="cv-experience-level" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800">
+                      <option value="senior">Senior (5-8y)</option>
+                      <option value="staff" selected>Staff / Lead (8-12y)</option>
+                      <option value="principal">Principal / Architect (12+y)</option>
+                      <option value="mid">Mid-Level (2-5y)</option>
+                      <option value="fresher">Fresher (0-2y)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Architecture Track</label>
+                    <select id="cv-track" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800">
+                      <option value="distributed">Distributed Systems &amp; Cloud</option>
+                      <option value="frontend">High-Performance Frontend &amp; Web</option>
+                      <option value="microservices">Microservices &amp; High-Throughput</option>
+                      <option value="aiml">AI / ML Platforms &amp; RAG</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Primary Tech Stack Keywords</label>
+                  <input type="text" id="cv-tech-stack" value="Go, Python, React, TypeScript, Kafka, Kubernetes, AWS, PostgreSQL, Redis" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20" />
+                </div>
+
+                <button type="button" onclick="generateTailoredCV()" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md shadow-purple-600/20 transition-all active:scale-95 flex items-center justify-center gap-1.5">
+                  <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                  <span>Generate Tailored ATS CV Now</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Output Preview & Action Panel (Col 7) -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200 shadow-cockpit-card flex flex-col">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-purple-600 text-[20px]">article</span>
+                  <h3 class="font-display font-bold text-base text-slate-900">Tailored CV &amp; STAR Accomplishments</h3>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="cv-ats-score">96% ATS Compatibility</span>
+                  </span>
+                  <button type="button" onclick="copyGeneratedCV()" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">content_copy</span>
+                    <span>Copy</span>
+                  </button>
+                  <button type="button" onclick="downloadCVText()" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition-all flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">download</span>
+                    <span>Save .txt</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Output Box -->
+              <div class="flex-1 min-h-[360px] max-h-[500px] overflow-y-auto bg-slate-900 text-slate-200 rounded-2xl p-4 font-mono text-xs leading-relaxed space-y-3" id="cv-output-container">
+                <!-- Tailored CV Content will appear here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-SECTION 4: JOB REFERRAL OUTREACH ENGINE -->
+        <!-- =================================================================== -->
+        <div id="mnc-panel-referrals" class="hidden flex-col gap-6">
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-cockpit-card space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <h3 class="font-display font-bold text-base text-slate-900">1-Click Job Referral Outreach Engine</h3>
+                <p class="text-xs text-slate-500">Pre-engineered cold message templates with high response rates across LinkedIn &amp; Email</p>
+              </div>
+
+              <!-- Persona Selector -->
+              <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button type="button" onclick="setReferralPersona('alumni')" id="btn-ref-alumni" class="px-3 py-1 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-xs transition-all">
+                  🎓 College Alumni
+                </button>
+                <button type="button" onclick="setReferralPersona('peer')" id="btn-ref-peer" class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+                  💻 Staff / Senior Peer
+                </button>
+                <button type="button" onclick="setReferralPersona('manager')" id="btn-ref-manager" class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+                  👔 Hiring Manager
+                </button>
+                <button type="button" onclick="setReferralPersona('recruiter')" id="btn-ref-recruiter" class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+                  📋 Talent Partner
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Referral Fields -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Company</label>
+                <select id="referral-company" onchange="updateReferralPitch()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Target Requisition / Role</label>
+                <input type="text" id="referral-role" value="Staff Full-Stack Engineer (Req #49120)" onkeyup="updateReferralPitch()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Your Key Highlight (1 Sentence)</label>
+                <input type="text" id="referral-highlight" value="Scaled payment isolation pipelines to 45,000 rps with 99.999% SLA" onkeyup="updateReferralPitch()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800" />
+              </div>
+            </div>
+
+            <!-- Pitch Display Box -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Subject Line (InMail / Email)</span>
+                <div id="referral-subject-box" class="p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs font-bold text-slate-800"></div>
+              </div>
+
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Message Body (Optimized for 150-word readability)</span>
+                <div id="referral-body-box" class="p-4 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-800 whitespace-pre-wrap leading-relaxed"></div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="copyReferralPitch()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 active:scale-95">
+                    <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                    <span>Copy Full Referral Message</span>
+                  </button>
+                  <button type="button" onclick="searchCompanyAlumniOnLinkedIn()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 active:scale-95">
+                    <span class="material-symbols-outlined text-[16px]">travel_explore</span>
+                    <span>Search Alumni on LinkedIn ↗</span>
+                  </button>
+                </div>
+                <span class="text-[11px] text-slate-500 font-medium">Pro-tip: Send between 8:30 AM – 9:45 AM recipient local time.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-SECTION 5: INTERVIEW PREP COURSES & ROADMAPS -->
+        <!-- =================================================================== -->
+        <div id="mnc-panel-courses" class="hidden flex-col gap-6">
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-cockpit-card space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="font-display font-bold text-base text-slate-900">Curated Interview Prep Roadmaps &amp; Free Masterclasses</h3>
+                <p class="text-xs text-slate-500">Battle-tested resources for DSA, System Design (HLD), Machine Coding (LLD) and Service MNC Aptitude</p>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">100% Free Resources</span>
+            </div>
+
+            <!-- Courses Grid -->
+            <div id="courses-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Rendered dynamically by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-SECTION 6: 1:1 MENTORS DIRECTORY & STARTUP MENTORSHIP -->
+        <!-- =================================================================== -->
+        <div id="mnc-panel-mentors" class="hidden flex-col gap-6">
+          <!-- Verified Mentors Section -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-cockpit-card space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="font-display font-bold text-base text-slate-900">Verified Industry Mentors (FAANG, Tier-1 &amp; Unicorns)</h3>
+                <p class="text-xs text-slate-500">Book simulated mock interviews, system design teardowns, and offer negotiation leveling</p>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-xs font-bold">Free Community Mocks</span>
+            </div>
+
+            <!-- Mentors Grid -->
+            <div id="mentors-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Mentors rendered dynamically by app.js -->
+            </div>
+          </div>
+
+          <!-- Early-Stage Startup Mentorship & Founder Hub -->
+          <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-5">
+              <div class="space-y-1.5">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold uppercase tracking-wider">
+                  <span class="material-symbols-outlined text-[14px]">rocket_launch</span>
+                  <span>Startup Mentorship &amp; Founding Engineer Accelerator</span>
+                </div>
+                <h3 class="font-display font-bold text-xl text-white">Thinking of Joining or Launching a Startup?</h3>
+                <p class="text-xs text-slate-300">Navigating early-stage equity grants, founding engineer roles, and YC Startup School curriculum</p>
+              </div>
+            </div>
+
+            <!-- 3 Startup Guidance Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2.5 backdrop-blur-sm">
+                <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-[18px]">pie_chart</span>
+                </div>
+                <h4 class="font-bold text-white text-sm">Startup Equity Calculator</h4>
+                <p class="text-slate-300 leading-relaxed text-[11px]">
+                  Founding Engineer #1-#5 standard grant is <strong>0.5% - 2.5%</strong> with 4-year vesting (1-year cliff). Compare cash vs equity upside before signing.
+                </p>
+                <div class="pt-2 text-[10px] text-amber-400 font-mono font-bold">
+                  Rule of thumb: 1% Seed equity = ~$150k target value at Series A.
+                </div>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2.5 backdrop-blur-sm">
+                <div class="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-[18px]">school</span>
+                </div>
+                <h4 class="font-bold text-white text-sm">YC Startup School Library</h4>
+                <p class="text-slate-300 leading-relaxed text-[11px]">
+                  Access Y Combinator's core lectures on How to Talk to Users, Finding Product-Market Fit, and Building MVP Architecture with rapid iterations.
+                </p>
+                <a href="https://www.startupschool.org/curriculum" target="_blank" class="inline-flex items-center gap-1 text-indigo-300 hover:text-white font-bold text-[11px] pt-1">
+                  Open YC Curriculum ↗
+                </a>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2.5 backdrop-blur-sm">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-[18px]">hub</span>
+                </div>
+                <h4 class="font-bold text-white text-sm">Wellfound &amp; AngelList Radar</h4>
+                <p class="text-slate-300 leading-relaxed text-[11px]">
+                  Direct access to seed and Series A founders with zero recruiter friction. Filter by remote-first culture, runway, and verified venture funding.
+                </p>
+                <a href="https://wellfound.com/jobs" target="_blank" class="inline-flex items-center gap-1 text-emerald-300 hover:text-white font-bold text-[11px] pt-1">
+                  Explore Startup Roles ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </main>
@@ -2680,6 +3115,80 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- MODAL: 1:1 MOCK INTERVIEW BOOKING (WITH SIMULATED CALENDAR) -->
+  <!-- ========================================================================= -->
+  <div id="modal-book-mock" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-6 bg-gradient-to-r from-slate-900 to-indigo-950 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white flex items-center justify-center shadow-md">
+            <span class="material-symbols-outlined text-[24px]">videocam</span>
+          </div>
+          <div>
+            <h3 id="mock-modal-mentor-name" class="font-display font-extrabold text-base text-white">Book 1:1 Mock Interview</h3>
+            <p id="mock-modal-mentor-role" class="text-xs text-indigo-300">Staff / Principal Industry Mentor</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeMockModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-4 text-xs">
+        <div class="p-3 bg-purple-50 border border-purple-200 rounded-2xl flex items-center justify-between">
+          <div>
+            <div class="font-bold text-purple-900">100% Free Community Mock (45 Mins)</div>
+            <div class="text-[11px] text-purple-700">Includes system design whiteboard + live feedback scorecard</div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">Zero Cost</span>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Select Interview Focus Track</label>
+          <select id="mock-track-select" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800">
+            <option value="hld">System Design (HLD) &amp; Scaling Distributed Architecture</option>
+            <option value="lld">Machine Coding &amp; Object Oriented Design (LLD)</option>
+            <option value="dsa">Data Structures &amp; Complex Problem Solving (DSA)</option>
+            <option value="behavioral">Behavioral (Amazon LPs / Staff Engineer Influence)</option>
+            <option value="resume">Resume Teardown &amp; Portfolio Roast</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Date</label>
+            <input type="date" id="mock-date-input" value="2026-11-04" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Timeslot (UTC)</label>
+            <select id="mock-time-select" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800">
+              <option value="14:00">14:00 UTC (9:00 AM EST)</option>
+              <option value="16:00" selected>16:00 UTC (11:00 AM EST)</option>
+              <option value="18:30">18:30 UTC (1:30 PM EST)</option>
+              <option value="21:00">21:00 UTC (4:00 PM EST)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Specific Target Company or Questions (Optional)</label>
+          <textarea id="mock-notes-input" rows="2" placeholder="e.g. Preparing for Stripe Round 2 Systems Scaling loop..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:bg-white focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-2 flex items-center justify-between border-t border-slate-100">
+          <button type="button" onclick="closeMockModal()" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-bold border border-slate-200">
+            Cancel
+          </button>
+          <button type="button" onclick="confirmMockBooking()" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold flex items-center gap-1.5 shadow-md shadow-purple-600/20 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+            <span>Confirm Booking &amp; Add to Calendar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- MOBILE SLIDE-OVER QUICK ACTIONS DRAWER -->
   <!-- ========================================================================= -->
   <div id="mobile-actions-drawer" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden flex-col justify-end sm:justify-center p-3 sm:p-4">
@@ -2695,6 +3204,10 @@
       </div>
 
       <div class="p-4 overflow-y-auto grid grid-cols-2 gap-2.5 text-xs">
+        <button type="button" onclick="switchView('mnc-hub'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-emerald-50 border border-emerald-100 flex flex-col items-center gap-1.5 text-emerald-900 text-center font-bold col-span-2">
+          <span class="material-symbols-outlined text-[24px] text-emerald-600">apartment</span>
+          <span>🏢 MNCs, Openings, CVs &amp; Mentors Hub (50+)</span>
+        </button>
         <button type="button" onclick="openResumeMatcher(); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-indigo-50 border border-indigo-100 flex flex-col items-center gap-1.5 text-indigo-900 text-center font-bold">
           <span class="material-symbols-outlined text-[24px] text-indigo-600">psychology</span>
           <span>AI Resume Match</span>
