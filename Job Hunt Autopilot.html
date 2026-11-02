@@ -606,6 +606,20 @@
 </div>
         </div>
 
+                    <button type="button" onclick="switchView('product-links'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">hub</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Product Links Hub</span>
+                  <span class="px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 text-[9px] font-bold">18 Platforms</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Google Ads, AdSense, Meta, TikTok, BigQuery &amp; Social</div>
+              </div>
+            </button>
+
+</div>
+        </div>
+
         <!-- DROPDOWN 2: AI Copilot & Tools -->
         <div class="relative header-dropdown-container">
           <button type="button" onclick="toggleHeaderDropdown('nav-dd-ai-tools')" class="px-3 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors group">
@@ -1029,6 +1043,17 @@
             <span>AI Radar</span>
           </button>
 
+                    <button id="tab-product-links" type="button" onclick="switchView('product-links')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all whitespace-nowrap shrink-0">
+            <span class="material-symbols-outlined text-[17px] text-indigo-600">hub</span>
+            <span>Product Links</span>
+            <span class="px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 text-[9px] font-bold">18 Active</span>
+          </button>
+
+          <button id="tab-chrome-mcp" type="button" onclick="openChromeMcpModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition-all whitespace-nowrap shrink-0">
+            <span class="material-symbols-outlined text-[17px] text-emerald-600">developer_board</span>
+            <span>Chrome Dev AI MCP</span>
+            <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold">Online</span>
+          </button>
           <button id="tab-auth" type="button" onclick="switchView('auth')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all whitespace-nowrap shrink-0">
             <span class="material-symbols-outlined text-[17px] text-indigo-600">badge</span>
             <span>Candidate Portal</span>
@@ -1255,6 +1280,74 @@
       <div id="device-scroll-viewport" class="w-full flex-1 flex flex-col">
         <!-- MAIN BODY LAYOUT -->
         <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+            <!-- =================================================================== -->
+      <!-- MARKETING & PROMOTION BANNER (GA4 E-COMMERCE & PROMOTION TRACKING) -->
+      <!-- =================================================================== -->
+      <section 
+        id="promo-hero-banner" 
+        data-promotion-id="PROMO_FAANG_2026" 
+        data-promotion-name="FAANG Career Accelerator 50% Off" 
+        data-creative-name="summer2020_promo.jpg" 
+        data-creative-slot="featured_app_1" 
+        data-location-id="HERO_BANNER"
+        class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950 text-white p-5 sm:p-7 shadow-xl border border-indigo-500/30 group cursor-pointer transition-all hover:shadow-2xl hover:border-indigo-400"
+        onclick="handlePromotionClick(event)"
+      >
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div class="flex items-start sm:items-center gap-4">
+            <!-- Creative Image Element with explicit data-image-id -->
+            <div class="relative shrink-0">
+              <img 
+                id="promo-banner-img" 
+                data-image-id="IMG_PROMO_SUMMER_2026" 
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80" 
+                alt="FAANG Career Accelerator Promotion" 
+                class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover ring-2 ring-indigo-400/50 shadow-lg group-hover:scale-105 transition-transform"
+              />
+              <span class="absolute -top-2 -left-2 bg-gradient-to-r from-amber-400 to-rose-500 text-slate-950 text-[10px] font-black uppercase px-2 py-0.5 rounded-full shadow-md">
+                50% OFF
+              </span>
+            </div>
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold uppercase tracking-wider font-mono">
+                  PROMO ID: PROMO_FAANG_2026
+                </span>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
+                  Image ID: IMG_PROMO_SUMMER_2026
+                </span>
+              </div>
+              <h2 class="text-lg sm:text-xl md:text-2xl font-black font-display text-white tracking-tight">
+                FAANG &amp; MNC Career Accelerator 2026
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
+                Unlock top-tier DSA masterclasses, System Design blueprints, verified recruiter direct lines, and 1-on-1 mock interviews. Use code <span class="font-mono font-bold text-amber-300 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30">FAANG50</span> at Razorpay checkout.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 shrink-0 w-full md:w-auto justify-end">
+            <div class="text-right hidden sm:block">
+              <div class="text-[11px] text-slate-400 line-through">₹9,999 / yr</div>
+              <div class="text-xl sm:text-2xl font-black text-emerald-400 font-mono">₹4,999<span class="text-xs text-slate-300 font-normal"> / yr</span></div>
+            </div>
+            <button 
+              type="button" 
+              onclick="launchPromotionRazorpay(event)" 
+              class="w-full sm:w-auto px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all active:scale-95 group-hover:ring-2 group-hover:ring-white/40"
+            >
+              <span class="material-symbols-outlined text-[18px]">verified</span>
+              <span>Claim 50% Off via Razorpay</span>
+              <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ambient Glow -->
+        <div class="absolute -right-16 -top-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      </section>
 
       <!-- KPI CARDS BANNER -->
       <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3.5">
@@ -4597,6 +4690,108 @@
         </div>
       </div>
 
+    
+      <!-- ========================================================================= -->
+      <!-- VIEW: PRODUCT LINKS & ADVERTISING INTEGRATIONS HUB (18 CONNECTED PLATFORMS) -->
+      <!-- ========================================================================= -->
+      <div id="view-product-links" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Breadcrumbs & Header -->
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5">
+          <div>
+            <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+              <button type="button" onclick="switchView('kanban')" class="hover:text-indigo-600 transition-colors flex items-center gap-1 font-medium">
+                <span class="material-symbols-outlined text-[16px]">home</span> Home
+              </button>
+              <span>/</span>
+              <span class="font-bold text-slate-900">Admin &amp; Integrations</span>
+              <span>/</span>
+              <span class="font-bold text-indigo-600">Product Links</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-900 tracking-tight flex items-center gap-2.5">
+              <span>Product links</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold font-mono">18 / 18 Linked</span>
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+              These settings control which products link to this property (Google Analytics 4 Property: <span class="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">G-5B8CWW4EQB</span>).
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button 
+              type="button" 
+              onclick="JobHuntProductLinks.syncAll()" 
+              class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-indigo-600/20 active:scale-95 transition-all"
+            >
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Sync All 18 Links</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="openChromeMcpModal()" 
+              class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-xs flex items-center gap-1.5 transition-all"
+            >
+              <span class="material-symbols-outlined text-[16px]">developer_board</span>
+              <span>Chrome Dev AI MCP</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Telemetry Summary Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Product Links</div>
+            <div class="text-2xl font-black text-slate-900 mt-1 font-mono">18 Active</div>
+            <div class="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 100% Operational
+            </div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Google Ecosystem</div>
+            <div class="text-2xl font-black text-indigo-600 mt-1 font-mono">13 Linked</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Ads, BigQuery, Search, Play, etc.</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Social &amp; Performance Pixels</div>
+            <div class="text-2xl font-black text-purple-600 mt-1 font-mono">5 Linked</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Meta, Pinterest, Reddit, Snap, TikTok</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Signals Dispatched Today</div>
+            <div class="text-2xl font-black text-emerald-600 mt-1 font-mono" id="product-links-signals-count">14,820</div>
+            <div class="text-[11px] text-emerald-700 font-semibold mt-0.5">Real-time Attribution Active</div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+          <div class="flex flex-wrap items-center gap-1.5 text-xs font-bold">
+            <button type="button" onclick="JobHuntProductLinks.filterCategory('all')" id="pl-cat-all" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white shadow-xs">All (18)</button>
+            <button type="button" onclick="JobHuntProductLinks.filterCategory('google-ads')" id="pl-cat-google-ads" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200">Google Ads &amp; Search (5)</button>
+            <button type="button" onclick="JobHuntProductLinks.filterCategory('monetization')" id="pl-cat-monetization" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200">Monetization &amp; Display (4)</button>
+            <button type="button" onclick="JobHuntProductLinks.filterCategory('cloud-app')" id="pl-cat-cloud-app" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200">Cloud &amp; App (4)</button>
+            <button type="button" onclick="JobHuntProductLinks.filterCategory('social')" id="pl-cat-social" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200">Social &amp; Pixels (5)</button>
+          </div>
+
+          <div class="relative w-full sm:w-64">
+            <span class="material-symbols-outlined absolute left-3 top-2 text-[16px] text-slate-400">search</span>
+            <input 
+              type="text" 
+              id="pl-search-input" 
+              oninput="JobHuntProductLinks.search(this.value)" 
+              placeholder="Search product links..." 
+              class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <!-- 18 PRODUCT LINKS GRID -->
+        <div id="product-links-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Dynamically populated and maintained via JS with all 18 platforms -->
+        </div>
+
+      </div>
+
     </main>
 
     <!-- ========================================================================= -->
@@ -7119,6 +7314,341 @@
             <span>Download Clean PDF</span>
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- DOCUSIGN DIGITAL OFFER SIGNING MODAL (Notion Labs $390,000 TC Offer)      -->
+  <!-- ========================================================================= -->
+  <div id="modal-docusign" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-3xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto animate-in zoom-in-95 duration-200 max-h-[92vh]">
+      
+      <!-- DocuSign Official Header -->
+      <div class="bg-[#21409A] text-white px-6 py-4 flex items-center justify-between shadow-md">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-white text-[#21409A] flex items-center justify-center font-black text-sm shadow-sm font-sans tracking-tighter">
+            <span class="material-symbols-outlined text-[20px]">draw</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-display font-black text-base text-white tracking-tight">DocuSign eSignature</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[9px] font-bold uppercase">Envelope Verified</span>
+            </div>
+            <div class="text-[10px] text-blue-200 font-mono">
+              Envelope ID: <span id="docusign-envelope-id">94218734-C82D-4E11-9F31-893B802E4B17</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" onclick="closeDocuSignModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Offer Document Review Body -->
+      <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-700 custom-scrollbar flex-1">
+        
+        <!-- Company & Verification Banner -->
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-slate-900 text-white font-black text-lg flex items-center justify-center shadow-md font-sans">
+              N
+            </div>
+            <div>
+              <h2 class="font-display font-extrabold text-base text-slate-900" id="docusign-doc-company">Notion Labs, Inc.</h2>
+              <p class="text-xs text-slate-500" id="docusign-doc-role">Lead Product Specialist &bull; Full-Time Exempt</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Compensation</div>
+            <div class="text-lg font-black text-emerald-700 font-mono" id="docusign-doc-salary">$210,000 Base + $180,000 Equity</div>
+          </div>
+        </div>
+
+        <!-- Contract Terms & Compensation Breakdown -->
+        <div class="space-y-3 bg-white p-5 rounded-2xl border border-slate-200 leading-relaxed">
+          <h3 class="font-bold text-sm text-slate-900 font-display flex items-center gap-2">
+            <span class="material-symbols-outlined text-indigo-600 text-[18px]">article</span>
+            <span>Official Employment Agreement &amp; Covenants</span>
+          </h3>
+          <p class="text-slate-600">
+            This Executive Employment Agreement is entered into between <strong>Notion Labs, Inc.</strong> ("Company") and <strong>Alex Chen</strong> ("Employee"). Company hereby offers, and Employee accepts, employment on the terms specified below:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-[10px] font-bold uppercase text-slate-400">Annual Base Salary</span>
+              <div class="font-mono font-bold text-slate-900 text-sm">$210,000.00 USD (Bi-weekly pay schedule)</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-[10px] font-bold uppercase text-slate-400">Equity Grant (RSUs)</span>
+              <div class="font-mono font-bold text-slate-900 text-sm">$180,000.00 value (4-year vesting, 1-yr cliff)</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-[10px] font-bold uppercase text-slate-400">Upfront Sign-on Bonus</span>
+              <div class="font-mono font-bold text-emerald-700 text-sm">$25,000.00 USD (Cycle 1 disbursement)</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-[10px] font-bold uppercase text-slate-400">Benefits &amp; Equipment</span>
+              <div class="font-mono font-bold text-slate-900 text-sm">100% Medical/Dental/Vision + MacBook M3 Max</div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+            <strong>Confidentiality &amp; IP Assignment:</strong> Employee agrees to strictly safeguard proprietary code, client directories, trade secrets, and assign all inventions developed during employment to Notion Labs, Inc.
+          </p>
+        </div>
+
+        <!-- Interactive Digital Signature Pad -->
+        <div class="p-5 rounded-2xl bg-indigo-50/70 border-2 border-indigo-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-indigo-700 text-[18px]">history_edu</span>
+              <span class="font-bold text-slate-900 text-xs">Digital Signature &amp; Execution Pad</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button 
+                type="button" 
+                onclick="adoptDocuSignSignature()" 
+                class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] transition-colors"
+              >
+                Adopt Alex Chen Signature
+              </button>
+              <button 
+                type="button" 
+                onclick="clearDocuSignCanvas()" 
+                class="px-2.5 py-1 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-[11px] transition-colors"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <div class="relative bg-white rounded-xl border border-slate-300 shadow-inner overflow-hidden">
+            <canvas id="docusign-canvas" width="600" height="110" class="w-full h-28 cursor-crosshair block"></canvas>
+            <div id="docusign-sign-placeholder" class="absolute inset-0 flex items-center justify-center pointer-events-none text-slate-300 text-xs font-semibold italic">
+              Draw your signature here or click "Adopt Alex Chen Signature"
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] pt-1">
+            <div>
+              <span class="text-slate-400 block">Signatory:</span>
+              <span class="font-bold text-slate-800">Alex Chen</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">Email:</span>
+              <span class="font-mono text-slate-800">alex.chen@executive.dev</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">Cryptographic Stamp:</span>
+              <span class="font-mono text-emerald-700 font-bold" id="docusign-crypto-stamp">SHA256: 8a4f91...e201</span>
+            </div>
+          </div>
+
+          <!-- Legal Consent Checkbox -->
+          <label class="flex items-start gap-2 pt-2 cursor-pointer select-none">
+            <input type="checkbox" id="docusign-consent-check" class="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500" checked />
+            <span class="text-[11px] text-slate-600 leading-tight">
+              I agree to use electronic records and signatures pursuant to the U.S. Electronic Signatures in Global and National Commerce Act (ESIGN) and confirm my acceptance of the employment offer terms.
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
+        <button type="button" onclick="closeDocuSignModal()" class="px-4 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold transition-colors">
+          Cancel &bull; Review Later
+        </button>
+        <button 
+          type="button" 
+          onclick="submitDocuSignOfferExecution()" 
+          class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-lg shadow-emerald-600/30 flex items-center gap-2 active:scale-95 transition-all"
+        >
+          <span class="material-symbols-outlined text-[17px]">verified</span>
+          <span>Sign &amp; Execute Offer via DocuSign</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- CHROME DEVTOOLS AI & MCP INSPECTOR MODAL                                   -->
+  <!-- ========================================================================= -->
+  <div id="modal-chrome-mcp" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-slate-900 text-slate-100 rounded-3xl max-w-3xl w-full shadow-2xl border border-slate-800 overflow-hidden flex flex-col my-auto animate-in zoom-in-95 duration-200 max-h-[92vh]">
+      
+      <!-- Chrome Dev AI Header -->
+      <div class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-black shadow-md shadow-emerald-500/20">
+            <span class="material-symbols-outlined text-[20px]">developer_board</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-display font-bold text-sm text-white">Chrome DevTools AI &amp; MCP Inspector</h3>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-mono font-bold">MCP BRIDGE ONLINE</span>
+            </div>
+            <p class="text-[10px] text-slate-400">Model Context Protocol diagnostics, live DOM telemetry &amp; Core Web Vitals</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeChromeMcpModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Body Telemetry -->
+      <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-300 custom-scrollbar flex-1">
+        
+        <!-- Core Web Vitals Gauges -->
+        <div>
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Core Web Vitals &amp; Runtime Performance</div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="p-3 rounded-2xl bg-slate-800/80 border border-slate-700">
+              <span class="text-[10px] font-mono text-slate-400">Largest Contentful Paint</span>
+              <div class="text-xl font-black text-emerald-400 font-mono mt-1" id="mcp-lcp-val">0.78 s</div>
+              <span class="text-[9px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-800/40">GOOD (&lt; 2.5s)</span>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-800/80 border border-slate-700">
+              <span class="text-[10px] font-mono text-slate-400">Interaction to Next Paint</span>
+              <div class="text-xl font-black text-emerald-400 font-mono mt-1" id="mcp-inp-val">12 ms</div>
+              <span class="text-[9px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-800/40">GOOD (&lt; 200ms)</span>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-800/80 border border-slate-700">
+              <span class="text-[10px] font-mono text-slate-400">Cumulative Layout Shift</span>
+              <div class="text-xl font-black text-emerald-400 font-mono mt-1" id="mcp-cls-val">0.001</div>
+              <span class="text-[9px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-800/40">GOOD (&lt; 0.1)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live DOM & Client Telemetry -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700/60">
+            <span class="text-[10px] text-slate-400 block font-mono">DOM Elements</span>
+            <span class="text-base font-bold text-white font-mono" id="mcp-dom-count">1,842</span>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700/60">
+            <span class="text-[10px] text-slate-400 block font-mono">JS Heap Memory</span>
+            <span class="text-base font-bold text-white font-mono" id="mcp-heap-val">18.4 MB</span>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700/60">
+            <span class="text-[10px] text-slate-400 block font-mono">Event Listeners</span>
+            <span class="text-base font-bold text-white font-mono">48 active</span>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700/60">
+            <span class="text-[10px] text-slate-400 block font-mono">CSP Compliance</span>
+            <span class="text-base font-bold text-emerald-400 font-mono">100% Pass</span>
+          </div>
+        </div>
+
+        <!-- MCP Server Bridge Statuses -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">MCP Server Bridges &amp; Tool Connectors</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-[11px]">
+            <div class="p-2.5 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-between">
+              <span class="text-slate-300">chrome-devtools-mcp</span>
+              <span class="text-emerald-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> CONNECTED</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-between">
+              <span class="text-slate-300">firebase-mcp-server</span>
+              <span class="text-emerald-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> CONNECTED</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-between">
+              <span class="text-slate-300">netlify-deploy-mcp</span>
+              <span class="text-emerald-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> CONNECTED</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-between">
+              <span class="text-slate-300">github-mcp-server</span>
+              <span class="text-emerald-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> CONNECTED</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Network Waterfall Stream -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Active API &amp; Stream Handshakes</div>
+          <div class="bg-black/60 rounded-xl p-3 border border-slate-800 font-mono text-[11px] space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar">
+            <div class="text-emerald-400 flex items-center justify-between">
+              <span>[200 OK] GET https://www.googletagmanager.com/gtag/js?id=G-5B8CWW4EQB</span>
+              <span class="text-slate-500">42ms</span>
+            </div>
+            <div class="text-emerald-400 flex items-center justify-between">
+              <span>[200 OK] POST firestore.googleapis.com/.../databases/(default)/documents</span>
+              <span class="text-slate-500">84ms</span>
+            </div>
+            <div class="text-indigo-300 flex items-center justify-between">
+              <span>[200 OK] GET checkout.razorpay.com/v1/checkout.js (Key: rzp_test_xeVAJ5Jg2C932Q)</span>
+              <span class="text-slate-500">110ms</span>
+            </div>
+            <div class="text-purple-300 flex items-center justify-between">
+              <span>[200 OK] POST gemini-1.5-flash / ailogic inference pipeline</span>
+              <span class="text-slate-500">240ms</span>
+            </div>
+            <div class="text-slate-400 flex items-center justify-between">
+              <span>[200 OK] GET job-hunt-autopilot.netlify.app/ CDN Edge Hit</span>
+              <span class="text-slate-500">18ms</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs">
+        <span class="text-slate-500 text-[11px] font-mono">Chrome Dev AI Telemetry v3.2 &bull; Active</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="refreshChromeMcpMetrics()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition-colors">
+            Run Diagnostics
+          </button>
+          <button type="button" onclick="closeChromeMcpModal()" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-slate-950 font-extrabold transition-colors">
+            Done
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- PRODUCT LINKS INTEGRATION CODE / TAG INSPECTOR MODAL                       -->
+  <!-- ========================================================================= -->
+  <div id="modal-product-links-snippet" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-slate-900 text-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-800 overflow-hidden flex flex-col my-auto animate-in zoom-in-95 duration-200">
+      <div class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-indigo-400 text-[20px]">code</span>
+          <div>
+            <h3 class="font-display font-bold text-sm text-white" id="pl-snippet-title">Product Link Tag Snippet</h3>
+            <p class="text-[10px] text-slate-400" id="pl-snippet-subtitle">Integration configuration &amp; tracking snippet</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeProductLinkSnippetModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-3">
+        <div class="text-[11px] text-slate-400">
+          Paste the following tag configuration in your application <code class="text-indigo-300">&lt;head&gt;</code> or dispatch it via <code class="text-indigo-300">gtag()</code>:
+        </div>
+        <div class="relative bg-black/70 p-4 rounded-2xl border border-slate-800 font-mono text-xs overflow-x-auto text-emerald-300" id="pl-snippet-code">
+          <!-- Code snippet -->
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs">
+        <button type="button" onclick="copyProductLinkSnippet()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold flex items-center gap-1.5 transition-colors">
+          <span class="material-symbols-outlined text-[16px]">content_copy</span>
+          <span>Copy Tag Code</span>
+        </button>
+        <button type="button" onclick="closeProductLinkSnippetModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition-colors">
+          Close
+        </button>
       </div>
     </div>
   </div>

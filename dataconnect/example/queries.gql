@@ -1,0 +1,114 @@
+mutation CreateUser($data: User_Data!) @auth(level: USER) {
+  user_insert(data: $data)
+}
+
+mutation UpdateUser($key: User_Key!, $data: User_Data!) @auth(level: USER) {
+  user_update(key: $key, data: $data)
+}
+
+mutation DeleteUser($key: User_Key!) @auth(level: USER) {
+  user_delete(key: $key)
+}
+
+query GetUser($key: User_Key!) @auth(level: USER) {
+  user(key: $key) { email name preferredJobTitles resumeLink }
+}
+
+query ListUsers @auth(level: USER) {
+  users { email name }
+}
+
+mutation CreateCompany($data: Company_Data!) @auth(level: PUBLIC, insecureReason: "Companies are public directory information.") {
+  company_insert(data: $data)
+}
+
+mutation UpdateCompany($key: Company_Key!, $data: Company_Data!) @auth(level: USER) {
+  company_update(key: $key, data: $data)
+}
+
+mutation DeleteCompany($key: Company_Key!) @auth(level: USER) {
+  company_delete(key: $key)
+}
+
+query GetCompany($key: Company_Key!) @auth(level: PUBLIC, insecureReason: "Companies are public directory information.") {
+  company(key: $key) { name industry websiteUrl glassdoorRating }
+}
+
+query ListCompanies @auth(level: PUBLIC, insecureReason: "Companies are public directory information.") {
+  companies { name industry }
+}
+
+mutation CreateJobPosting($companyName: String!, $jobTitle: String!, $sourceUrl: String!, $status: String!) @auth(level: USER) {
+  jobPosting_insert(data: {
+    companyName: $companyName,
+    jobTitle: $jobTitle,
+    sourceUrl: $sourceUrl,
+    status: $status,
+    userId_expr: "auth.uid"
+  })
+}
+
+mutation UpdateJobPosting($key: JobPosting_Key!, $data: JobPosting_Data!) @auth(level: USER) {
+  jobPosting_update(key: $key, data: $data)
+}
+
+mutation DeleteJobPosting($key: JobPosting_Key!) @auth(level: USER) {
+  jobPosting_delete(key: $key)
+}
+
+query GetJobPosting($key: JobPosting_Key!) @auth(level: USER) {
+  jobPosting(key: $key) { companyName jobTitle status user { email } }
+}
+
+query ListMyJobPostings @auth(level: USER) {
+  jobPostings(where: {userId: {eq_expr: "auth.uid"}}) { companyName jobTitle }
+}
+
+mutation CreateApplication($jobPostingId: UUID!, $appliedDate: Date!, $status: String!) @auth(level: USER) {
+  application_insert(data: {
+    jobPostingId: $jobPostingId,
+    appliedDate: $appliedDate,
+    status: $status
+  })
+}
+
+mutation UpdateApplication($key: Application_Key!, $data: Application_Data!) @auth(level: USER) {
+  application_update(key: $key, data: $data)
+}
+
+mutation DeleteApplication($key: Application_Key!) @auth(level: USER) {
+  application_delete(key: $key)
+}
+
+query GetApplication($key: Application_Key!) @auth(level: USER) {
+  application(key: $key) { status appliedDate jobPosting { jobTitle } }
+}
+
+query ListMyApplications @auth(level: USER) {
+  applications(where: {jobPosting: {userId: {eq_expr: "auth.uid"}}}) { status appliedDate }
+}
+
+mutation CreateTask($title: String!, $dueDate: Timestamp!, $isCompleted: Boolean!, $applicationId: UUID!) @auth(level: USER) {
+  task_insert(data: {
+    title: $title,
+    dueDate: $dueDate,
+    isCompleted: $isCompleted,
+    applicationId: $applicationId
+  })
+}
+
+mutation UpdateTask($key: Task_Key!, $data: Task_Data!) @auth(level: USER) {
+  task_update(key: $key, data: $data)
+}
+
+mutation DeleteTask($key: Task_Key!) @auth(level: USER) {
+  task_delete(key: $key)
+}
+
+query GetTask($key: Task_Key!) @auth(level: USER) {
+  task(key: $key) { title dueDate isCompleted }
+}
+
+query ListMyTasks @auth(level: USER) {
+  tasks(where: {application: {jobPosting: {userId: {eq_expr: "auth.uid"}}}}) { title dueDate }
+}

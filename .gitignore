@@ -5,4 +5,5 @@ __pycache__/
 autopilot.db
 node_modules/
 .netlify/
+.firebase/
 firebase-debug.log

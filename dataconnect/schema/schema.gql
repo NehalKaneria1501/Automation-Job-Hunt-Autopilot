@@ -1,0 +1,41 @@
+type User @table {
+  email: String!
+  name: String!
+  preferredJobTitles: String
+  resumeLink: String
+}
+
+type Company @table {
+  name: String!
+  industry: String
+  websiteUrl: String
+  glassdoorRating: Float
+}
+
+type JobPosting @table {
+  companyName: String!
+  jobTitle: String!
+  sourceUrl: String!
+  status: String!
+  location: String
+  salaryRange: String
+  description: String
+  user: User!
+}
+
+type Application @table {
+  appliedDate: Date!
+  status: String!
+  coverLetterContent: String
+  notes: String
+  followUpDate: Timestamp
+  jobPosting: JobPosting!
+}
+
+type Task @table {
+  title: String!
+  dueDate: Timestamp!
+  isCompleted: Boolean!
+  description: String
+  application: Application!
+}

@@ -1,0 +1,88 @@
+mutation SeedAllData @transaction {
+  user_insertMany(data: [
+    {
+      id: "d5789818-9511-448a-830a-65654218f401",
+      email: "alice@example.com",
+      name: "Alice Smith"
+    },
+    {
+      id: "d5789818-9511-448a-830a-65654218f402",
+      email: "bob@example.com",
+      name: "Bob Jones"
+    },
+    {
+      id: "d5789818-9511-448a-830a-65654218f403",
+      email: "charlie@example.com",
+      name: "Charlie Brown"
+    }
+  ])
+  jobPosting_insertMany(data: [
+    {
+      id: "93567696-7399-4e6f-8a8g-43432096a201",
+      userId: "d5789818-9511-448a-830a-65654218f401",
+      companyName: "TechCorp",
+      jobTitle: "Software Engineer",
+      sourceUrl: "https://techcorp.com/jobs/1",
+      status: "OPEN"
+    },
+    {
+      id: "93567696-7399-4e6f-8a8g-43432096a202",
+      userId: "d5789818-9511-448a-830a-65654218f402",
+      companyName: "InnovateCo",
+      jobTitle: "Product Manager",
+      sourceUrl: "https://innovateco.com/jobs/5",
+      status: "CLOSED"
+    },
+    {
+      id: "93567696-7399-4e6f-8a8g-43432096a203",
+      userId: "d5789818-9511-448a-830a-65654218f403",
+      companyName: "DataSolutions",
+      jobTitle: "Data Scientist",
+      sourceUrl: "https://datasolutions.com/jobs/3",
+      status: "OPEN"
+    }
+  ])
+  application_insertMany(data: [
+    {
+      id: "a4678707-8400-4f7f-8e9h-54543107a301",
+      jobPostingId: "93567696-7399-4e6f-8a8g-43432096a201",
+      appliedDate: "2023-10-01",
+      status: "APPLIED"
+    },
+    {
+      id: "a4678707-8400-4f7f-8e9h-54543107a302",
+      jobPostingId: "93567696-7399-4e6f-8a8g-43432096a202",
+      appliedDate: "2023-10-05",
+      status: "REJECTED"
+    },
+    {
+      id: "a4678707-8400-4f7f-8e9h-54543107a303",
+      jobPostingId: "93567696-7399-4e6f-8a8g-43432096a203",
+      appliedDate: "2023-10-10",
+      status: "INTERVIEWING"
+    }
+  ])
+  task_insertMany(data: [
+    {
+      id: "b5789818-9511-448a-830a-65654218b401",
+      applicationId: "a4678707-8400-4f7f-8e9h-54543107a301",
+      title: "Update Resume",
+      dueDate: "2023-10-02T09:00:00Z",
+      isCompleted: true
+    },
+    {
+      id: "b5789818-9511-448a-830a-65654218b402",
+      applicationId: "a4678707-8400-4f7f-8e9h-54543107a302",
+      title: "Send Follow-up Email",
+      dueDate: "2023-10-07T14:00:00Z",
+      isCompleted: false
+    },
+    {
+      id: "b5789818-9511-448a-830a-65654218b403",
+      applicationId: "a4678707-8400-4f7f-8e9h-54543107a303",
+      title: "Prepare Portfolio",
+      dueDate: "2023-10-12T10:00:00Z",
+      isCompleted: false
+    }
+  ])
+}
