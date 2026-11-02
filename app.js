@@ -987,7 +987,7 @@ function switchView(viewName) {
     logFirebaseAnalyticsEvent('page_view', { page_title: viewName });
   }
 
-  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox', 'logs-center', 'newsletter', 'auth', 'dsa-sdlc', 'companies-hr', 'ats-tools', 'courses-mentors', 'pricing', 'ai-radar', 'product-links'];
+  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox', 'logs-center', 'newsletter', 'auth', 'dsa-sdlc', 'companies-hr', 'ats-tools', 'courses-mentors', 'pricing', 'ai-radar', 'product-links', 'meetups'];
   views.forEach(v => {
     const el = document.getElementById(`view-${v}`);
     if (el) {
@@ -1033,6 +1033,9 @@ function switchView(viewName) {
   }
   if (viewName === 'courses-mentors' && typeof initCoursesMentorsView === 'function') {
     initCoursesMentorsView();
+  }
+  if (viewName === 'meetups' && typeof initMeetupsView === 'function') {
+    initMeetupsView();
   }
   if (viewName === 'pricing' && typeof initPricingView === 'function') {
     initPricingView();
@@ -9205,7 +9208,7 @@ function initCoursesMentorsView() {
 
 function switchCourseSubTab(tab) {
   activeCourseSubTab = tab;
-  const sections = ['courses', 'notes', 'mentors', 'maps'];
+  const sections = ['courses', 'notes', 'mentors', 'maps', 'meetups'];
   sections.forEach(s => {
     const el = document.getElementById(`section-${s}-content`);
     const btn = document.getElementById(`tab-btn-${s}`);
@@ -9224,6 +9227,7 @@ function switchCourseSubTab(tab) {
 
   if (tab === 'notes') renderInterviewNotesGrid();
   if (tab === 'maps') selectMapCenter('bangalore');
+  if (tab === 'meetups') renderMeetupsGrid();
 }
 
 function filterCoursesCategory(cat) {
@@ -11098,5 +11102,757 @@ function copyProductLinkSnippet() {
         showToast("📋 Tag code copied to clipboard!");
       }
     });
+  }
+}
+
+
+
+/* ==========================================================================
+   MEETUP COMMUNITIES & DEVELOPER CIRCLES DATASET (18 Premier Chapters)
+   ========================================================================== */
+const meetupsCommunitiesData = [
+  {
+    id: "gdg-bengaluru",
+    name: "GDG Bengaluru (Google Developer Group)",
+    category: "gdg",
+    categoryBadge: "Google GDG",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+    region: "apac",
+    city: "Bengaluru, India",
+    members: 24500,
+    logo: "google",
+    title: "Gemini 2.5 & Google Cloud Vertex AI Production Hackathon",
+    desc: "Hands-on workshop exploring multimodal Gemini models, RAG with Firestore vector search, and deploying serverless inference on Cloud Run.",
+    date: "Saturday, Nov 14, 2026 • 10:00 AM IST",
+    venue: "Google RMZ Infinity, Old Madras Rd, Bengaluru",
+    isVirtual: false,
+    host: "Karthik Rao • Google Developer Expert (GDE)",
+    tags: ["Gemini 2.5", "Vertex AI", "Cloud Run", "RAG"],
+    calendarTitle: "GDG Bengaluru: Gemini 2.5 & Vertex AI Hackathon",
+    calendarDetails: "Join GDG Bengaluru at Google RMZ Infinity for a deep-dive into multimodal AI and Vertex AI pipelines."
+  },
+  {
+    id: "gdg-london",
+    name: "GDG London & Android Worldwide",
+    category: "gdg",
+    categoryBadge: "Google GDG",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+    region: "europe",
+    city: "London, United Kingdom",
+    members: 18200,
+    logo: "google",
+    title: "Modern Web Performance & Chrome DevTools AI Inspector",
+    desc: "Deep-dive into Core Web Vitals (LCP, INP, CLS), automated Chrome MCP debugging, and progressive hydration strategies in 2026.",
+    date: "Wednesday, Nov 18, 2026 • 6:30 PM GMT",
+    venue: "Google 6 Pancras Square, Kings Cross, London",
+    isVirtual: false,
+    host: "Emma Watson • Principal Web Architect @ DeepMind",
+    tags: ["Chrome DevTools", "Core Web Vitals", "MCP", "Next.js"],
+    calendarTitle: "GDG London: Modern Web Performance & Chrome DevTools",
+    calendarDetails: "Google 6 Pancras Square, London. Performance engineering and developer tools."
+  },
+  {
+    id: "gdg-sanfrancisco",
+    name: "GDG San Francisco & Silicon Valley AI",
+    category: "gdg",
+    categoryBadge: "Google GDG",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+    region: "na",
+    city: "San Francisco, USA",
+    members: 31000,
+    logo: "google",
+    title: "Autonomous Agentic Systems with Model Context Protocol (MCP)",
+    desc: "Architecting multi-agent swarms with tool calling, persistent sandboxes, and durable background tasks using the Gemini SDK.",
+    date: "Thursday, Nov 19, 2026 • 5:30 PM PST",
+    venue: "Google Bay View Campus, Mountain View, CA",
+    isVirtual: false,
+    host: "David Zhang • AI Research Director",
+    tags: ["Autonomous Agents", "MCP", "Gemini SDK", "Tool Calling"],
+    calendarTitle: "GDG San Francisco: Autonomous Agentic Systems with MCP",
+    calendarDetails: "Google Bay View Campus. Engineering scalable agentic workflows."
+  },
+  {
+    id: "aws-bengaluru",
+    name: "AWS User Group Bengaluru & Cloud Architects",
+    category: "aws",
+    categoryBadge: "AWS Community",
+    badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
+    region: "apac",
+    city: "Bengaluru, India",
+    members: 19800,
+    logo: "cloud",
+    title: "Serverless Microservices, DynamoDB Global Tables & EKS Scaling",
+    desc: "Real-world war stories scaling to 100,000 RPS on AWS Lambda, EventBridge choreography, and zero-downtime Kubernetes deployments.",
+    date: "Saturday, Nov 21, 2026 • 11:00 AM IST",
+    venue: "Amazon Development Center, Bagmane Tech Park, Bengaluru",
+    isVirtual: false,
+    host: "Rohit Bansal • AWS Community Hero",
+    tags: ["AWS Lambda", "DynamoDB", "EKS", "Serverless"],
+    calendarTitle: "AWS UG Bengaluru: Serverless Microservices at Scale",
+    calendarDetails: "Amazon Bagmane Tech Park. Distributed serverless architectures."
+  },
+  {
+    id: "aws-london",
+    name: "AWS Community Day London & Serverless Guild",
+    category: "aws",
+    categoryBadge: "AWS Community",
+    badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
+    region: "europe",
+    city: "London, United Kingdom",
+    members: 12400,
+    logo: "cloud",
+    title: "Event-Driven FinTech Architectures with AWS Step Functions",
+    desc: "Idempotent payment processing, automated reconciliations, and low-latency fraud detection with Amazon Bedrock.",
+    date: "Tuesday, Nov 24, 2026 • 6:00 PM GMT",
+    venue: "CodeNode, 9 South Pl, London EC2M 7EB",
+    isVirtual: false,
+    host: "Sarah Connor • Cloud Architect",
+    tags: ["Step Functions", "Bedrock", "FinTech", "Event-Driven"],
+    calendarTitle: "AWS Community Day London: Event-Driven FinTech",
+    calendarDetails: "CodeNode London. Financial infrastructure on AWS."
+  },
+  {
+    id: "react-india",
+    name: "React India & Next.js Developers Circle",
+    category: "react",
+    categoryBadge: "React & Next.js",
+    badgeColor: "bg-cyan-50 text-cyan-700 border-cyan-200",
+    region: "global",
+    city: "Virtual + Bengaluru Chapter",
+    members: 22100,
+    logo: "code",
+    title: "Next.js 15 Server Actions, React 19 Compiler & Streaming SSR",
+    desc: "Live code walkthrough migrating to React 19 Compiler, eliminating useMemo waterfalls, and optimizing Partial Prerendering (PPR).",
+    date: "Sunday, Nov 15, 2026 • 4:00 PM IST",
+    venue: "Virtual Live Stream (YouTube & Zoom)",
+    isVirtual: true,
+    host: "Harish Kumar • Staff Frontend Engineer",
+    tags: ["React 19", "Next.js 15", "PPR", "Server Actions"],
+    calendarTitle: "React India: React 19 Compiler & Next.js 15 Sprint",
+    calendarDetails: "Interactive live masterclass and Q&A with React core contributors."
+  },
+  {
+    id: "pydata-nyc",
+    name: "PyData NYC & Python Machine Learning Guild",
+    category: "python",
+    categoryBadge: "Python & PyData",
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    region: "na",
+    city: "New York, USA",
+    members: 16500,
+    logo: "terminal",
+    title: "Production RAG with LangChain, Milvus Vector DB & Llama-3",
+    desc: "Chunking strategies, hybrid semantic + keyword BM25 search, reranking with Cohere, and evaluating Hallucination Index with RAGAS.",
+    date: "Thursday, Nov 26, 2026 • 6:30 PM EST",
+    venue: "Microsoft Reactor NYC, 11 Times Sq, New York",
+    isVirtual: false,
+    host: "Dr. Maya Lin • Head of AI Research",
+    tags: ["LangChain", "Milvus", "RAGAS", "Llama-3"],
+    calendarTitle: "PyData NYC: Production RAG Architectures",
+    calendarDetails: "Microsoft Reactor NYC. Production retrieval-augmented generation."
+  },
+  {
+    id: "bangpypers",
+    name: "BangPypers: The Bangalore Python User Group",
+    category: "python",
+    categoryBadge: "Python & PyData",
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    region: "apac",
+    city: "Bengaluru, India",
+    members: 14800,
+    logo: "terminal",
+    title: "AsyncIO High-Concurrency Microservices & FastAPI Internals",
+    desc: "Deep-dive into uvloop, GIL-free Python 3.14, memory profiling with py-spy, and building sub-5ms REST endpoints.",
+    date: "Saturday, Nov 28, 2026 • 2:00 PM IST",
+    venue: "HasGeek House, Indiranagar, Bengaluru",
+    isVirtual: false,
+    host: "Anand Chitipothu • Python Core Contributor",
+    tags: ["FastAPI", "AsyncIO", "Python 3.14", "uvloop"],
+    calendarTitle: "BangPypers: High-Concurrency Python Services",
+    calendarDetails: "HasGeek House, Indiranagar. Performance tuning with Python 3.14."
+  },
+  {
+    id: "cncf-k8s",
+    name: "Kubernetes & CNCF Cloud Native Community",
+    category: "aws",
+    categoryBadge: "Cloud Native & K8s",
+    badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+    region: "apac",
+    city: "Pune & Virtual APAC",
+    members: 15300,
+    logo: "hub",
+    title: "Platform Engineering with Helm, ArgoCD GitOps & Prometheus SRE",
+    desc: "Automating self-healing clusters, multi-tenant Kubernetes namespaces, service mesh with Istio, and zero-trust mTLS encryption.",
+    date: "Sunday, Nov 29, 2026 • 10:30 AM IST",
+    venue: "Tech Mahindra Innovation Park, Hinjawadi, Pune",
+    isVirtual: false,
+    host: "Vikram Mehta • Principal SRE Lead",
+    tags: ["Kubernetes", "ArgoCD", "GitOps", "Prometheus"],
+    calendarTitle: "CNCF Pune: Platform Engineering with ArgoCD",
+    calendarDetails: "Hinjawadi, Pune. Modern GitOps workflows and SRE observability."
+  },
+  {
+    id: "faang-system-design",
+    name: "FAANG System Design & Architecture Round Table",
+    category: "system-design",
+    categoryBadge: "System Design",
+    badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    region: "global",
+    city: "Virtual Live Whiteboard",
+    members: 28000,
+    logo: "lan",
+    title: "Designing WhatsApp & Uber at 100 Million RPS (Live Whiteboard)",
+    desc: "Interactive architecture session: handling websocket connections, geo-sharding with QuadTrees, Redis Pub/Sub, and distributed locking with Raft.",
+    date: "Sunday, Nov 22, 2026 • 7:00 PM IST",
+    venue: "Virtual Interactive Miro Canvas + Live Discord",
+    isVirtual: true,
+    host: "Siddharth Singh • Ex-Staff Engineer @ Meta",
+    tags: ["HLD / LLD", "Distributed Systems", "Redis", "Raft"],
+    calendarTitle: "FAANG System Design Round Table: WhatsApp at Scale",
+    calendarDetails: "Live architecture teardown with former Meta and Google Staff Engineers."
+  },
+  {
+    id: "leetcode-blind75",
+    name: "LeetCode & Blind 75 Daily Problem Grinders Club",
+    category: "system-design",
+    categoryBadge: "DSA & LeetCode",
+    badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    region: "global",
+    city: "Global Discord & Live Code",
+    members: 34000,
+    logo: "developer_mode",
+    title: "Dynamic Programming & Graph Traversal Speed Blitz (Win Swag!)",
+    desc: "Live mock contest solving Hard problems in 45 minutes with optimal Space-Time complexity. 1:1 critique by FAANG interviewers.",
+    date: "Every Wednesday & Saturday • 9:00 PM IST",
+    venue: "Discord Live Voice Channel #faang-mock-arena",
+    isVirtual: true,
+    host: "Aman Dhattarwal Inspired Community Leads",
+    tags: ["Dynamic Programming", "Graphs", "Blind 75", "Contest"],
+    calendarTitle: "Blind 75 Speed Blitz: Dynamic Programming Mastery",
+    calendarDetails: "Competitive programming and live mock interview rounds."
+  },
+  {
+    id: "huggingface-genai",
+    name: "Hugging Face & Open Source GenAI Builders",
+    category: "ai",
+    categoryBadge: "AI & GenAI",
+    badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
+    region: "apac",
+    city: "Bengaluru, India",
+    members: 21500,
+    logo: "psychology",
+    title: "Fine-Tuning Small Language Models with Unsloth, LoRA & vLLM",
+    desc: "Hands-on lab fine-tuning DeepSeek-Coder and Llama-3-8B on custom private enterprise datasets for sub-50ms code completion.",
+    date: "Saturday, Dec 05, 2026 • 11:00 AM IST",
+    venue: "WeWork Galaxy, Residency Rd, Bengaluru",
+    isVirtual: false,
+    host: "Dr. Kunal Shah • Open Source ML Fellow",
+    tags: ["LoRA", "vLLM", "DeepSeek", "Unsloth"],
+    calendarTitle: "Hugging Face Builders: Fine-Tuning SLMs with LoRA",
+    calendarDetails: "WeWork Galaxy, Bengaluru. Practical high-throughput LLM fine-tuning."
+  },
+  {
+    id: "dubai-tech-hub",
+    name: "Dubai Tech Hub & Middle East Cloud Innovators",
+    category: "aws",
+    categoryBadge: "Middle East Tech",
+    badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
+    region: "mena",
+    city: "Dubai, United Arab Emirates",
+    members: 9800,
+    logo: "domain",
+    title: "FinTech Scaling & High-Frequency Multi-Currency Gateway Architecture",
+    desc: "Handling cross-border remittances, ISO 20022 messaging, zero-trust fraud analytics, and multi-currency compliance across GCC & Europe.",
+    date: "Wednesday, Dec 09, 2026 • 7:00 PM GST",
+    venue: "Dubai Internet City Innovation Center, Dubai",
+    isVirtual: false,
+    host: "Zayd Al-Mansoor • VP of Engineering",
+    tags: ["FinTech", "Multi-Currency", "ISO20022", "High-Frequency"],
+    calendarTitle: "Dubai Tech Hub: FinTech & High-Frequency Architecture",
+    calendarDetails: "Dubai Internet City. Scaling international payment rails."
+  },
+  {
+    id: "women-who-code",
+    name: "Women Who Code & Lead in Tech (Global)",
+    category: "women-tech",
+    categoryBadge: "Diversity & Leadership",
+    badgeColor: "bg-pink-50 text-pink-700 border-pink-200",
+    region: "global",
+    city: "Global Virtual Circle",
+    members: 17600,
+    logo: "favorite",
+    title: "Breaking into Staff+ Engineering & Salary Negotiation Playbook",
+    desc: "Executive workshop on executive presence, influencing without authority, navigating performance calibrations, and winning $350k+ compensation packages.",
+    date: "Sunday, Dec 13, 2026 • 6:00 PM IST (12:30 PM GMT)",
+    venue: "Virtual Interactive Zoom & Breakouts",
+    isVirtual: true,
+    host: "Pooja Malhotra • Engineering Director @ Uber",
+    tags: ["Staff+ Career", "Salary Negotiation", "Leadership", "Mentorship"],
+    calendarTitle: "Women in Tech: Breaking into Staff+ Engineering",
+    calendarDetails: "Executive leadership and career acceleration playbook."
+  },
+  {
+    id: "flutter-global",
+    name: "Flutter & Mobile Devs Global Community",
+    category: "react",
+    categoryBadge: "Mobile & Flutter",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+    region: "apac",
+    city: "Hyderabad, India & Virtual",
+    members: 14200,
+    logo: "smartphone",
+    title: "Cross-Platform Flutter 3.x, Riverpod 2.0 & Native Asset FFI",
+    desc: "Building 120 FPS high-performance Flutter mobile apps, state management architectures, and automated fastlane App Store & Play Store pipelines.",
+    date: "Saturday, Dec 19, 2026 • 3:00 PM IST",
+    venue: "T-Hub Phase 2, Raidurg, Hyderabad",
+    isVirtual: false,
+    host: "Sravan Reddy • Google Developer Expert (Flutter)",
+    tags: ["Flutter 3.x", "Dart", "Riverpod", "Mobile CI/CD"],
+    calendarTitle: "Flutter Global: High-Performance Mobile Apps",
+    calendarDetails: "T-Hub Phase 2, Hyderabad. Riverpod architecture and native bindings."
+  },
+  {
+    id: "rust-hackers",
+    name: "Rust & High-Performance Systems Hackers",
+    category: "system-design",
+    categoryBadge: "Rust & Systems",
+    badgeColor: "bg-orange-50 text-orange-700 border-orange-200",
+    region: "europe",
+    city: "Berlin, Germany & Virtual",
+    members: 11200,
+    logo: "memory",
+    title: "Zero-Cost Abstractions, Tokio Async Concurrency & WASM",
+    desc: "Building sub-millisecond database kernels, memory-safe network proxies, and compiling Rust to WebAssembly for client-side sandboxes.",
+    date: "Tuesday, Dec 15, 2026 • 6:30 PM CET",
+    venue: "Betahaus Berlin, Rudi-Dutschke-Str. 23, Berlin",
+    isVirtual: false,
+    host: "Jens Vogel • Rust Systems Architect",
+    tags: ["Rust", "Tokio", "WASM", "Concurrency"],
+    calendarTitle: "Rust Hackers Berlin: Zero-Cost Abstractions",
+    calendarDetails: "Betahaus Berlin. Deep-dive into memory safety and async Tokio."
+  },
+  {
+    id: "gdg-berlin",
+    name: "GDG Berlin & Cloud Native Hub",
+    category: "gdg",
+    categoryBadge: "Google GDG",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+    region: "europe",
+    city: "Berlin, Germany",
+    members: 13900,
+    logo: "google",
+    title: "Building Resilient AI Gateways on Google Cloud GKE",
+    desc: "Scaling model inference across GPUs, implementing intelligent rate limiting, fallbacks, and cost optimization for generative AI services.",
+    date: "Wednesday, Dec 16, 2026 • 7:00 PM CET",
+    venue: "Google Berlin, Tucholskystr. 2, Berlin",
+    isVirtual: false,
+    host: "Lena Meyer • Cloud Native Architect",
+    tags: ["Google Cloud", "GKE", "AI Gateway", "Kubernetes"],
+    calendarTitle: "GDG Berlin: Resilient AI Gateways on GKE",
+    calendarDetails: "Google Berlin. Multi-region infrastructure and AI routing."
+  },
+  {
+    id: "producttank",
+    name: "ProductTank & Technical Product Leaders",
+    category: "ai",
+    categoryBadge: "Product Management",
+    badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    region: "na",
+    city: "San Francisco, USA & Virtual",
+    members: 13900,
+    logo: "insights",
+    title: "AI-First Product Management: From Prototype to Product-Market Fit",
+    desc: "PRD writing for agentic applications, designing evaluation harnesses, A/B testing non-deterministic outputs, and monetization models.",
+    date: "Thursday, Dec 17, 2026 • 6:00 PM PST",
+    venue: "Hacker Dojo, 855 Maude Ave, Mountain View, CA",
+    isVirtual: false,
+    host: "Michael Chang • VP of Product @ Scale AI",
+    tags: ["AI Product", "Evals", "PMF", "Monetization"],
+    calendarTitle: "ProductTank SF: AI-First Product Management",
+    calendarDetails: "Hacker Dojo, Mountain View. Product frameworks for autonomous systems."
+  }
+];
+
+let activeMeetupFilter = 'all';
+let activeMeetupRegion = 'all';
+let meetupSearchQuery = '';
+
+function initMeetupsView() {
+  renderMeetupsGrid();
+  updateMeetupsJoinedCounter();
+}
+
+function renderMeetupsGrid() {
+  const grid = document.getElementById('meetups-cards-grid');
+  const coursesSubGrid = document.getElementById('section-meetups-cards-grid');
+  if (!grid && !coursesSubGrid) return;
+
+  const joined = JSON.parse(localStorage.getItem('autopilot_joined_meetups') || '[]');
+  const userMeetups = JSON.parse(localStorage.getItem('autopilot_user_meetups') || '[]');
+  
+  let list = [...userMeetups, ...meetupsCommunitiesData];
+
+  // Filter by category
+  if (activeMeetupFilter !== 'all') {
+    list = list.filter(m => m.category === activeMeetupFilter);
+  }
+
+  // Filter by region
+  if (activeMeetupRegion !== 'all') {
+    list = list.filter(m => m.region === activeMeetupRegion || m.region === 'global');
+  }
+
+  // Filter by search
+  if (meetupSearchQuery) {
+    const q = meetupSearchQuery.toLowerCase();
+    list = list.filter(m => 
+      m.name.toLowerCase().includes(q) || 
+      m.title.toLowerCase().includes(q) || 
+      m.city.toLowerCase().includes(q) ||
+      (m.tags && m.tags.some(t => t.toLowerCase().includes(q)))
+    );
+  }
+
+  const cardsHtml = list.map(m => {
+    const isJoined = joined.includes(m.id);
+    const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(m.calendarTitle || m.title)}&dates=20261120T100000Z/20261120T120000Z&details=${encodeURIComponent((m.calendarDetails || m.desc) + ' | Meetup Host: ' + m.host)}&location=${encodeURIComponent(m.venue || m.city)}`;
+
+    return `
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between gap-4 group">
+        <div class="space-y-3">
+          <!-- Top Row: Badge, City & Members -->
+          <div class="flex items-center justify-between gap-2">
+            <span class="px-2.5 py-0.5 rounded-full border text-[10px] font-bold ${m.badgeColor || 'bg-indigo-50 text-indigo-700 border-indigo-200'}">
+              ${m.categoryBadge}
+            </span>
+            <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
+              <span class="material-symbols-outlined text-[15px] text-slate-400">group</span>
+              <span>${m.members ? m.members.toLocaleString() : '500+'} Members</span>
+            </div>
+          </div>
+
+          <!-- Title & Community Name -->
+          <div>
+            <div class="flex items-center gap-1.5 text-xs font-bold text-slate-500 mb-0.5">
+              <span class="material-symbols-outlined text-[15px] text-rose-500">location_on</span>
+              <span>${m.city}</span>
+              ${m.isVirtual ? '<span class="px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 text-[9px] font-black uppercase">Virtual</span>' : ''}
+              ${m.isCustom ? '<span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-black uppercase">Host Chapter</span>' : ''}
+            </div>
+            <h4 class="font-display font-black text-slate-900 text-base leading-snug group-hover:text-indigo-600 transition-colors">${m.name}</h4>
+          </div>
+
+          <!-- Next Event Highlight Card -->
+          <div class="p-3.5 rounded-2xl bg-gradient-to-r from-slate-50 to-indigo-50/40 border border-slate-200/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700 font-mono">Next Upcoming Meetup:</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            </div>
+            <div class="font-bold text-slate-900 text-xs leading-snug">${m.title}</div>
+            <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">${m.desc}</p>
+            
+            <div class="pt-2 border-t border-slate-200/60 flex flex-col gap-1 text-[11px] text-slate-600 font-medium">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[15px] text-indigo-600">event</span>
+                <span class="font-bold text-slate-800">${m.date}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[15px] text-slate-400">pin_drop</span>
+                <span class="truncate">${m.venue}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[15px] text-slate-400">person</span>
+                <span class="truncate text-slate-500">Host: ${m.host}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Topic Tags -->
+          <div class="flex flex-wrap gap-1">
+            ${m.tags.map(t => `<span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-semibold">#${t}</span>`).join('')}
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-3 border-t border-slate-100 space-y-2">
+          <div class="grid grid-cols-2 gap-2">
+            <button 
+              type="button" 
+              onclick="toggleMeetupRsvp('${m.id}')" 
+              id="btn-rsvp-${m.id}"
+              class="w-full py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${
+                isJoined 
+                  ? 'bg-emerald-600 text-white shadow-xs' 
+                  : 'bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-md shadow-indigo-600/20'
+              }"
+            >
+              <span class="material-symbols-outlined text-[16px]">${isJoined ? 'check_circle' : 'person_add'}</span>
+              <span>${isJoined ? 'RSVP Confirmed ✓' : 'Join / RSVP'}</span>
+            </button>
+
+            <a 
+              href="${googleCalUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors text-center cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-[16px] text-amber-600">calendar_month</span>
+              <span>Google Cal</span>
+            </a>
+          </div>
+
+          <button 
+            type="button" 
+            onclick="openCommunityDiscordModal('${m.name}')" 
+            class="w-full py-1.5 rounded-lg text-[11px] font-bold text-indigo-700 hover:bg-indigo-50 flex items-center justify-center gap-1 transition-colors"
+          >
+            <span class="material-symbols-outlined text-[14px]">forum</span>
+            <span>Join Chapter Discord &amp; Study Circle</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (grid) grid.innerHTML = cardsHtml;
+  if (coursesSubGrid) coursesSubGrid.innerHTML = cardsHtml;
+}
+
+function filterMeetupsCategory(cat) {
+  activeMeetupFilter = cat;
+  document.querySelectorAll('.meetup-cat-chip').forEach(btn => {
+    const c = btn.getAttribute('data-meetup-cat');
+    if (c === cat) {
+      btn.className = "meetup-cat-chip px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shrink-0 cursor-pointer shadow-xs";
+    } else {
+      btn.className = "meetup-cat-chip px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold text-xs shrink-0 cursor-pointer";
+    }
+  });
+  renderMeetupsGrid();
+}
+
+function filterMeetupsRegion(region) {
+  activeMeetupRegion = region;
+  renderMeetupsGrid();
+}
+
+function searchMeetups(query) {
+  meetupSearchQuery = query;
+  renderMeetupsGrid();
+}
+
+function toggleMeetupRsvp(meetupId) {
+  const joined = JSON.parse(localStorage.getItem('autopilot_joined_meetups') || '[]');
+  const idx = joined.indexOf(meetupId);
+  const m = [...JSON.parse(localStorage.getItem('autopilot_user_meetups') || '[]'), ...meetupsCommunitiesData].find(x => x.id === meetupId);
+  const title = m ? m.name : "Community Meetup";
+
+  if (idx > -1) {
+    joined.splice(idx, 1);
+    localStorage.setItem('autopilot_joined_meetups', JSON.stringify(joined));
+    if (typeof showToast === 'function') {
+      showToast(`Removed RSVP for ${title}`);
+    }
+  } else {
+    joined.push(meetupId);
+    localStorage.setItem('autopilot_joined_meetups', JSON.stringify(joined));
+    
+    // Save to Firestore
+    if (window.firebaseDb && window.firebaseOps && window.firebaseOps.setDoc) {
+      try {
+        const user = (typeof getAuthUser === 'function' ? getAuthUser() : null) || {};
+        const rsvpRef = window.firebaseOps.doc(window.firebaseDb, "community_rsvps", `${meetupId}_${Date.now()}`);
+        window.firebaseOps.setDoc(rsvpRef, {
+          meetupId: meetupId,
+          meetupName: title,
+          attendeeName: user.name || "Alex Chen",
+          attendeeEmail: user.email || "alex.chen@executive.dev",
+          rsvpTime: new Date().toISOString()
+        });
+      } catch (e) {}
+    }
+
+    if (typeof triggerConfetti === 'function') {
+      try { triggerConfetti(); } catch (e) {}
+    }
+
+    if (typeof showToast === 'function') {
+      showToast(`🎉 RSVP Confirmed! Welcome to ${title} Circle!`);
+    }
+  }
+
+  updateMeetupsJoinedCounter();
+  renderMeetupsGrid();
+}
+
+function updateMeetupsJoinedCounter() {
+  const joined = JSON.parse(localStorage.getItem('autopilot_joined_meetups') || '[]');
+  const badge = document.getElementById('meetups-joined-count');
+  if (badge) badge.textContent = `${joined.length} Registered`;
+}
+
+function openHostMeetupModal() {
+  const modal = document.getElementById('modal-host-meetup');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+function closeHostMeetupModal() {
+  const modal = document.getElementById('modal-host-meetup');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function submitHostMeetup(event) {
+  if (event) event.preventDefault();
+
+  const name = document.getElementById('host-meetup-name') ? document.getElementById('host-meetup-name').value.trim() : '';
+  const cat = document.getElementById('host-meetup-cat') ? document.getElementById('host-meetup-cat').value : 'gdg';
+  const city = document.getElementById('host-meetup-city') ? document.getElementById('host-meetup-city').value.trim() : '';
+  const title = document.getElementById('host-meetup-title') ? document.getElementById('host-meetup-title').value.trim() : '';
+  const date = document.getElementById('host-meetup-date') ? document.getElementById('host-meetup-date').value.trim() : '';
+  const venue = document.getElementById('host-meetup-venue') ? document.getElementById('host-meetup-venue').value.trim() : '';
+  const organizer = document.getElementById('host-meetup-organizer') ? document.getElementById('host-meetup-organizer').value.trim() : 'Alex Chen';
+
+  if (!name || !title || !city) {
+    if (typeof showToast === 'function') {
+      showToast("⚠️ Please fill in community name, city, and event topic.");
+    }
+    return;
+  }
+
+  const newMeetup = {
+    id: "user-meetup-" + Date.now(),
+    name: name,
+    category: cat,
+    categoryBadge: cat.toUpperCase(),
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    region: "apac",
+    city: city,
+    members: 120,
+    logo: "groups",
+    title: title,
+    desc: `Community workshop organized by ${organizer}. Hands-on coding and live collaboration.`,
+    date: date || "Upcoming Weekend • 11:00 AM",
+    venue: venue || "Local Hub / Virtual",
+    isVirtual: venue.toLowerCase().includes('virtual') || venue.toLowerCase().includes('zoom'),
+    host: `${organizer} • Community Lead`,
+    tags: ["Community", "Hands-on", "Peer Learning"],
+    isCustom: true
+  };
+
+  const userMeetups = JSON.parse(localStorage.getItem('autopilot_user_meetups') || '[]');
+  userMeetups.unshift(newMeetup);
+  localStorage.setItem('autopilot_user_meetups', JSON.stringify(userMeetups));
+
+  // Sync to Firestore
+  if (window.firebaseDb && window.firebaseOps && window.firebaseOps.setDoc) {
+    try {
+      const docRef = window.firebaseOps.doc(window.firebaseDb, "hosted_meetups", newMeetup.id);
+      window.firebaseOps.setDoc(docRef, { ...newMeetup, createdAt: new Date().toISOString() });
+    } catch (e) {}
+  }
+
+  closeHostMeetupModal();
+
+  if (typeof triggerConfetti === 'function') {
+    try { triggerConfetti(); } catch (e) {}
+  }
+
+  if (typeof showToast === 'function') {
+    showToast(`🎉 New Meetup Chapter Hosted! "${name}" is now live!`);
+  }
+
+  renderMeetupsGrid();
+}
+
+function openCommunityDiscordModal(name) {
+  if (typeof showToast === 'function') {
+    showToast(`💬 Connected to ${name} Discord Channel & WhatsApp Circle!`);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ED-TECH CERTIFICATE OF COMPLETION GENERATOR & PREVIEW MODAL
+// -----------------------------------------------------------------------------
+function openCertificatePreviewModal() {
+  const modal = document.getElementById('modal-certificate-preview');
+  if (!modal) return;
+  const user = (typeof getAuthUser === 'function' ? getAuthUser() : null) || {};
+  const name = user.name || "Alex Chen";
+  const nameEl = document.getElementById('cert-candidate-name');
+  if (nameEl) nameEl.textContent = name;
+  const dateEl = document.getElementById('cert-issue-date');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeCertificatePreviewModal() {
+  const modal = document.getElementById('modal-certificate-preview');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function shareCertificateLinkedIn() {
+  const url = encodeURIComponent('https://job-hunt-autopilot.netlify.app/');
+  const title = encodeURIComponent('Honored to receive the Verified Certificate of Mastery in Software Systems & Autonomous Career Engineering from Job Hunt Autopilot!');
+  window.open(`https://www.linkedin.com/feed/?shareActive=true&text=${title}%20${url}`, '_blank');
+}
+
+// -----------------------------------------------------------------------------
+// ED-TECH INTERACTIVE COURSE SYLLABUS & CURRICULUM MODAL
+// -----------------------------------------------------------------------------
+function openCoursePreview(courseId) {
+  const c = expandedCoursesData.find(x => x.id === courseId) || expandedCoursesData[0];
+  const modal = document.getElementById('modal-course-preview');
+  if (!modal) {
+    if (typeof showToast === 'function') {
+      showToast(`Opening ${c.platformBadge} Free Preview Module 1-3... 🎥`);
+    }
+    return;
+  }
+
+  document.getElementById('course-preview-title').textContent = c.title;
+  document.getElementById('course-preview-platform').textContent = c.platformBadge;
+  document.getElementById('course-preview-desc').textContent = c.desc;
+  document.getElementById('course-preview-duration').textContent = c.duration;
+  document.getElementById('course-preview-students').textContent = `${c.students.toLocaleString()} Learners Enrolled`;
+  document.getElementById('course-preview-rating').textContent = `★ ${c.rating} / 5.0 Rating`;
+  document.getElementById('course-preview-price').textContent = formatCurrency(c.rawPrice);
+
+  const enrollBtn = document.getElementById('btn-preview-enroll-now');
+  if (enrollBtn) {
+    enrollBtn.setAttribute('onclick', `closeCoursePreviewModal(); openCoursePaymentModal('course', '${c.id}')`);
+  }
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeCoursePreviewModal() {
+  const modal = document.getElementById('modal-course-preview');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function downloadCourseSyllabusPdf() {
+  if (typeof showToast === 'function') {
+    showToast("📥 Complete 48-Page Syllabus & Hands-on Projects Curriculum PDF Downloaded!");
+  }
+}
+
+function openStreakModal() {
+  if (typeof showToast === 'function') {
+    showToast("🔥 14-Day Study Streak Active! Top 2% Learner on Job Hunt Autopilot!");
   }
 }
