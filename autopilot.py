@@ -734,11 +734,24 @@ class AutopilotRequestHandler(SimpleHTTPRequestHandler):
         self.send_response(404)
         self.end_headers()
 
-def start_server(port=8000):
+def start_server(port=8000, max_retries=10):
     init_db()
-    server_address = ("", port)
-    httpd = HTTPServer(server_address, AutopilotRequestHandler)
-    print(f"🚀 Job Hunt Autopilot running at http://localhost:{port}")
+    current_port = port
+    httpd = None
+    for attempt in range(max_retries):
+        try:
+            server_address = ("", current_port)
+            httpd = HTTPServer(server_address, AutopilotRequestHandler)
+            break
+        except OSError as e:
+            if attempt < max_retries - 1:
+                print(f"⚠️ Port {current_port} is already in use. Trying port {current_port + 1}...")
+                current_port += 1
+            else:
+                print(f"❌ Could not bind to any port from {port} to {current_port}: {e}")
+                return
+
+    print(f"🚀 Job Hunt Autopilot running at http://localhost:{current_port}")
     print(f"   Database: SQLite (autopilot.db)")
     print(f"   REST APIs: /api/triage, /api/db/status, /api/db/applications, /api/db/reset")
     print(f"   AI Chatbot: POST /api/chat (Python Career Copilot + Gemini API)")
