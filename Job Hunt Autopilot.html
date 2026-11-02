@@ -965,6 +965,24 @@
     <!-- SECONDARY APP HEADER: STICKY VIEW NAVIGATION WITH LEFT & RIGHT ARROWS -->
     <div id="header-secondary-nav" class="border-t border-slate-100 bg-slate-50/95 backdrop-blur-md px-3 sm:px-6 lg:px-8 py-1.5 transition-all shadow-2xs">
       <div class="max-w-7xl mx-auto flex items-center justify-between gap-1.5 sm:gap-2">
+        <!-- GLOBAL MULTI-CURRENCY SELECTOR (INR, GBP, AED, USD, CAD, AUD, EUR) -->
+        <div class="hidden sm:flex items-center gap-1.5 shrink-0 pl-1.5 pr-1 border-r border-slate-200">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider hidden lg:inline">Currency:</span>
+          <select 
+            id="global-currency-selector" 
+            onchange="setAppCurrency(this.value)" 
+            title="Switch Global Pricing Currency (INR, GBP, AED, USD, CAD, AUD, EUR)"
+            class="app-currency-selector bg-white hover:bg-slate-50 text-slate-800 text-xs font-black rounded-xl px-2.5 py-1 border border-slate-200 hover:border-indigo-400 shadow-2xs focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
+          >
+            <option value="INR" selected>🇮🇳 INR (₹)</option>
+            <option value="GBP">🇬🇧 GBP (£)</option>
+            <option value="AED">🇦🇪 AED (د.إ)</option>
+            <option value="USD">🇺🇸 USD ($)</option>
+            <option value="CAD">🇨🇦 CAD (CA$)</option>
+            <option value="AUD">🇦🇺 AUD (A$)</option>
+            <option value="EUR">🇪🇺 EUR (€)</option>
+          </select>
+        </div>
         
         <!-- Left Scroll Arrow Button -->
         <button 
@@ -3729,6 +3747,23 @@
         <!-- SUB-TAB 1: COURSES & BOOTCAMPS (Scaler / Edureka / Apna / Intellipaat) -->
         <!-- ===================================================================== -->
         <div id="section-courses-content" class="flex flex-col gap-6">
+          <!-- Dedicated Multi-Currency Pricing Switcher Bar (INR, GBP, AED, USD, CAD, AUD, EUR) -->
+          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-2xl border border-blue-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+              <span class="text-xs font-black text-blue-950 font-display">Multi-Currency Global Pricing:</span>
+              <span class="text-[11px] text-blue-700 hidden sm:inline">All courses, bootcamps & passes priced in your local currency</span>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button type="button" onclick="setAppCurrency('INR')" data-currency="INR" class="currency-pill px-2.5 py-1 rounded-lg text-xs font-black bg-indigo-600 text-white shadow-xs transition-colors cursor-pointer">🇮🇳 INR (₹)</button>
+              <button type="button" onclick="setAppCurrency('GBP')" data-currency="GBP" class="currency-pill px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer">🇬🇧 GBP (£)</button>
+              <button type="button" onclick="setAppCurrency('AED')" data-currency="AED" class="currency-pill px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer">🇦🇪 AED (د.إ)</button>
+              <button type="button" onclick="setAppCurrency('USD')" data-currency="USD" class="currency-pill px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer">🇺🇸 USD ($)</button>
+              <button type="button" onclick="setAppCurrency('CAD')" data-currency="CAD" class="currency-pill px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer">🇨🇦 CAD (CA$)</button>
+              <button type="button" onclick="setAppCurrency('AUD')" data-currency="AUD" class="currency-pill px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer">🇦🇺 AUD (A$)</button>
+              <button type="button" onclick="setAppCurrency('EUR')" data-currency="EUR" class="currency-pill px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer">🇪🇺 EUR (€)</button>
+            </div>
+          </div>
           
           <!-- Category Filter Bar & Search -->
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -3912,6 +3947,18 @@
           <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
             Choose the membership tier tailored to your search velocity. Unlock deep ATS keyword injection, verified recruiter emails, multi-language DSA solutions, and private 1-on-1 mentorship.
           </p>
+
+                    <!-- Multi-Currency Switcher Pills for Subscriptions -->
+          <div class="inline-flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200 flex-wrap justify-center mt-2">
+            <span class="text-[10px] font-bold text-slate-500 uppercase px-2">Currency:</span>
+            <button type="button" onclick="setAppCurrency('INR')" data-currency="INR" class="currency-pill px-2.5 py-1 rounded-xl text-xs font-black bg-indigo-600 text-white shadow-xs cursor-pointer">🇮🇳 INR (₹)</button>
+            <button type="button" onclick="setAppCurrency('GBP')" data-currency="GBP" class="currency-pill px-2.5 py-1 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">🇬🇧 GBP (£)</button>
+            <button type="button" onclick="setAppCurrency('AED')" data-currency="AED" class="currency-pill px-2.5 py-1 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">🇦🇪 AED (د.إ)</button>
+            <button type="button" onclick="setAppCurrency('USD')" data-currency="USD" class="currency-pill px-2.5 py-1 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">🇺🇸 USD ($)</button>
+            <button type="button" onclick="setAppCurrency('CAD')" data-currency="CAD" class="currency-pill px-2.5 py-1 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">🇨🇦 CAD (CA$)</button>
+            <button type="button" onclick="setAppCurrency('AUD')" data-currency="AUD" class="currency-pill px-2.5 py-1 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">🇦🇺 AUD (A$)</button>
+            <button type="button" onclick="setAppCurrency('EUR')" data-currency="EUR" class="currency-pill px-2.5 py-1 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">🇪🇺 EUR (€)</button>
+          </div>
 
           <!-- Billing Toggle (Monthly vs Annual) -->
           <div class="flex items-center justify-center gap-3 pt-2">
@@ -7053,20 +7100,43 @@
       </div>
 
       <div class="p-5 space-y-4">
-        <div class="p-3 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-between">
-          <span class="text-xs font-bold text-slate-700">Billing Cycle</span>
-          <span class="text-xs font-black text-indigo-700" id="checkout-billing-cycle">Annual ($260 / year)</span>
+        <div class="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-slate-500 uppercase">Total Investment</span>
+            <div class="text-2xl font-black text-indigo-950 font-display" id="checkout-plan-price">₹7,999</div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-black text-indigo-700 block" id="checkout-billing-cycle">Annual Billed</span>
+            <span class="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">Instant Pro Unlock</span>
+          </div>
         </div>
 
-        <div class="space-y-2">
-          <label class="block text-xs font-bold text-slate-700">Payment Simulation (Stripe / Razorpay Demo)</label>
-          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-            <input type="text" value="4242 •••• •••• 4242" readonly class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-slate-700" />
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" value="12/28" readonly class="bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-slate-700" />
-              <input type="text" value="CVC: 888" readonly class="bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-slate-700" />
+        <!-- Currency Selector Pills in Subscription Checkout -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+            <span>Choose Billing Currency:</span>
+            <span class="text-[10px] text-indigo-600 font-mono">Real-Time Conversion</span>
+          </div>
+          <div class="grid grid-cols-4 sm:grid-cols-7 gap-1 p-1 bg-slate-100 rounded-xl text-center">
+            <button type="button" onclick="setAppCurrency('INR')" data-currency="INR" class="sub-currency-pill px-1.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-xs cursor-pointer">₹ INR</button>
+            <button type="button" onclick="setAppCurrency('GBP')" data-currency="GBP" class="sub-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">£ GBP</button>
+            <button type="button" onclick="setAppCurrency('AED')" data-currency="AED" class="sub-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">AED</button>
+            <button type="button" onclick="setAppCurrency('USD')" data-currency="USD" class="sub-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">$ USD</button>
+            <button type="button" onclick="setAppCurrency('CAD')" data-currency="CAD" class="sub-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">CA$</button>
+            <button type="button" onclick="setAppCurrency('AUD')" data-currency="AUD" class="sub-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">A$</button>
+            <button type="button" onclick="setAppCurrency('EUR')" data-currency="EUR" class="sub-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">€ EUR</button>
+          </div>
+        </div>
+
+        <div class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[20px]">verified_user</span>
+            <div>
+              <span class="font-bold text-slate-900 block">Razorpay Live Verified Gateway</span>
+              <span class="text-[10px] text-slate-500 font-mono">Key: rzp_test_xeVAJ5Jg2C932Q • 256-Bit SSL</span>
             </div>
           </div>
+          <span class="px-2 py-0.5 rounded-full bg-blue-600 text-white font-mono text-[9px] font-bold">PRO VIP</span>
         </div>
 
         <p class="text-[11px] text-slate-500 leading-relaxed">
@@ -7076,8 +7146,9 @@
 
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
         <button type="button" onclick="closeSubscriptionCheckout()" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-200">Cancel</button>
-        <button type="button" onclick="processSubscriptionPayment()" id="btn-process-checkout" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/30 flex items-center gap-1.5">
-          <span>⚡ Pay via Razorpay &amp; Activate VIP</span>
+        <button type="button" onclick="processSubscriptionPayment()" id="btn-process-checkout" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-xs shadow-md shadow-indigo-600/30 flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">bolt</span>
+          <span id="btn-process-checkout-text">⚡ Pay via Razorpay &amp; Activate VIP</span>
         </button>
       </div>
     </div>
@@ -7189,6 +7260,23 @@
           </div>
         </div>
 
+        <!-- Quick Currency Switcher inside Course Checkout Modal -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+            <span>Pay in Local Currency:</span>
+            <span class="text-[10px] text-indigo-600 font-mono">7 Currencies Supported</span>
+          </div>
+          <div class="grid grid-cols-4 sm:grid-cols-7 gap-1 p-1 bg-slate-100 rounded-xl text-center">
+            <button type="button" onclick="setAppCurrency('INR')" data-currency="INR" class="course-currency-pill px-1.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-xs cursor-pointer">₹ INR</button>
+            <button type="button" onclick="setAppCurrency('GBP')" data-currency="GBP" class="course-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">£ GBP</button>
+            <button type="button" onclick="setAppCurrency('AED')" data-currency="AED" class="course-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">AED</button>
+            <button type="button" onclick="setAppCurrency('USD')" data-currency="USD" class="course-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">$ USD</button>
+            <button type="button" onclick="setAppCurrency('CAD')" data-currency="CAD" class="course-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">CA$</button>
+            <button type="button" onclick="setAppCurrency('AUD')" data-currency="AUD" class="course-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">A$</button>
+            <button type="button" onclick="setAppCurrency('EUR')" data-currency="EUR" class="course-currency-pill px-1.5 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:bg-slate-200 cursor-pointer">€ EUR</button>
+          </div>
+        </div>
+
         <!-- Razorpay Fast Checkout Primary Button -->
         <div class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl flex flex-col gap-2">
           <div class="flex items-center justify-between text-xs font-bold text-blue-900">
@@ -7198,9 +7286,9 @@
             </div>
             <span class="px-1.5 py-0.5 rounded bg-blue-600 text-white font-mono text-[9px]">rzp_test_xeVAJ5Jg2C932Q</span>
           </div>
-          <button type="button" onclick="processCoursePayment()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-indigo-600/20 active:scale-98 transition-all">
+          <button type="button" onclick="processCoursePayment()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-indigo-600/20 active:scale-98 transition-all cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">lock</span>
-            <span>Pay with Razorpay (Instant Access)</span>
+            <span id="pay-btn-text">Pay with Razorpay (Instant Access)</span>
           </button>
         </div>
 

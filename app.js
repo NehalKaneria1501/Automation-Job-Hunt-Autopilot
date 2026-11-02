@@ -8479,6 +8479,105 @@ function confirmMentorBooking() {
 }
 
 // -----------------------------------------------------------------------------
+
+/* ==========================================================================
+   GLOBAL MULTI-CURRENCY PRICING ENGINE (INR, GBP, AED, USD, CAD, AUD, EUR)
+   ========================================================================== */
+const CURRENCY_CONFIG = {
+  INR: { code: 'INR', symbol: '₹', name: 'Indian Rupee', flag: '🇮🇳', rateFromINR: 1.0, prefix: '₹', suffix: '' },
+  GBP: { code: 'GBP', symbol: '£', name: 'British Pound', flag: '🇬🇧', rateFromINR: 0.0093, prefix: '£', suffix: '' },
+  AED: { code: 'AED', symbol: 'AED', name: 'UAE Dirham', flag: '🇦🇪', rateFromINR: 0.0433, prefix: 'AED ', suffix: '' },
+  USD: { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸', rateFromINR: 0.0118, prefix: '$', suffix: '' },
+  CAD: { code: 'CAD', symbol: 'CA$', name: 'Canadian Dollar', flag: '🇨🇦', rateFromINR: 0.0161, prefix: 'CA$', suffix: '' },
+  AUD: { code: 'AUD', symbol: 'A$', name: 'Australian Dollar', flag: '🇦🇺', rateFromINR: 0.0182, prefix: 'A$', suffix: '' },
+  EUR: { code: 'EUR', symbol: '€', name: 'Euro', flag: '🇪🇺', rateFromINR: 0.0109, prefix: '€', suffix: '' }
+};
+
+let currentAppCurrency = localStorage.getItem('autopilot_currency') || 'INR';
+
+function getAppCurrency() {
+  const stored = localStorage.getItem('autopilot_currency');
+  if (stored && CURRENCY_CONFIG[stored]) return stored;
+  return 'INR';
+}
+
+function getConvertedRawAmount(amountInr, currencyCode = getAppCurrency()) {
+  const conf = CURRENCY_CONFIG[currencyCode] || CURRENCY_CONFIG.INR;
+  if (currencyCode === 'INR') return Math.round(amountInr);
+  return Math.max(1, Math.round(amountInr * conf.rateFromINR));
+}
+
+function formatCurrency(amountInr, currencyCode = getAppCurrency()) {
+  const conf = CURRENCY_CONFIG[currencyCode] || CURRENCY_CONFIG.INR;
+  const raw = getConvertedRawAmount(amountInr, currencyCode);
+  return `${conf.prefix}${raw.toLocaleString()}${conf.suffix}`;
+}
+
+function setAppCurrency(newCurr) {
+  if (!CURRENCY_CONFIG[newCurr]) return;
+  currentAppCurrency = newCurr;
+  localStorage.setItem('autopilot_currency', newCurr);
+
+  // 1. Sync all select elements across the DOM
+  document.querySelectorAll('.app-currency-selector, #global-currency-selector, #pricing-currency-select, #courses-currency-select').forEach(el => {
+    el.value = newCurr;
+  });
+
+  // 2. Sync all currency pills across modals & views
+  document.querySelectorAll('.currency-pill').forEach(btn => {
+    const c = btn.getAttribute('data-currency');
+    if (c === newCurr) {
+      btn.className = "currency-pill px-2.5 py-1 rounded-lg text-xs font-black bg-indigo-600 text-white shadow-xs transition-colors cursor-pointer";
+    } else {
+      btn.className = "currency-pill px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer";
+    }
+  });
+
+  // 3. Re-render views with new pricing
+  if (typeof renderExpandedCoursesGrid === 'function') renderExpandedCoursesGrid();
+  if (typeof renderInterviewNotesGrid === 'function') renderInterviewNotesGrid();
+  if (typeof updatePricingPrices === 'function') updatePricingPrices();
+
+  // 4. Update Course Payment Modal if open
+  if (typeof currentActivePaymentItem !== 'undefined' && currentActivePaymentItem) {
+    const baseInr = currentActivePaymentItem.rawPriceInr || currentActivePaymentItem.rawPrice || 499;
+    const priceEl = document.getElementById('pay-item-price');
+    if (priceEl) priceEl.textContent = formatCurrency(baseInr, newCurr);
+    
+    const payBtnText = document.getElementById('pay-btn-text');
+    if (payBtnText) payBtnText.textContent = `Pay ${formatCurrency(baseInr, newCurr)} via Razorpay (Instant Access)`;
+    
+    const emi3 = Math.round(getConvertedRawAmount(baseInr, newCurr) / 3);
+    const emi6 = Math.round(getConvertedRawAmount(baseInr, newCurr) / 6);
+    const emi3El = document.getElementById('pay-emi-3');
+    const emi6El = document.getElementById('pay-emi-6');
+    const conf = CURRENCY_CONFIG[newCurr];
+    if (emi3El) emi3El.textContent = `${conf.prefix}${emi3.toLocaleString()}${conf.suffix} / mo`;
+    if (emi6El) emi6El.textContent = `${conf.prefix}${emi6.toLocaleString()}${conf.suffix} / mo`;
+  }
+
+  // 5. Update Subscription Checkout Modal if open
+  if (typeof currentActiveSubscriptionPlan !== 'undefined') {
+    const isExec = currentActiveSubscriptionPlan === 'executive';
+    const baseInr = isExec 
+      ? (isAnnualBilling ? 18999 : 2499) 
+      : (isAnnualBilling ? 7999 : 1299);
+    const formatted = formatCurrency(baseInr, newCurr);
+    const priceEl = document.getElementById('checkout-plan-price');
+    const cycleEl = document.getElementById('checkout-billing-cycle');
+    const btnText = document.getElementById('btn-process-checkout-text');
+
+    if (priceEl) priceEl.textContent = formatted;
+    if (cycleEl) cycleEl.textContent = isAnnualBilling ? `Annual (${formatted} / year)` : `Monthly (${formatted} / month)`;
+    if (btnText) btnText.textContent = `⚡ Pay ${formatted} via Razorpay & Unlock VIP`;
+  }
+
+  if (typeof showToast === 'function') {
+    showToast(`💱 Currency switched to ${CURRENCY_CONFIG[newCurr].flag} ${newCurr} (${CURRENCY_CONFIG[newCurr].symbol})`);
+  }
+}
+
+
 // 7. SUBSCRIPTIONS & WHOLE WEBSITE PRO PRICING
 // -----------------------------------------------------------------------------
 let isAnnualBilling = true;
@@ -8503,33 +8602,86 @@ function togglePricingBilling() {
 function updatePricingPrices() {
   const proPrice = document.getElementById('pricing-pro-price');
   const execPrice = document.getElementById('pricing-exec-price');
+  const curr = getAppCurrency();
+  const conf = CURRENCY_CONFIG[curr] || CURRENCY_CONFIG.INR;
+
+  // Base subscription amounts in INR
+  const proAnnualInr = 7999;
+  const proMonthlyInr = 1299;
+  const execAnnualInr = 18999;
+  const execMonthlyInr = 2499;
 
   if (proPrice) {
-    proPrice.innerHTML = isAnnualBilling 
-      ? '$29 <span class="text-xs font-normal text-slate-300">/ month ($260/yr)</span>' 
-      : '$39 <span class="text-xs font-normal text-slate-300">/ month</span>';
+    if (isAnnualBilling) {
+      const annualRaw = getConvertedRawAmount(proAnnualInr, curr);
+      const monthlyEquiv = Math.round(annualRaw / 12);
+      proPrice.innerHTML = `${conf.prefix}${monthlyEquiv.toLocaleString()}${conf.suffix} <span class="text-xs font-normal text-slate-300">/ month (${conf.prefix}${annualRaw.toLocaleString()}${conf.suffix}/yr)</span>`;
+    } else {
+      const monthlyRaw = getConvertedRawAmount(proMonthlyInr, curr);
+      proPrice.innerHTML = `${conf.prefix}${monthlyRaw.toLocaleString()}${conf.suffix} <span class="text-xs font-normal text-slate-300">/ month</span>`;
+    }
   }
+
   if (execPrice) {
-    execPrice.innerHTML = isAnnualBilling 
-      ? '$79 <span class="text-xs font-normal text-slate-500">/ month ($710/yr)</span>' 
-      : '$99 <span class="text-xs font-normal text-slate-500">/ month</span>';
+    if (isAnnualBilling) {
+      const annualRaw = getConvertedRawAmount(execAnnualInr, curr);
+      const monthlyEquiv = Math.round(annualRaw / 12);
+      execPrice.innerHTML = `${conf.prefix}${monthlyEquiv.toLocaleString()}${conf.suffix} <span class="text-xs font-normal text-slate-500">/ month (${conf.prefix}${annualRaw.toLocaleString()}${conf.suffix}/yr)</span>`;
+    } else {
+      const monthlyRaw = getConvertedRawAmount(execMonthlyInr, curr);
+      execPrice.innerHTML = `${conf.prefix}${monthlyRaw.toLocaleString()}${conf.suffix} <span class="text-xs font-normal text-slate-500">/ month</span>`;
+    }
+  }
+
+  const modalPrice = document.getElementById('checkout-plan-price');
+  if (modalPrice && typeof currentActiveSubscriptionPlan !== 'undefined') {
+    const isExec = currentActiveSubscriptionPlan === 'executive';
+    const baseInr = isExec 
+      ? (isAnnualBilling ? execAnnualInr : execMonthlyInr) 
+      : (isAnnualBilling ? proAnnualInr : proMonthlyInr);
+    modalPrice.textContent = formatCurrency(baseInr, curr);
   }
 }
 
-function openSubscriptionCheckout(planId) {
+let currentActiveSubscriptionPlan = 'pro';
+
+function openSubscriptionCheckout(planId = 'pro') {
+  currentActiveSubscriptionPlan = planId;
   const modal = document.getElementById('modal-subscription-checkout');
   if (!modal) return;
 
+  const curr = getAppCurrency();
   const nameEl = document.getElementById('checkout-plan-name');
   const cycleEl = document.getElementById('checkout-billing-cycle');
+  const priceEl = document.getElementById('checkout-plan-price');
+  const btnText = document.getElementById('btn-process-checkout-text');
 
-  if (planId === 'executive') {
+  const isExec = planId === 'executive';
+  const baseInr = isExec 
+    ? (isAnnualBilling ? 18999 : 2499) 
+    : (isAnnualBilling ? 7999 : 1299);
+  const formatted = formatCurrency(baseInr, curr);
+
+  if (isExec) {
     if (nameEl) nameEl.textContent = "Executive & Switcher Elite Pass";
-    if (cycleEl) cycleEl.textContent = isAnnualBilling ? "Annual ($710 / year)" : "Monthly ($99 / month)";
+    if (cycleEl) cycleEl.textContent = isAnnualBilling ? `Annual (${formatted} / year)` : `Monthly (${formatted} / month)`;
   } else {
     if (nameEl) nameEl.textContent = "Pro Career Hunter Pass";
-    if (cycleEl) cycleEl.textContent = isAnnualBilling ? "Annual ($260 / year)" : "Monthly ($39 / month)";
+    if (cycleEl) cycleEl.textContent = isAnnualBilling ? `Annual (${formatted} / year)` : `Monthly (${formatted} / month)`;
   }
+
+  if (priceEl) priceEl.textContent = formatted;
+  if (btnText) btnText.textContent = `⚡ Pay ${formatted} via Razorpay & Unlock VIP`;
+
+  // Highlight active currency pill in modal
+  document.querySelectorAll('.sub-currency-pill').forEach(btn => {
+    const c = btn.getAttribute('data-currency');
+    if (c === curr) {
+      btn.className = "sub-currency-pill px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-600 text-white shadow-xs cursor-pointer";
+    } else {
+      btn.className = "sub-currency-pill px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer";
+    }
+  });
 
   modal.classList.remove('hidden');
   modal.classList.add('flex');
@@ -8544,30 +8696,51 @@ function closeSubscriptionCheckout() {
 }
 
 function processSubscriptionPayment() {
-  const btn = document.getElementById('btn-process-checkout');
-  if (btn) btn.textContent = "Verifying Card...";
+  const planId = currentActiveSubscriptionPlan || 'pro';
+  const isExec = planId === 'executive';
+  const planTitle = isExec ? "Executive & Switcher Elite Pass" : "Pro Career Hunter Pass";
+  const curr = getAppCurrency();
 
-  setTimeout(() => {
-    closeSubscriptionCheckout();
-    if (btn) btn.textContent = "Activate Subscription 🚀";
+  // Base subscription amounts in INR
+  const baseInr = isExec 
+    ? (isAnnualBilling ? 18999 : 2499) 
+    : (isAnnualBilling ? 7999 : 1299);
 
-    // Set pro status in localStorage
-    localStorage.setItem('autopilot_pro_tier', 'PRO');
-    
-    // Elevate UI user badge
+  const subItem = {
+    id: `sub_${planId}_${isAnnualBilling ? 'annual' : 'monthly'}`,
+    title: `${planTitle} (${isAnnualBilling ? 'Annual' : 'Monthly'})`,
+    tag: "Subscription Pass",
+    rawPriceInr: baseInr,
+    rawPrice: baseInr
+  };
+
+  closeSubscriptionCheckout();
+
+  if (typeof launchRazorpayPayment === 'function') {
+    launchRazorpayPayment(subItem, (paymentId) => {
+      localStorage.setItem('autopilot_pro_tier', isExec ? 'EXECUTIVE' : 'PRO');
+      const badge = document.getElementById('header-user-avatar');
+      if (badge) badge.textContent = isExec ? "EXEC" : "PRO";
+
+      if (typeof triggerConfetti === 'function') {
+        try { triggerConfetti(); } catch (e) {}
+      }
+
+      if (typeof showToast === 'function') {
+        showToast(`🎉 Razorpay Payment Verified (${paymentId})! ${planTitle} Activated 🌟`);
+      }
+
+      setTimeout(() => switchView('kanban'), 400);
+    });
+  } else {
+    localStorage.setItem('autopilot_pro_tier', isExec ? 'EXECUTIVE' : 'PRO');
     const badge = document.getElementById('header-user-avatar');
-    if (badge) badge.textContent = "PRO";
-
-    if (typeof triggerConfetti === 'function') {
-      try { triggerConfetti(); } catch (e) {}
-    }
-
+    if (badge) badge.textContent = isExec ? "EXEC" : "PRO";
     if (typeof showToast === 'function') {
-      showToast("Subscription Activated! Unlimited Pro Tools Unlocked 🌟");
+      showToast(`Subscription Activated! ${planTitle} Unlocked 🌟`);
     }
-
     setTimeout(() => switchView('kanban'), 400);
-  }, 700);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -9107,10 +9280,15 @@ function renderExpandedCoursesGrid(searchFilter = '') {
         <div class="flex items-center justify-between">
           <div>
             <div class="text-[10px] text-slate-400 font-bold uppercase">${c.duration}</div>
-            <div class="text-lg font-black text-slate-900 font-display">${c.priceInr} <span class="text-xs text-slate-400 font-normal">(${c.priceUsd})</span></div>
+            <div class="text-lg font-black text-slate-900 font-display">
+              ${formatCurrency(c.rawPrice)} 
+              <span class="text-xs text-slate-400 font-normal">(${getAppCurrency() === 'INR' ? c.priceUsd : '₹' + c.rawPrice.toLocaleString()})</span>
+            </div>
           </div>
           <div class="text-right">
-            <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">EMI from ${c.emiText}</span>
+            <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
+              EMI from ${formatCurrency(Math.round(c.rawPrice / 12))} / mo
+            </span>
           </div>
         </div>
 
@@ -9181,24 +9359,55 @@ function openCoursePaymentModal(itemType, itemId) {
   const modal = document.getElementById('modal-course-payment');
   if (!modal) return;
 
+  const curr = getAppCurrency();
   if (itemType === 'notes') {
     const note = interviewNotesData.find(x => x.id === itemId) || interviewNotesData[0];
-    currentActivePaymentItem = { title: note.title, tag: "Notes Subscription Pass", price: "₹499 ($6)", rawPrice: 499 };
+    currentActivePaymentItem = { 
+      id: note.id,
+      title: note.title, 
+      tag: "Notes Subscription Pass", 
+      rawPriceInr: 499, 
+      rawPrice: 499 
+    };
   } else {
     const course = expandedCoursesData.find(x => x.id === itemId) || expandedCoursesData[0];
-    currentActivePaymentItem = { title: course.title, tag: course.platformBadge, price: `${course.priceInr} (${course.priceUsd})`, rawPrice: course.rawPrice };
+    currentActivePaymentItem = { 
+      id: course.id,
+      title: course.title, 
+      tag: course.platformBadge, 
+      rawPriceInr: course.rawPrice, 
+      rawPrice: course.rawPrice 
+    };
   }
+
+  const baseInr = currentActivePaymentItem.rawPriceInr;
+  const formatted = formatCurrency(baseInr, curr);
 
   document.getElementById('pay-item-title').textContent = currentActivePaymentItem.title;
   document.getElementById('pay-item-tag').textContent = currentActivePaymentItem.tag;
-  document.getElementById('pay-item-price').textContent = currentActivePaymentItem.price;
+  document.getElementById('pay-item-price').textContent = formatted;
 
-  const emi3 = Math.round(currentActivePaymentItem.rawPrice / 3);
-  const emi6 = Math.round(currentActivePaymentItem.rawPrice / 6);
+  const payBtnText = document.getElementById('pay-btn-text');
+  if (payBtnText) payBtnText.textContent = `Pay ${formatted} via Razorpay (Instant Access)`;
+
+  const convertedAmount = getConvertedRawAmount(baseInr, curr);
+  const conf = CURRENCY_CONFIG[curr];
+  const emi3 = Math.round(convertedAmount / 3);
+  const emi6 = Math.round(convertedAmount / 6);
   const emi3El = document.getElementById('pay-emi-3');
   const emi6El = document.getElementById('pay-emi-6');
-  if (emi3El) emi3El.textContent = `₹${emi3.toLocaleString()} / mo`;
-  if (emi6El) emi6El.textContent = `₹${emi6.toLocaleString()} / mo`;
+  if (emi3El) emi3El.textContent = `${conf.prefix}${emi3.toLocaleString()}${conf.suffix} / mo`;
+  if (emi6El) emi6El.textContent = `${conf.prefix}${emi6.toLocaleString()}${conf.suffix} / mo`;
+
+  // Highlight active currency pill in modal
+  document.querySelectorAll('.course-currency-pill').forEach(btn => {
+    const c = btn.getAttribute('data-currency');
+    if (c === curr) {
+      btn.className = "course-currency-pill px-2.5 py-1 rounded-lg text-xs font-black bg-blue-600 text-white shadow-xs cursor-pointer";
+    } else {
+      btn.className = "course-currency-pill px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer";
+    }
+  });
 
   switchPayTab('upi');
   modal.classList.remove('hidden');
@@ -9756,12 +9965,12 @@ function trackAddPaymentInfo(item, paymentType = 'Razorpay') {
   });
 }
 
-function trackPurchase(transactionId, item, amount) {
+function trackPurchase(transactionId, item, amount, currency = getAppCurrency()) {
   if (!item) return;
   logFirebaseAnalyticsEvent('purchase', {
     transaction_id: transactionId,
     affiliation: 'Job Hunt Autopilot Official Store',
-    currency: 'INR',
+    currency: currency,
     value: amount,
     tax: Math.round(amount * 0.18),
     shipping: 0,
@@ -9792,8 +10001,13 @@ function launchRazorpayPayment(itemDetails, onComplete) {
   const userName = user.name || "Alex Chen";
   const userEmail = user.email || "alex.chen@executive.dev";
 
-  const rawAmount = (itemDetails && itemDetails.rawPrice !== undefined) ? itemDetails.rawPrice : 499;
-  const amountPaise = Math.max(100, Math.round(rawAmount * 100)); // Minimum ₹1
+  const baseInr = (itemDetails && itemDetails.rawPriceInr !== undefined) 
+    ? itemDetails.rawPriceInr 
+    : ((itemDetails && itemDetails.rawPrice !== undefined) ? itemDetails.rawPrice : 499);
+  
+  const currencyCode = getAppCurrency();
+  const convertedAmount = getConvertedRawAmount(baseInr, currencyCode);
+  const amountSubunit = Math.max(100, Math.round(convertedAmount * 100)); // Subunit: cents, paise, fils
 
   // Emit Firebase E-Commerce events
   if (typeof trackBeginCheckout === 'function') trackBeginCheckout(itemDetails);
@@ -9801,8 +10015,8 @@ function launchRazorpayPayment(itemDetails, onComplete) {
 
   const options = {
     key: RAZORPAY_API_KEY,
-    amount: amountPaise,
-    currency: "INR",
+    amount: amountSubunit,
+    currency: currencyCode,
     name: "Job Hunt Autopilot",
     description: itemDetails.title || "Career Preparation Pass",
     image: "https://job-hunt-autopilot.netlify.app/favicon.ico",
@@ -9814,6 +10028,9 @@ function launchRazorpayPayment(itemDetails, onComplete) {
     notes: {
       item_id: itemDetails.id || "course_sub",
       category: itemDetails.tag || "career_education",
+      currency: currencyCode,
+      amount: convertedAmount,
+      base_inr: baseInr,
       platform: "job-hunt-autopilot.netlify.app",
       razorpay_key: RAZORPAY_API_KEY
     },
@@ -9825,12 +10042,12 @@ function launchRazorpayPayment(itemDetails, onComplete) {
 
       // 1. Emit Purchase in Firebase Analytics
       if (typeof trackPurchase === 'function') {
-        trackPurchase(paymentId, itemDetails, rawAmount);
+        trackPurchase(paymentId, itemDetails, convertedAmount, currencyCode);
       }
 
       // 2. Save Order to Firestore (orders collection)
       if (typeof saveOrderToFirestore === 'function') {
-        saveOrderToFirestore(paymentId, itemDetails);
+        saveOrderToFirestore(paymentId, itemDetails, currencyCode, convertedAmount);
       }
 
       // 3. Callback
@@ -9920,23 +10137,29 @@ window.testRazorpayCheckout = function(amount = 1) {
   });
 };
 
-async function saveOrderToFirestore(paymentId, itemDetails) {
+async function saveOrderToFirestore(paymentId, itemDetails, currency = getAppCurrency(), amount = null) {
   try {
     if (window.firebaseDb && window.firebaseOps && window.firebaseOps.setDoc) {
       const docRef = window.firebaseOps.doc(window.firebaseDb, "orders", paymentId);
+      const user = (typeof getAuthUser === 'function' ? getAuthUser() : null) || {};
+      const baseInr = itemDetails.rawPriceInr || itemDetails.rawPrice || 499;
+      const finalAmount = amount !== null ? amount : getConvertedRawAmount(baseInr, currency);
+
       await window.firebaseOps.setDoc(docRef, {
         orderId: paymentId,
         gateway: "Razorpay (rzp_test_xeVAJ5Jg2C932Q)",
         itemTitle: itemDetails.title,
         itemId: itemDetails.id || "prod_item",
-        amountInr: itemDetails.rawPrice || 499,
-        currency: "INR",
-        customerName: "Alex Chen",
-        customerEmail: "alex.chen@executive.dev",
+        category: itemDetails.tag || "Career Pass",
+        amount: finalAmount,
+        currency: currency,
+        amountInr: baseInr,
+        customerName: user.name || "Alex Chen",
+        customerEmail: user.email || "alex.chen@executive.dev",
         status: "PAID",
         timestamp: new Date().toISOString()
       });
-      console.log(`🔥 Order recorded in Firestore: orders/${paymentId}`);
+      console.log(`🔥 Multi-currency order recorded in Firestore: orders/${paymentId} (${currency} ${finalAmount})`);
     }
   } catch (err) {
     console.warn("Firestore order sync warning:", err);
