@@ -65,6 +65,60 @@
 
   <style>
 
+    /* ========================================================================= */
+    /* REMOVE INNER SCROLLBARS & ENSURE UNIFIED NATURAL PAGE SCROLLING          */
+    /* ========================================================================= */
+    html {
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scroll-behavior: smooth !important;
+    }
+    body {
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow-y: visible !important;
+      overflow-x: hidden !important;
+      position: relative;
+    }
+    #viewport-container, #device-chassis, #device-scroll-viewport {
+      overflow: visible !important;
+      height: auto !important;
+      min-height: 100% !important;
+      max-height: none !important;
+    }
+    /* Kanban columns expand naturally without internal scrollbars */
+    #col-applied, #col-interview, #col-offer, #col-rejected {
+      overflow-y: visible !important;
+      overflow-x: visible !important;
+      max-height: none !important;
+      height: auto !important;
+    }
+    #col-applied-wrapper, #col-interview-wrapper, #col-offer-wrapper, #col-rejected-wrapper {
+      overflow: visible !important;
+      height: auto !important;
+      min-height: 280px !important;
+      max-height: none !important;
+    }
+    /* Suppress inner scroll traps on content cards */
+    #cv-output-container {
+      max-height: none !important;
+      overflow-y: visible !important;
+    }
+    /* Hide scrollbars inside elements while keeping them accessible */
+    .scrollbar-none::-webkit-scrollbar,
+    .no-inner-scroll::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    .scrollbar-none, .no-inner-scroll {
+      -ms-overflow-style: none !important;
+      scrollbar-width: none !important;
+    }
+
+
     /* Smooth Scrolling & Unified Scrollbar Fixes */
     html {
       scroll-behavior: smooth !important;
@@ -1196,7 +1250,7 @@
               </div>
               <span id="badge-count-applied" class="px-2 py-0.5 text-xs font-bold rounded-full bg-white text-slate-700 border border-slate-200">0</span>
             </div>
-            <div id="col-applied" class="flex flex-col gap-3 flex-1 custom-scrollbar overflow-y-auto"></div>
+            <div id="col-applied" class="flex flex-col gap-3 flex-1"></div>
           </div>
 
           <!-- Column 2: INTERVIEWS ACTIVE -->
@@ -1208,7 +1262,7 @@
               </div>
               <span id="badge-count-interview" class="px-2 py-0.5 text-xs font-bold rounded-full bg-white text-indigo-700 border border-indigo-200">0</span>
             </div>
-            <div id="col-interview" class="flex flex-col gap-3 flex-1 custom-scrollbar overflow-y-auto"></div>
+            <div id="col-interview" class="flex flex-col gap-3 flex-1"></div>
           </div>
 
           <!-- Column 3: LEGITIMATE OFFERS -->
@@ -1220,7 +1274,7 @@
               </div>
               <span id="badge-count-offer" class="px-2 py-0.5 text-xs font-bold rounded-full bg-white text-emerald-700 border border-emerald-200">0</span>
             </div>
-            <div id="col-offer" class="flex flex-col gap-3 flex-1 custom-scrollbar overflow-y-auto"></div>
+            <div id="col-offer" class="flex flex-col gap-3 flex-1"></div>
           </div>
 
           <!-- Column 4: REJECTED -->
@@ -1232,7 +1286,7 @@
               </div>
               <span id="badge-count-rejected" class="px-2 py-0.5 text-xs font-bold rounded-full bg-white text-slate-600 border border-slate-200">0</span>
             </div>
-            <div id="col-rejected" class="flex flex-col gap-3 flex-1 custom-scrollbar overflow-y-auto"></div>
+            <div id="col-rejected" class="flex flex-col gap-3 flex-1"></div>
           </div>
         </div>
 
