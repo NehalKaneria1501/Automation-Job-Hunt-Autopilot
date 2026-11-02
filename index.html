@@ -3,6 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Canonical & Domain Host (Netlify Production) -->
+  <link rel="canonical" href="https://job-hunt-autopilot.netlify.app/">
+  <meta property="og:url" content="https://job-hunt-autopilot.netlify.app/">
+  <meta property="og:site_name" content="Job Hunt Autopilot">
+  <meta name="twitter:url" content="https://job-hunt-autopilot.netlify.app/">
   <title>Job Hunt Autopilot — Executive Career Cockpit (Google Stitch)</title>
 
   <!-- Google tag (gtag.js) -->
@@ -12,7 +17,7 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', 'G-5B8CWW4EQB');
+    gtag('config', 'G-5B8CWW4EQB', { 'page_location': 'https://job-hunt-autopilot.netlify.app/' });
   </script>
 
   <!-- Google Fonts: Plus Jakarta Sans / Manrope / JetBrains Mono -->
@@ -887,7 +892,7 @@
         <div class="hidden lg:flex items-center gap-3 text-[11px] text-slate-500 font-mono">
           <span id="telemetry-firebase-badge" class="flex items-center gap-1.5 text-amber-700 font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-[10px]">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-            <span>Firebase: job-hunt-autopilot-16ebb</span>
+            <span class="text-emerald-800 font-bold">Netlify: job-hunt-autopilot.netlify.app</span>
           </span>
           <span class="flex items-center gap-1 text-emerald-600"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live DKIM/SPF Ingest</span>
           <span>Stitch Cockpit v3.2</span>
@@ -6144,7 +6149,8 @@
               <span class="text-base">🔥</span>
               <div>
                 <div class="font-bold text-amber-950 text-xs">Google Firebase Ecosystem</div>
-                <div class="text-[10px] text-amber-700 font-mono">job-hunt-autopilot-16ebb</div>
+                <div class="text-[10px] text-amber-800 font-mono">job-hunt-autopilot-16ebb</div>
+                <div class="text-[9px] text-emerald-700 font-bold">Live: job-hunt-autopilot.netlify.app</div>
               </div>
             </div>
             <span class="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 font-extrabold text-[9px] uppercase tracking-wider" id="profile-firebase-status">Connected</span>
@@ -6544,17 +6550,24 @@
         </button>
       </div>
 
-      <div class="p-4 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="switchDsaCodeLang('python')" id="btn-lang-python" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">Python</button>
-          <button type="button" onclick="switchDsaCodeLang('javascript')" id="btn-lang-javascript" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white">JavaScript</button>
-          <button type="button" onclick="switchDsaCodeLang('java')" id="btn-lang-java" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white">Java</button>
+      <div class="p-3.5 bg-slate-800 border-b border-slate-700 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="switchDsaCodeLang('python')" id="btn-lang-python" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-xs">🐍 Python 3.12</button>
+          <button type="button" onclick="switchDsaCodeLang('javascript')" id="btn-lang-javascript" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white">⚡ JavaScript (Node.js)</button>
+          <button type="button" onclick="switchDsaCodeLang('java')" id="btn-lang-java" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white">☕ Java 21</button>
         </div>
-        <div class="text-[11px] font-mono text-emerald-400" id="dsa-modal-complexity">Time: O(N) | Space: O(N)</div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="runDsaCodeSimulation()" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 shadow-xs transition-all active:scale-95">
+            <span class="material-symbols-outlined text-[15px]">play_circle</span>
+            <span>Run Test Cases</span>
+          </button>
+          <div class="text-[11px] font-mono text-emerald-400 px-2 py-0.5 rounded bg-slate-900 border border-slate-700" id="dsa-modal-complexity">Time: O(N) | Space: O(N)</div>
+        </div>
       </div>
 
-      <div class="p-4 bg-slate-950 text-slate-200 overflow-y-auto custom-scrollbar flex-1">
+      <div class="p-4 bg-slate-950 text-slate-200 overflow-y-auto custom-scrollbar flex-1 space-y-3">
         <pre><code id="dsa-modal-code-body" class="text-xs font-mono leading-relaxed"># Solution code</code></pre>
+        <div id="dsa-terminal-output" class="hidden p-3.5 bg-black/90 rounded-2xl border border-slate-800 space-y-2"></div>
       </div>
 
       <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
