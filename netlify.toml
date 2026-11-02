@@ -15,9 +15,9 @@
 [[headers]]
   for = "/*"
     [headers.values]
-      X-Frame-Options = "SAMEORIGIN"
       X-Content-Type-Options = "nosniff"
       Referrer-Policy = "strict-origin-when-cross-origin"
+      Content-Security-Policy = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob: chrome-extension:; frame-src * data: blob:; img-src * data: blob: https:; connect-src * https: wss:; font-src * data: https:;"
 
 [[headers]]
   for = "/app.js"
