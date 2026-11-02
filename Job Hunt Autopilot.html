@@ -223,6 +223,20 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+    .header-dropdown-menu {
+      transform-origin: top left;
+      animation: headerDropdownFade 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes headerDropdownFade {
+      from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
   </style>
 </head>
 <body class="bg-cockpit-surface text-cockpit-onSurface antialiased min-h-screen flex flex-col">
@@ -300,80 +314,240 @@
   <!-- TOP COCKPIT HEADER (DESKTOP) -->
   <header id="desktop-app-header" class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
     <!-- Primary App Header -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/25">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 md:gap-4">
+      
+      <!-- LEFT: Brand Logo & Executive Badge -->
+      <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+        <a href="#kanban" onclick="switchView('kanban'); return false;" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/25 hover:scale-105 transition-transform" title="Job Hunt Autopilot Home">
           <i data-lucide="compass" class="w-6 h-6"></i>
-        </div>
+        </a>
         <div>
           <div class="flex items-center gap-2">
             <span class="font-display font-extrabold text-sm sm:text-base tracking-tight text-slate-900">Job Hunt Autopilot</span>
-            <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Stitch</span>
+            <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 border border-indigo-200 shadow-2xs">PRO v3.2</span>
           </div>
-          <p class="hidden sm:block text-[11px] text-slate-500 font-medium">Executive Career Cockpit • Autonomous Inbound Triage &amp; Threat Quarantine</p>
+          <p class="hidden xl:block text-[11px] text-slate-500 font-medium">Executive Career Cockpit • Autonomous Triage &amp; Threat Quarantine</p>
         </div>
       </div>
 
-      <!-- Quick Action Controls & Modals Trigger -->
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <!-- Shield Status Badge -->
-        <div class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
-          </span>
-          <span>Zero-Trust Shield Active</span>
+      <!-- CENTER: Categorized Navigation Dropdowns (Desktop & Tablet) -->
+      <nav class="hidden md:flex items-center gap-1 lg:gap-1.5 text-xs font-semibold text-slate-700">
+        
+        <!-- DROPDOWN 1: Workspaces -->
+        <div class="relative header-dropdown-container">
+          <button type="button" onclick="toggleHeaderDropdown('nav-dd-workspaces')" class="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-[18px] text-indigo-600">domain</span>
+            <span>Workspaces</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400">expand_more</span>
+          </button>
+          <div id="nav-dd-workspaces" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 flex-col gap-1">
+            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider">Candidate Workspaces</div>
+            <button type="button" onclick="switchView('kanban'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">view_kanban</span></span>
+              <div>
+                <div class="font-bold text-slate-900">Pipeline Kanban</div>
+                <div class="text-[10px] text-slate-500">124 Multi-stage tracked jobs</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('inbox'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">mail</span></span>
+              <div>
+                <div class="font-bold text-slate-900">Inbound Triage Inbox</div>
+                <div class="text-[10px] text-slate-500">DKIM/SPF parsed email stream</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('mnc-hub'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">apartment</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>MNC Career Hub</span>
+                  <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold">50+ MNCs</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Openings, Referrals, CVs &amp; Mentors</div>
+              </div>
+            </button>
+            <div class="h-px bg-slate-100 my-1"></div>
+            <button type="button" onclick="openLogModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">receipt_long</span></span>
+              <div>
+                <div class="font-bold text-slate-800">Raw Ingest Audit Log</div>
+                <div class="text-[10px] text-slate-500">Live RFC822 parser logs (20)</div>
+              </div>
+            </button>
+          </div>
         </div>
 
-        <!-- Ingest Log Modal Trigger (hidden on mobile, shown in drawer) -->
-        <button type="button" onclick="openLogModal()" class="hidden md:inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all">
-          <span class="material-symbols-outlined text-[18px]">receipt_long</span>
-          <span class="hidden lg:inline">Ingest Log</span>
-          <span class="bg-slate-300 text-slate-800 text-[10px] px-1.5 py-0.2 rounded font-mono font-bold">20</span>
+        <!-- DROPDOWN 2: Security & SRE -->
+        <div class="relative header-dropdown-container">
+          <button type="button" onclick="toggleHeaderDropdown('nav-dd-security')" class="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-[18px] text-red-500">shield</span>
+            <span>Security &amp; SRE</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400">expand_more</span>
+          </button>
+          <div id="nav-dd-security" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 flex-col gap-1">
+            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider">Zero-Trust Intelligence</div>
+            <button type="button" onclick="switchView('scam-radar'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-red-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">security</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Scam Radar &amp; IC3</span>
+                  <span class="px-1.5 py-0.2 rounded bg-red-100 text-red-700 text-[9px] font-bold">4 Blocked</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Fake checks, Telegram &amp; spoof alerts</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('follow-up'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-amber-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">schedule_send</span></span>
+              <div>
+                <div class="font-bold text-slate-900">Follow-up SLA Queue</div>
+                <div class="text-[10px] text-slate-500">Recruiter outreach countdowns</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('interview-studio'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-purple-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">mic</span></span>
+              <div>
+                <div class="font-bold text-slate-900">Interview Studio</div>
+                <div class="text-[10px] text-slate-500">Audio simulator &amp; calendar invite</div>
+              </div>
+            </button>
+            <button type="button" onclick="switchView('grafana-retro'); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-emerald-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">monitoring</span></span>
+              <div>
+                <div class="font-bold text-slate-900">Grafana SRE Telemetry</div>
+                <div class="text-[10px] text-slate-500">Ingest throughput &amp; error metrics</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- DROPDOWN 3: AI & Tools -->
+        <div class="relative header-dropdown-container">
+          <button type="button" onclick="toggleHeaderDropdown('nav-dd-ai-tools')" class="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-[18px] text-purple-600">psychology</span>
+            <span>AI &amp; Tools</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-400">expand_more</span>
+          </button>
+          <div id="nav-dd-ai-tools" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 flex-col gap-1">
+            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider">AI Engines &amp; Extensibility</div>
+            <button type="button" onclick="openResumeMatcher(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-indigo-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">psychology</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Gemini ATS Resume Matcher</span>
+                  <span class="px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 text-[9px] font-bold">AI</span>
+                </div>
+                <div class="text-[10px] text-slate-500">ATS score &amp; bullet-point critique</div>
+              </div>
+            </button>
+            <button type="button" onclick="openJobScraper(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-blue-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">travel_explore</span></span>
+              <div>
+                <div class="font-bold text-slate-900">Job URL Scraper (BS4)</div>
+                <div class="text-[10px] text-slate-500">Auto-parse job posts from link</div>
+              </div>
+            </button>
+            <button type="button" onclick="triggerBackgroundSync(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-emerald-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">sync</span></span>
+              <div>
+                <div class="font-bold text-slate-900">APScheduler Background Poller</div>
+                <div class="text-[10px] text-slate-500">15-minute autonomous inbox sync</div>
+              </div>
+            </button>
+            <button type="button" onclick="openDatabaseModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">database</span></span>
+              <div>
+                <div class="font-bold text-slate-900" id="header-menu-db-label">Relational Database Studio</div>
+                <div class="text-[10px] text-slate-500">SQLite / IndexedDB persistence</div>
+              </div>
+            </button>
+            <div class="h-px bg-slate-100 my-1"></div>
+            <a href="/docs" target="_blank" onclick="closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-purple-50 flex items-center gap-2.5 transition-colors text-purple-900">
+              <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">api</span></span>
+              <div>
+                <div class="font-bold text-purple-950 flex items-center gap-1">
+                  <span>Swagger OpenAPI Docs</span>
+                  <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                </div>
+                <div class="text-[10px] text-purple-700">Explore interactive REST endpoints</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- DROPDOWN 4: Demo & Reset (Attract Professionals) -->
+        <div class="relative header-dropdown-container">
+          <button type="button" onclick="toggleHeaderDropdown('nav-dd-demo-reset')" class="px-2.5 py-1.5 rounded-xl bg-amber-50/90 hover:bg-amber-100 text-amber-900 border border-amber-200/80 flex items-center gap-1.5 transition-colors font-bold shadow-2xs">
+            <span class="material-symbols-outlined text-[18px] text-amber-600">restart_alt</span>
+            <span>Demo &amp; Reset</span>
+            <span class="material-symbols-outlined text-[16px] text-amber-600">expand_more</span>
+          </button>
+          <div id="nav-dd-demo-reset" class="header-dropdown-menu hidden absolute left-0 top-11 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 flex-col gap-1">
+            <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-amber-700 tracking-wider flex items-center justify-between">
+              <span>Executive Demo Controls</span>
+              <span class="px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded font-bold text-[9px]">Portfolio</span>
+            </div>
+            <button type="button" onclick="openResetWebsiteModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2.5 rounded-xl bg-gradient-to-r from-amber-50 to-indigo-50 hover:from-amber-100 hover:to-indigo-100 border border-amber-200/60 flex items-center gap-2.5 transition-all">
+              <span class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold shadow-xs"><span class="material-symbols-outlined text-[20px]">restart_alt</span></span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1">
+                  <span>Reset Website &amp; Demo</span>
+                  <span class="text-[9px] px-1 bg-amber-200 text-amber-900 rounded font-bold">Attract Pros</span>
+                </div>
+                <div class="text-[10px] text-slate-600">Restore clean benchmark state for recruiters</div>
+              </div>
+            </button>
+            <button type="button" onclick="triggerAutopilotIngestion(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i></span>
+              <div>
+                <div class="font-bold text-slate-900">Re-Scan Inbound Emails</div>
+                <div class="text-[10px] text-slate-500">Trigger immediate classification triage</div>
+              </div>
+            </button>
+            <button type="button" onclick="openConnectModal(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-slate-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">link</span></span>
+              <div>
+                <div class="font-bold text-slate-900">OAuth Inbound Connections</div>
+                <div class="text-[10px] text-slate-500">Connect Google, Outlook or IMAP</div>
+              </div>
+            </button>
+            <div class="h-px bg-slate-100 my-1"></div>
+            <button type="button" onclick="exportDatabaseBackup(); closeAllHeaderDropdowns();" class="w-full text-left p-2 rounded-xl hover:bg-emerald-50 flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs"><span class="material-symbols-outlined text-[18px]">download</span></span>
+              <div>
+                <div class="font-bold text-slate-900">Export Career Database (JSON)</div>
+                <div class="text-[10px] text-slate-500">Download backup file to local machine</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+      </nav>
+
+      <!-- RIGHT: Action Buttons, Reset Demo, Profile & Viewport Toggle -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        
+        <!-- PROMINENT DIRECT "RESET WEBSITE" BUTTON TO ATTRACT PROFESSIONALS -->
+        <button 
+          type="button" 
+          onclick="openResetWebsiteModal()" 
+          title="Reset Cockpit to Executive Demo State (Attract Recruiters & Professionals)"
+          class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 border border-amber-300 text-xs font-bold transition-all active:scale-95 shadow-xs"
+        >
+          <span class="material-symbols-outlined text-[16px] text-amber-600">restart_alt</span>
+          <span class="hidden sm:inline">Reset Demo</span>
+          <span class="inline sm:hidden">Reset</span>
         </button>
 
-        <!-- Connect OAuth Modal Trigger -->
-        <button type="button" onclick="openConnectModal()" class="hidden lg:inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition-all">
-          <span class="material-symbols-outlined text-[18px]">link</span>
-          <span class="hidden xl:inline">Connect</span>
-        </button>
-
-        <!-- Database Manager Trigger -->
-        <button type="button" onclick="openDatabaseModal()" id="btn-db-status" class="hidden sm:inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-all shadow-xs">
-          <span class="material-symbols-outlined text-[18px] text-emerald-600">database</span>
-          <span id="db-status-badge-text" class="hidden lg:inline">DB: SQLite Connected</span>
-          <span class="inline lg:hidden font-mono font-bold text-[10px]">DB</span>
-        </button>
-
-        <!-- Interactive Swagger API Docs Link -->
-        <a href="/docs" target="_blank" title="Interactive OpenAPI Swagger Documentation" class="hidden xl:inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-xs font-bold transition-all shadow-xs">
-          <span class="material-symbols-outlined text-[18px] text-purple-600">api</span>
-          <span>API Docs</span>
-        </a>
-
-        <!-- AI Resume Matcher Trigger -->
-        <button type="button" onclick="openResumeMatcher()" title="AI Resume Matcher & ATS Critique (Gemini SDK)" class="hidden md:inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 text-indigo-800 border border-indigo-200 text-xs font-bold transition-all shadow-xs">
-          <span class="material-symbols-outlined text-[18px] text-indigo-600">psychology</span>
-          <span class="hidden xl:inline">AI Resume Match</span>
-        </button>
-
-        <!-- Job Auto-Scraper Trigger -->
-        <button type="button" onclick="openJobScraper()" title="Auto-Scrape Job URL (BeautifulSoup4)" class="hidden lg:inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold transition-all shadow-xs">
-          <span class="material-symbols-outlined text-[18px] text-blue-600">travel_explore</span>
-          <span class="hidden xl:inline">Scrape URL</span>
-        </button>
-
-        <!-- Auto-Sync APScheduler Trigger & Status -->
-        <button type="button" onclick="triggerBackgroundSync()" id="btn-auto-sync" title="APScheduler Background Worker" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition-all">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span id="sync-status-text" class="hidden xl:inline">Auto-Sync (15m)</span>
-          <i data-lucide="refresh-cw" class="w-3 h-3 text-slate-500"></i>
-        </button>
-
-        <!-- Re-Scan Inbox Button -->
-        <button id="btn-run-autopilot" type="button" onclick="triggerAutopilotIngestion()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all active:scale-95">
+        <!-- Quick Re-Scan Button -->
+        <button 
+          id="btn-run-autopilot" 
+          type="button" 
+          onclick="triggerAutopilotIngestion()" 
+          title="Re-Scan All Inbound Sources" 
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all active:scale-95"
+        >
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-          <span class="hidden md:inline">Re-Scan</span>
+          <span class="hidden lg:inline">Re-Scan</span>
         </button>
 
         <!-- Mobile Quick Actions Menu Toggle (visible on mobile screens) -->
@@ -421,6 +595,10 @@
             <button type="button" onclick="openUserProfileModal(); toggleUserDropdown(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-indigo-50 text-slate-700 font-semibold flex items-center gap-2 transition-colors">
               <span class="material-symbols-outlined text-[18px] text-indigo-600">account_circle</span>
               <span>Candidate Profile &amp; Goals</span>
+            </button>
+            <button type="button" onclick="openResetWebsiteModal(); toggleUserDropdown(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-amber-50 text-amber-800 font-bold flex items-center gap-2 transition-colors">
+              <span class="material-symbols-outlined text-[18px] text-amber-600">restart_alt</span>
+              <span>Reset Website to Demo</span>
             </button>
             <button type="button" onclick="openAuthModal('otp'); toggleUserDropdown(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 text-slate-700 font-medium flex items-center gap-2 transition-colors">
               <span class="material-symbols-outlined text-[18px] text-purple-600">shield_lock</span>
@@ -1842,6 +2020,72 @@
   </div> <!-- End device-chassis -->
 
   </div> <!-- End Viewport Container -->
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: RESET WEBSITE / DEMO SANDBOX RESTORE MODAL -->
+  <!-- ========================================================================= -->
+  <div id="reset-website-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center font-black">
+            <span class="material-symbols-outlined text-[24px]">restart_alt</span>
+          </div>
+          <div>
+            <h3 class="font-display font-extrabold text-base text-white">Reset Website &amp; Demo Sandbox</h3>
+            <p class="text-xs text-slate-300">Prepare for recruiters, live demos &amp; portfolio showcases</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeResetWebsiteModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-start gap-3">
+          <span class="material-symbols-outlined text-amber-600 text-[22px] shrink-0">workspace_premium</span>
+          <div class="text-xs text-amber-950">
+            <div class="font-bold mb-1">Attract Professional Recruiters &amp; Hiring Teams</div>
+            <p class="leading-relaxed text-amber-800">
+              Resetting restores a pristine, high-achieving executive candidate portfolio: <strong>124 tracked applications</strong>, <strong>20 authenticated emails</strong>, <strong>Zero-Trust scam quarantine</strong>, <strong>upcoming interview schedules</strong>, and <strong>50+ top MNC openings</strong>.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-xs text-slate-600">
+          <div class="font-bold text-slate-800 uppercase tracking-wider text-[11px]">What will be restored:</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
+              <span class="material-symbols-outlined text-indigo-600 text-[18px]">view_kanban</span>
+              <span>124 Pipeline Applications</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
+              <span class="material-symbols-outlined text-red-600 text-[18px]">security</span>
+              <span>4 Quarantined Fake Offers</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-600 text-[18px]">mic</span>
+              <span>4 Upcoming Interviews</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-600 text-[18px]">database</span>
+              <span>Clean SQLite / IndexedDB</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-3 border-t border-slate-100">
+          <button type="button" onclick="closeResetWebsiteModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all">
+            Cancel
+          </button>
+          <button type="button" onclick="executeWebsiteReset()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-indigo-600 hover:from-amber-700 hover:to-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center gap-1.5 transition-all active:scale-95">
+            <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+            <span>Reset Website Now</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ========================================================================= -->
   <!-- MODAL 1: OAUTH & INBOX CONNECTION MODAL (STITCH SCREEN 9fdf030cccd243f7ae01e4474fce1b8c) -->
@@ -3314,6 +3558,10 @@
         <button type="button" onclick="switchView('mnc-hub'); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-emerald-50 border border-emerald-100 flex flex-col items-center gap-1.5 text-emerald-900 text-center font-bold col-span-2">
           <span class="material-symbols-outlined text-[24px] text-emerald-600">apartment</span>
           <span>🏢 MNCs, Openings, CVs &amp; Mentors Hub (50+)</span>
+        </button>
+        <button type="button" onclick="openResetWebsiteModal(); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-indigo-50 border border-amber-200 flex flex-col items-center gap-1.5 text-amber-950 text-center font-bold col-span-2 shadow-2xs">
+          <span class="material-symbols-outlined text-[24px] text-amber-600">restart_alt</span>
+          <span>🔄 Reset Website &amp; Demo Sandbox (Attract Professionals)</span>
         </button>
         <button type="button" onclick="openResumeMatcher(); toggleMobileActionsDrawer(false);" class="p-3 rounded-2xl bg-indigo-50 border border-indigo-100 flex flex-col items-center gap-1.5 text-indigo-900 text-center font-bold">
           <span class="material-symbols-outlined text-[24px] text-indigo-600">psychology</span>

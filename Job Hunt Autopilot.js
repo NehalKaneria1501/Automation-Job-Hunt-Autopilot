@@ -1799,24 +1799,56 @@ async function handleCreateApplication(event) {
   showToast(`Application for ${company} added successfully!`);
 }
 
-async function resetDatabaseToSample() {
-  if (confirm("Reset database back to the default 20 sample job seeker emails?")) {
-    if (dbEngine === 'sqlite') {
-      try {
-        await fetch('/api/db/reset', { method: 'POST' });
-        showToast("Relational SQLite database reset to 20 emails.");
-      } catch (e) {}
-    } else if (idbInstance) {
-      await clearIndexedDB(idbInstance);
-      const defaults = EMBEDDED_EMAILS.map(evaluateAutopilotRules);
-      for (const item of defaults) {
-        await putRecordToIndexedDB(idbInstance, item);
-      }
-      showToast("IndexedDB reset to 20 sample emails.");
-    }
-    await initAutopilot();
-    closeDatabaseModal();
+function openResetWebsiteModal() {
+  const modal = document.getElementById('reset-website-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    safeCreateIcons();
   }
+}
+
+function closeResetWebsiteModal() {
+  const modal = document.getElementById('reset-website-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+async function executeWebsiteReset() {
+  closeResetWebsiteModal();
+  showToast("🔄 Restoring Executive Demo Sandbox...");
+
+  if (dbEngine === 'sqlite') {
+    try {
+      await fetch('/api/db/reset', { method: 'POST' });
+    } catch (e) {
+      console.warn("SQLite reset fallback:", e);
+    }
+  } else if (idbInstance) {
+    await clearIndexedDB(idbInstance);
+    const defaults = EMBEDDED_EMAILS.map(evaluateAutopilotRules);
+    for (const item of defaults) {
+      await putRecordToIndexedDB(idbInstance, item);
+    }
+  }
+
+  // Re-run full pipeline initialization and rendering
+  await initAutopilot();
+  
+  // Return to Pipeline view
+  switchView('kanban');
+
+  showToast("✨ Cockpit successfully reset to Executive Benchmark! 124 Applications, 20 Verified Emails & 50+ MNCs ready for demonstration.");
+  if (typeof triggerConfetti === 'function') {
+    try { triggerConfetti(); } catch (e) {}
+  }
+}
+
+async function resetDatabaseToSample() {
+  openResetWebsiteModal();
+  closeDatabaseModal();
 }
 
 function exportDatabaseBackup() {
@@ -2568,11 +2600,39 @@ function toggleUserDropdown(force) {
   const isCurrentlyHidden = dd.classList.contains('hidden');
   const shouldOpen = force !== undefined ? force : isCurrentlyHidden;
   if (shouldOpen) {
+    closeAllHeaderDropdowns();
     dd.classList.remove('hidden');
     dd.classList.add('flex');
   } else {
     dd.classList.add('hidden');
     dd.classList.remove('flex');
+  }
+}
+
+/**
+ * Header Categorized Dropdown Menu Manager
+ */
+function closeAllHeaderDropdowns() {
+  document.querySelectorAll('.header-dropdown-menu').forEach(el => {
+    el.classList.add('hidden');
+    el.classList.remove('flex');
+  });
+}
+
+function toggleHeaderDropdown(menuId, force) {
+  const menu = document.getElementById(menuId);
+  if (!menu) return;
+  const isHidden = menu.classList.contains('hidden');
+  const shouldOpen = force !== undefined ? force : isHidden;
+
+  // Close user profile dropdown and other menus first
+  toggleUserDropdown(false);
+  const wasOpen = !isHidden;
+  closeAllHeaderDropdowns();
+
+  if (shouldOpen && !wasOpen) {
+    menu.classList.remove('hidden');
+    menu.classList.add('flex');
   }
 }
 
@@ -2982,6 +3042,12 @@ function initAuthSuite() {
       if (!dropdown.contains(e.target) && (!userMenuBtn || !userMenuBtn.contains(e.target))) {
         toggleUserDropdown(false);
       }
+    }
+
+    // Close header categorized menus when clicking outside
+    const inDropdownContainer = e.target.closest('.header-dropdown-container');
+    if (!inDropdownContainer) {
+      closeAllHeaderDropdowns();
     }
   });
 }
