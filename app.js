@@ -352,6 +352,9 @@ let activeFollowupTab = 'due';
 let activeFollowupTone = 'concierge';
 let sirenActive = true;
 let isMobileViewport = false;
+let currentDevicePreset = 'iphone16pro';
+let isSimulatorLandscape = false;
+let currentSimulatorScale = 0.9;
 let isRecordingMock = false;
 
 let dbEngine = 'sqlite'; // 'sqlite' or 'indexeddb'
@@ -943,6 +946,7 @@ function switchView(viewName) {
     }
   });
 
+  syncMobileNavActiveTab();
   safeCreateIcons();
 }
 
@@ -1332,27 +1336,191 @@ function exportIncidentRetroPDF() {
  */
 function toggleViewportMode() {
   isMobileViewport = !isMobileViewport;
+  applyViewportMode();
+}
+
+/**
+ * Apply or Revert Mobile Device Simulator Workbench
+ */
+function applyViewportMode() {
+  const desktopHeader = document.getElementById('desktop-app-header');
+  const simBar = document.getElementById('mobile-simulator-bar');
   const container = document.getElementById('viewport-container');
+  const chassis = document.getElementById('device-chassis');
+  const bezelTop = document.getElementById('phone-bezel-top');
+  const bottomNav = document.getElementById('phone-bottom-nav');
+  const homeIndicator = document.getElementById('phone-home-indicator');
+  const scrollViewport = document.getElementById('device-scroll-viewport');
   const btn = document.getElementById('btn-viewport-toggle');
 
   if (isMobileViewport) {
+    document.body.classList.add('mobile-simulator-active');
+    if (desktopHeader) desktopHeader.classList.add('hidden');
+    if (simBar) {
+      simBar.classList.remove('hidden');
+      simBar.classList.add('flex');
+    }
+    if (bezelTop) {
+      bezelTop.classList.remove('hidden');
+      bezelTop.classList.add('flex');
+    }
+    if (bottomNav) {
+      bottomNav.classList.remove('hidden');
+      bottomNav.classList.add('flex');
+    }
+    if (homeIndicator) {
+      homeIndicator.classList.remove('hidden');
+      homeIndicator.classList.add('flex');
+    }
+
     if (container) {
-      container.className = "max-w-[420px] mx-auto my-6 bg-slate-900 p-3 rounded-[48px] shadow-2xl border-[6px] border-slate-700 flex flex-col transition-all duration-300";
+      container.className = "w-full flex-1 flex flex-col items-center justify-start py-6 px-2 transition-all duration-300";
     }
+
+    applyDeviceDimensions();
+
+    if (scrollViewport) {
+      scrollViewport.className = "w-full flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-slate-50";
+    }
+
     if (btn) {
-      btn.className = "p-2 rounded-xl bg-indigo-600 text-white transition-colors";
+      btn.className = "p-2 rounded-xl bg-indigo-600 text-white transition-colors shadow-sm";
+      btn.title = "Exit Mobile Viewport (Esc)";
     }
-    showToast("Mobile Device Viewport Active ([MOBILE] Stitch Screen View)!");
+
+    updateSimulatorClock();
+    syncMobileNavActiveTab();
+    safeCreateIcons();
+    showToast("📱 Mobile Device Viewport Active ([MOBILE] Stitch Screen View)!");
   } else {
+    document.body.classList.remove('mobile-simulator-active');
+    if (desktopHeader) desktopHeader.classList.remove('hidden');
+    if (simBar) {
+      simBar.classList.add('hidden');
+      simBar.classList.remove('flex');
+    }
+    if (bezelTop) {
+      bezelTop.classList.add('hidden');
+      bezelTop.classList.remove('flex');
+    }
+    if (bottomNav) {
+      bottomNav.classList.add('hidden');
+      bottomNav.classList.remove('flex');
+    }
+    if (homeIndicator) {
+      homeIndicator.classList.add('hidden');
+      homeIndicator.classList.remove('flex');
+    }
+
     if (container) {
       container.className = "w-full flex-1 flex flex-col transition-all duration-300";
+      container.style.transform = '';
     }
+
+    if (chassis) {
+      chassis.className = "w-full flex-1 flex flex-col transition-all duration-300";
+      chassis.style.width = '';
+      chassis.style.height = '';
+      chassis.style.maxWidth = '';
+      chassis.style.maxHeight = '';
+      chassis.style.transform = '';
+    }
+
+    if (scrollViewport) {
+      scrollViewport.className = "w-full flex-1 flex flex-col";
+    }
+
     if (btn) {
       btn.className = "p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors";
+      btn.title = "Toggle Mobile Device Viewport";
     }
-    showToast("Desktop Cockpit View Active!");
+
+    safeCreateIcons();
+    showToast("🖥️ Desktop Cockpit View Active!");
   }
 }
+
+/**
+ * Configure Smartphone Hardware Chassis & Resolution Presets
+ */
+function applyDeviceDimensions() {
+  const chassis = document.getElementById('device-chassis');
+  if (!chassis) return;
+
+  const devices = {
+    iphone16pro: { width: 393, height: 852 },
+    pixel9: { width: 412, height: 924 },
+    ipadmini: { width: 768, height: 1024 }
+  };
+
+  const dev = devices[currentDevicePreset] || devices.iphone16pro;
+  let w = isSimulatorLandscape ? dev.height : dev.width;
+  let h = isSimulatorLandscape ? dev.width : dev.height;
+
+  // Max height limit relative to window viewport so it stays comfortably in view
+  const availableScreenHeight = Math.max(640, window.innerHeight - 110);
+  const constrainedHeight = Math.min(h, availableScreenHeight);
+
+  chassis.className = "mobile-simulator-chassis flex flex-col shadow-2xl relative select-none transition-all duration-300";
+  chassis.style.width = `${w}px`;
+  chassis.style.height = `${constrainedHeight}px`;
+  chassis.style.maxWidth = '96vw';
+  chassis.style.transform = `scale(${currentSimulatorScale})`;
+  chassis.style.transformOrigin = 'top center';
+}
+
+function changeSimulatorDevice(device) {
+  currentDevicePreset = device;
+  if (isMobileViewport) {
+    applyDeviceDimensions();
+    const names = { iphone16pro: 'Apple iPhone 16 Pro (393 × 852)', pixel9: 'Google Pixel 9 (412 × 924)', ipadmini: 'Apple iPad Mini (768 × 1024)' };
+    showToast(`📱 Preset: ${names[device] || device}`);
+  }
+}
+
+function rotateSimulator() {
+  isSimulatorLandscape = !isSimulatorLandscape;
+  if (isMobileViewport) {
+    applyDeviceDimensions();
+    showToast(`🔄 Orientation: ${isSimulatorLandscape ? 'Landscape' : 'Portrait'}`);
+  }
+}
+
+function changeSimulatorScale(scale) {
+  currentSimulatorScale = parseFloat(scale) || 0.9;
+  if (isMobileViewport) {
+    applyDeviceDimensions();
+  }
+}
+
+function updateSimulatorClock() {
+  const clockEl = document.getElementById('simulator-clock');
+  if (!clockEl) return;
+  const now = new Date();
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  clockEl.innerText = `${hours}:${minutes}`;
+}
+
+function syncMobileNavActiveTab() {
+  const navTabs = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro'];
+  navTabs.forEach(tabName => {
+    const el = document.getElementById(`mob-nav-${tabName}`);
+    if (!el) return;
+    if (tabName === activeView) {
+      el.className = "flex flex-col items-center gap-0.5 py-1 px-2 text-indigo-600 font-bold transition-colors";
+    } else {
+      el.className = "flex flex-col items-center gap-0.5 py-1 px-2 text-slate-500 hover:text-slate-800 transition-colors";
+    }
+  });
+}
+
+// Global Keyboard Shortcut: Press Escape to return to Desktop Cockpit
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && isMobileViewport) {
+    toggleViewportMode();
+  }
+});
 
 /**
  * Toast Notification with Progress Bar
