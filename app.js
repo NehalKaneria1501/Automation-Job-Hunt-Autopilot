@@ -987,7 +987,7 @@ function switchView(viewName) {
     logFirebaseAnalyticsEvent('page_view', { page_title: viewName });
   }
 
-  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox', 'logs-center', 'newsletter', 'auth', 'dsa-sdlc', 'companies-hr', 'ats-tools', 'courses-mentors', 'pricing', 'ai-radar', 'product-links', 'meetups'];
+  const views = ['kanban', 'scam-radar', 'follow-up', 'interview-studio', 'grafana-retro', 'mnc-hub', 'inbox', 'logs-center', 'newsletter', 'auth', 'dsa-sdlc', 'companies-hr', 'ats-tools', 'courses-mentors', 'pricing', 'ai-radar', 'product-links', 'meetups', 'podcast', 'portfolio'];
   views.forEach(v => {
     const el = document.getElementById(`view-${v}`);
     if (el) {
@@ -1033,6 +1033,12 @@ function switchView(viewName) {
   }
   if (viewName === 'courses-mentors' && typeof initCoursesMentorsView === 'function') {
     initCoursesMentorsView();
+  }
+  if (viewName === 'podcast' && typeof initPodcastView === 'function') {
+    initPodcastView();
+  }
+  if (viewName === 'portfolio' && typeof initPortfolioView === 'function') {
+    initPortfolioView();
   }
   if (viewName === 'meetups' && typeof initMeetupsView === 'function') {
     initMeetupsView();
@@ -12012,4 +12018,704 @@ async function handleApplyJobSubmission(event) {
   if (typeof showToast === 'function') {
     showToast(`🎉 Application for ${role} @ ${company} successfully dispatched via Autopilot!`);
   }
+}
+
+
+/* ==========================================================================
+   WORDPRESS & EDTECH MULTI-THEME ENGINE (7 Verified Showcase Presets)
+   ========================================================================== */
+const WORDPRESS_THEMES_DATA = [
+  {
+    id: "edutech",
+    name: "Edu-Tech Academy Prime",
+    tagline: "Scaler & Coursera LMS Academic Standard",
+    category: "education",
+    categoryLabel: "Education & LMS",
+    wpThemeRef: "Blue Tidalwave Cycle • EduPress LMS",
+    primaryColor: "#4648D4",
+    accentColor: "#00885D",
+    palette: ["#4648D4", "#00885D", "#F8F9FF", "#0B1C30"],
+    desc: "Optimized for structured 4-stage cohorts, weekly curriculum accordions, live study streaks, and verified blockchain certificates.",
+    badgeClass: "bg-blue-100 text-blue-800 border-blue-200"
+  },
+  {
+    id: "ecommerce",
+    name: "E-Commerce Academy Storefront",
+    tagline: "WooCommerce & Digital Products Marketplace",
+    category: "ecommerce",
+    categoryLabel: "E-Commerce & Store",
+    wpThemeRef: "Storefront Pro • Astra Commerce",
+    primaryColor: "#059669",
+    accentColor: "#D97706",
+    palette: ["#059669", "#D97706", "#F0FDF4", "#064E3B"],
+    desc: "High-conversion checkout layout with multi-currency pricing, product bundle cards, coupon code engine, and 1-click Razorpay checkout.",
+    badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-200"
+  },
+  {
+    id: "adtech",
+    name: "Ad-Tech Programmatic Publisher",
+    tagline: "Google AdSense & Carbon Network Media Kit",
+    category: "adtech",
+    categoryLabel: "Ad-Tech & Media",
+    wpThemeRef: "PressTrend • Header Bidding Pro",
+    primaryColor: "#0284C7",
+    accentColor: "#8B5CF6",
+    palette: ["#0284C7", "#8B5CF6", "#F0F9FF", "#082F49"],
+    desc: "Programmatic leaderboard ad slots, in-feed sponsored job highlights, live CPM calculators, and advertiser sponsorship booking.",
+    badgeClass: "bg-cyan-100 text-cyan-800 border-cyan-200"
+  },
+  {
+    id: "blog",
+    name: "Gutenberg Editorial Chronicle",
+    tagline: "Deep Tech Journalism & Long-Form Reading",
+    category: "blog",
+    categoryLabel: "Editorial & Blog",
+    wpThemeRef: "Twenty Twenty-Four • DevJournal",
+    primaryColor: "#DC2626",
+    accentColor: "#2563EB",
+    palette: ["#DC2626", "#2563EB", "#FDFBF7", "#1C1917"],
+    desc: "Warm newsprint cream background, high-contrast readable serif typography, author cards, read-time chips, and article sharing.",
+    badgeClass: "bg-rose-100 text-rose-800 border-rose-200"
+  },
+  {
+    id: "portfolio",
+    name: "Executive Bento DevFolio",
+    tagline: "Dark Neon Glassmorphism Showcase",
+    category: "portfolio",
+    categoryLabel: "Portfolio & Bento",
+    wpThemeRef: "Neve Dark • Bento Minimalist",
+    primaryColor: "#6366F1",
+    accentColor: "#06B6D4",
+    palette: ["#6366F1", "#06B6D4", "#0B0F19", "#F9FAFB"],
+    desc: "Sleek Dark Mode with neon cyan and violet accents, interactive project Bento-grid, system architecture blueprints, and GitHub repo cards.",
+    badgeClass: "bg-indigo-100 text-indigo-800 border-indigo-200"
+  },
+  {
+    id: "newsletter",
+    name: "Substack Creator Hub",
+    tagline: "High-Growth Newsletter & Subscriber Ticker",
+    category: "newsletter",
+    categoryLabel: "Newsletter Hub",
+    wpThemeRef: "Gazette Dispatch • MailPoet Lead",
+    primaryColor: "#FF6600",
+    accentColor: "#15803D",
+    palette: ["#FF6600", "#15803D", "#FAF8F5", "#18181B"],
+    desc: "Vibrant Substack orange accents, lead magnet opt-in hero, subscriber counter milestones (18.4k+ members), and private VIP archive.",
+    badgeClass: "bg-amber-100 text-amber-800 border-amber-200"
+  },
+  {
+    id: "podcast",
+    name: "Audio Studio & Soundwave Cast",
+    tagline: "Spotify & Castos Developer Audio Studio",
+    category: "podcast",
+    categoryLabel: "Podcast & Audio",
+    wpThemeRef: "Podcaster Studio • AudioStream",
+    primaryColor: "#A855F7",
+    accentColor: "#EC4899",
+    palette: ["#A855F7", "#EC4899", "#0F0C20", "#FAF5FF"],
+    desc: "Midnight purple soundstage, persistent bottom dock audio player, interactive waveform visualizer, episode queue, and guest interview bios.",
+    badgeClass: "bg-purple-100 text-purple-800 border-purple-200"
+  }
+];
+
+let activeThemePreset = localStorage.getItem('autopilot_theme_preset') || 'edutech';
+let activeThemeFilterCategory = 'all';
+
+function initThemeEngine() {
+  applyWebsiteTheme(activeThemePreset, false);
+  renderThemeBrowserGrid();
+}
+
+function applyWebsiteTheme(themeId, notify = true) {
+  const theme = WORDPRESS_THEMES_DATA.find(t => t.id === themeId) || WORDPRESS_THEMES_DATA[0];
+  activeThemePreset = theme.id;
+  localStorage.setItem('autopilot_theme_preset', theme.id);
+
+  // Remove previous theme classes
+  WORDPRESS_THEMES_DATA.forEach(t => {
+    document.body.classList.remove(`theme-${t.id}`);
+  });
+
+  // Add new theme class
+  document.body.classList.add(`theme-${theme.id}`);
+
+  // Update theme indicators across headers & widgets
+  const themeLabels = document.querySelectorAll('.active-theme-label');
+  themeLabels.forEach(el => el.textContent = theme.name);
+
+  const themeBadges = document.querySelectorAll('.active-theme-badge');
+  themeBadges.forEach(el => {
+    el.textContent = theme.categoryLabel;
+    el.className = `active-theme-badge px-2 py-0.5 rounded-full text-[10px] font-bold border ${theme.badgeClass}`;
+  });
+
+  // Re-render theme browser cards to show active checkmark
+  renderThemeBrowserGrid();
+
+  // Sync to Firestore if authenticated
+  if (window.firebaseDb && window.firebaseOps && window.firebaseOps.setDoc) {
+    const user = typeof getAuthUser === 'function' ? getAuthUser() : null;
+    if (user && user.id) {
+      try {
+        const prefRef = window.firebaseOps.doc(window.firebaseDb, "user_preferences", user.id);
+        window.firebaseOps.setDoc(prefRef, { theme: theme.id, updatedAt: new Date().toISOString() }, { merge: true });
+      } catch (e) {}
+    }
+  }
+
+  if (notify) {
+    if (typeof triggerConfetti === 'function') {
+      try { triggerConfetti(); } catch (e) {}
+    }
+    if (typeof showToast === 'function') {
+      showToast(`🎨 Theme Applied: "${theme.name}" (${theme.wpThemeRef})`);
+    }
+  }
+}
+
+function openThemeBrowserModal() {
+  const modal = document.getElementById('modal-theme-browser');
+  if (modal) {
+    renderThemeBrowserGrid();
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+function closeThemeBrowserModal() {
+  const modal = document.getElementById('modal-theme-browser');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function filterThemeBrowser(cat) {
+  activeThemeFilterCategory = cat;
+  // Update filter pill UI
+  const pills = document.querySelectorAll('.theme-filter-pill');
+  pills.forEach(p => {
+    if (p.getAttribute('data-theme-cat') === cat) {
+      p.className = 'theme-filter-pill px-3 py-1 rounded-xl bg-slate-900 text-white font-bold text-xs cursor-pointer shadow-xs';
+    } else {
+      p.className = 'theme-filter-pill px-3 py-1 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold text-xs cursor-pointer';
+    }
+  });
+  renderThemeBrowserGrid();
+}
+
+function renderThemeBrowserGrid() {
+  const grid = document.getElementById('theme-browser-cards-grid');
+  if (!grid) return;
+
+  let themes = WORDPRESS_THEMES_DATA;
+  if (activeThemeFilterCategory !== 'all') {
+    themes = themes.filter(t => t.category === activeThemeFilterCategory);
+  }
+
+  grid.innerHTML = themes.map(t => {
+    const isActive = activeThemePreset === t.id;
+    return `
+      <div class="p-5 rounded-3xl border transition-all flex flex-col justify-between gap-4 ${
+        isActive 
+          ? 'bg-gradient-to-b from-indigo-50/50 to-white border-indigo-400 shadow-md ring-2 ring-indigo-400/20' 
+          : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-lg'
+      }">
+        <div class="space-y-3">
+          <!-- Top Row: Badge & Category -->
+          <div class="flex items-center justify-between gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${t.badgeClass}">
+              ${t.categoryLabel}
+            </span>
+            <span class="text-[10px] font-mono font-semibold text-slate-400 truncate max-w-[150px]">
+              ${t.wpThemeRef}
+            </span>
+          </div>
+
+          <!-- Color Swatch Palette Preview -->
+          <div class="flex items-center gap-1.5 p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
+            ${t.palette.map(color => `
+              <div class="w-6 h-6 rounded-lg shadow-2xs border border-black/10 shrink-0" style="background-color: ${color};" title="${color}"></div>
+            `).join('')}
+            <span class="text-[10px] text-slate-400 font-mono ml-auto">CSS Tokens</span>
+          </div>
+
+          <!-- Title & Tagline -->
+          <div>
+            <h4 class="font-display font-black text-slate-900 text-base leading-snug">${t.name}</h4>
+            <p class="text-xs font-semibold text-indigo-700 mt-0.5">${t.tagline}</p>
+          </div>
+
+          <p class="text-[11px] text-slate-600 leading-relaxed">${t.desc}</p>
+        </div>
+
+        <!-- Action Button -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+          ${
+            isActive 
+              ? `<span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-800 font-black text-xs">
+                   <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                   <span>Active Theme ✓</span>
+                 </span>`
+              : `<button type="button" onclick="applyWebsiteTheme('${t.id}')" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs transition-all active:scale-95 shadow-xs cursor-pointer flex items-center gap-1">
+                   <span class="material-symbols-outlined text-[15px]">palette</span>
+                   <span>Activate Theme</span>
+                 </button>`
+          }
+          <button type="button" onclick="previewThemeLive('${t.id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs cursor-pointer">
+            Quick Peek ↗
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function previewThemeLive(themeId) {
+  applyWebsiteTheme(themeId, true);
+  closeThemeBrowserModal();
+}
+
+/* ==========================================================================
+   PODCAST & AUDIO STUDIO ENGINE (6 Verified Engineering Episodes)
+   ========================================================================== */
+const PODCAST_EPISODES_DATA = [
+  {
+    id: "ep-42",
+    epNumber: 42,
+    title: "Scaling Distributed Databases to 100,000 TPS with Redis & Raft",
+    guest: "Vikram Malhotra • Ex-Stripe Staff Storage Engineer",
+    duration: "44 min",
+    durationSeconds: 2640,
+    date: "November 2, 2026",
+    topics: ["Distributed Systems", "Raft", "Redis", "High-Throughput"],
+    desc: "Deep-dive into multi-datacenter consensus, partitioned Raft clusters, handling split-brain network partitions, and zero-data-loss failovers.",
+    audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
+    quote: "If your storage layer cannot survive a 3-way partition without dropping writes, your architecture isn't production-ready."
+  },
+  {
+    id: "ep-41",
+    epNumber: 41,
+    title: "Cracking the Google L6 Staff SRE & Microservice Resiliency Bar",
+    guest: "Elena Rostova • Principal SRE @ Google Cloud",
+    duration: "52 min",
+    durationSeconds: 3120,
+    date: "October 26, 2026",
+    topics: ["SRE", "Google L6", "Chaos Engineering", "Incident Management"],
+    desc: "What hiring committees look for in Staff SRE candidates: error budgets, multi-region failovers, automated rollback heuristics, and surviving live outages.",
+    audioUrl: "https://actions.google.com/sounds/v1/ambiences/rain_heavy.ogg",
+    quote: "Staff engineers don't just fix outages; they build organizational systems so that the same failure mode can never occur twice."
+  },
+  {
+    id: "ep-40",
+    epNumber: 40,
+    title: "High-Level System Design: Architecting WhatsApp & Uber from Scratch",
+    guest: "Siddharth Singh • Staff Systems Architect @ Meta",
+    duration: "48 min",
+    durationSeconds: 2880,
+    date: "October 19, 2026",
+    topics: ["System Design", "HLD", "WebSockets", "Geo-Sharding"],
+    desc: "Handling 2 billion active connections: QuadTrees for geo-location lookup, distributed connection brokers, end-to-end encryption key exchange, and message ordering.",
+    audioUrl: "https://actions.google.com/sounds/v1/ambiences/office_background.ogg",
+    quote: "At 100M concurrent WebSocket connections, TCP connection memory footprint becomes your greatest architectural constraint."
+  },
+  {
+    id: "ep-39",
+    epNumber: 39,
+    title: "Autonomous AI Agents with Gemini 2.5 & Model Context Protocol (MCP)",
+    guest: "Dr. Kunal Shah • AI Systems Fellow @ Anthropic & Google Partner",
+    duration: "39 min",
+    durationSeconds: 2340,
+    date: "October 12, 2026",
+    topics: ["AI Agents", "MCP", "Gemini 2.5", "Tool Calling"],
+    desc: "Building production-ready autonomous coding agents: durable execution, sandbox firecracker microVMs, async tool calling, and avoiding recursive hallucination loops.",
+    audioUrl: "https://actions.google.com/sounds/v1/ambiences/rain_on_roof.ogg",
+    quote: "Model Context Protocol is to AI agents what HTTP was to the World Wide Web — the open standard that connects intelligence to tools."
+  },
+  {
+    id: "ep-38",
+    epNumber: 38,
+    title: "Negotiating $350k+ TC & Surviving FAANG Calibrations in 2026",
+    guest: "Pooja Malhotra • Engineering Director & Compensation Advisor",
+    duration: "46 min",
+    durationSeconds: 2760,
+    date: "October 05, 2026",
+    topics: ["Compensation", "Negotiation", "Career Strategy", "Equity / RSUs"],
+    desc: "How to counter competing offers from Stripe, Google, and Amazon: maximizing sign-on bonuses, navigating 1-year equity cliffs, and tax optimization strategies.",
+    audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
+    quote: "Never negotiate on base alone; the highest leverage is always in the unvested equity refresh cadence and upfront sign-on bonus."
+  },
+  {
+    id: "ep-37",
+    epNumber: 37,
+    title: "Platform Engineering with ArgoCD GitOps, Helm & Istio Service Mesh",
+    guest: "Jens Vogel • Head of Infrastructure @ Delivery Hero",
+    duration: "55 min",
+    durationSeconds: 3300,
+    date: "September 28, 2026",
+    topics: ["Kubernetes", "GitOps", "ArgoCD", "Istio"],
+    desc: "Migrating from bespoke Jenkins pipelines to declarative GitOps: zero-trust mTLS between 400+ microservices, canary deployments, and automated rollbacks.",
+    audioUrl: "https://actions.google.com/sounds/v1/ambiences/office_background.ogg",
+    quote: "If humans are SSHing into production clusters to apply YAML, your continuous deployment pipeline is broken."
+  }
+];
+
+let currentPlayingEpisode = null;
+let isAudioPlaying = false;
+let audioPlaybackSpeed = 1.0;
+
+function initPodcastView() {
+  renderPodcastEpisodesGrid();
+}
+
+function renderPodcastEpisodesGrid() {
+  const container = document.getElementById('podcast-episodes-grid');
+  if (!container) return;
+
+  container.innerHTML = PODCAST_EPISODES_DATA.map(ep => {
+    const isThisPlaying = currentPlayingEpisode && currentPlayingEpisode.id === ep.id && isAudioPlaying;
+    return `
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs hover:shadow-xl hover:border-purple-300 transition-all flex flex-col justify-between gap-4 group">
+        <div class="space-y-3">
+          <!-- Top Row: Episode Badge & Duration -->
+          <div class="flex items-center justify-between gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold uppercase tracking-wider">
+              Episode ${ep.epNumber}
+            </span>
+            <div class="flex items-center gap-1.5 text-slate-400 text-xs font-mono font-medium">
+              <span class="material-symbols-outlined text-[15px]">schedule</span>
+              <span>${ep.duration}</span>
+            </div>
+          </div>
+
+          <!-- Title -->
+          <h4 class="font-display font-black text-slate-900 text-base leading-snug group-hover:text-purple-600 transition-colors">
+            ${ep.title}
+          </h4>
+
+          <!-- Guest Info -->
+          <div class="flex items-center gap-2 p-2.5 rounded-2xl bg-slate-50 border border-slate-200/60">
+            <div class="w-8 h-8 rounded-xl bg-purple-600 text-white font-black text-xs flex items-center justify-center shrink-0">
+              ${ep.guest.slice(0, 2).toUpperCase()}
+            </div>
+            <div class="min-w-0">
+              <div class="font-bold text-slate-800 text-xs truncate">${ep.guest.split('•')[0].trim()}</div>
+              <div class="text-[10px] text-slate-400 truncate">${ep.guest.split('•')[1] ? ep.guest.split('•')[1].trim() : 'Guest Speaker'}</div>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-500 leading-relaxed">${ep.desc}</p>
+
+          <!-- Key Takeaway Quote -->
+          <div class="p-3 rounded-2xl bg-purple-50/50 border border-purple-100 text-[11px] text-purple-900 italic">
+            "${ep.quote}"
+          </div>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-1">
+            ${ep.topics.map(t => `<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-mono">#${t}</span>`).join('')}
+          </div>
+        </div>
+
+        <!-- Playback Trigger Button -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+          <button 
+            type="button" 
+            onclick="playPodcastEpisode('${ep.id}')" 
+            class="w-full py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              isThisPlaying 
+                ? 'bg-rose-600 text-white shadow-md' 
+                : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md shadow-purple-600/20'
+            }"
+          >
+            <span class="material-symbols-outlined text-[18px]">${isThisPlaying ? 'pause_circle' : 'play_circle'}</span>
+            <span>${isThisPlaying ? 'Pause Episode' : 'Listen Now (' + ep.duration + ')'}</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function playPodcastEpisode(episodeId) {
+  const ep = PODCAST_EPISODES_DATA.find(x => x.id === episodeId) || PODCAST_EPISODES_DATA[0];
+  const dock = document.getElementById('global-audio-player');
+  const audioEl = document.getElementById('global-audio-element');
+
+  if (currentPlayingEpisode && currentPlayingEpisode.id === ep.id && isAudioPlaying) {
+    // Pause
+    isAudioPlaying = false;
+    if (audioEl) audioEl.pause();
+    updateAudioPlayerUI();
+    renderPodcastEpisodesGrid();
+    return;
+  }
+
+  currentPlayingEpisode = ep;
+  isAudioPlaying = true;
+
+  if (dock) {
+    dock.classList.remove('hidden');
+    dock.classList.add('flex');
+  }
+
+  if (audioEl) {
+    audioEl.src = ep.audioUrl;
+    audioEl.playbackRate = audioPlaybackSpeed;
+    audioEl.play().catch(() => {});
+  }
+
+  updateAudioPlayerUI();
+  renderPodcastEpisodesGrid();
+
+  if (typeof showToast === 'function') {
+    showToast(`🎙️ Playing: Episode ${ep.epNumber} — ${ep.title}`);
+  }
+}
+
+function toggleAudioPlayback() {
+  const audioEl = document.getElementById('global-audio-element');
+  if (!currentPlayingEpisode) {
+    playPodcastEpisode('ep-42');
+    return;
+  }
+
+  if (isAudioPlaying) {
+    isAudioPlaying = false;
+    if (audioEl) audioEl.pause();
+  } else {
+    isAudioPlaying = true;
+    if (audioEl) audioEl.play().catch(() => {});
+  }
+  updateAudioPlayerUI();
+  renderPodcastEpisodesGrid();
+}
+
+function setPlaybackSpeed(speed) {
+  audioPlaybackSpeed = speed;
+  const audioEl = document.getElementById('global-audio-element');
+  if (audioEl) audioEl.playbackRate = speed;
+  const speedBtn = document.getElementById('audio-speed-btn');
+  if (speedBtn) speedBtn.textContent = `${speed}x`;
+  if (typeof showToast === 'function') {
+    showToast(`⚡ Audio speed set to ${speed}x`);
+  }
+}
+
+function cyclePlaybackSpeed() {
+  const speeds = [1.0, 1.25, 1.5, 2.0];
+  const currIdx = speeds.indexOf(audioPlaybackSpeed);
+  const nextSpeed = speeds[(currIdx + 1) % speeds.length];
+  setPlaybackSpeed(nextSpeed);
+}
+
+function closeAudioPlayerDock() {
+  const audioEl = document.getElementById('global-audio-element');
+  if (audioEl) audioEl.pause();
+  isAudioPlaying = false;
+  currentPlayingEpisode = null;
+  const dock = document.getElementById('global-audio-player');
+  if (dock) {
+    dock.classList.add('hidden');
+    dock.classList.remove('flex');
+  }
+  renderPodcastEpisodesGrid();
+}
+
+function updateAudioPlayerUI() {
+  if (!currentPlayingEpisode) return;
+  const titleEl = document.getElementById('audio-dock-title');
+  const guestEl = document.getElementById('audio-dock-guest');
+  const playIcon = document.getElementById('audio-dock-play-icon');
+  const waveContainer = document.getElementById('audio-dock-equalizer');
+
+  if (titleEl) titleEl.textContent = `Ep ${currentPlayingEpisode.epNumber}: ${currentPlayingEpisode.title}`;
+  if (guestEl) guestEl.textContent = currentPlayingEpisode.guest;
+  if (playIcon) playIcon.textContent = isAudioPlaying ? 'pause' : 'play_arrow';
+  if (waveContainer) {
+    waveContainer.style.opacity = isAudioPlaying ? '1' : '0.3';
+  }
+}
+
+/* ==========================================================================
+   AD-TECH SPONSORSHIP & MONETIZATION ENGINE
+   ========================================================================== */
+function openAdTechSponsorModal() {
+  const modal = document.getElementById('modal-adtech-sponsor');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+function closeAdTechSponsorModal() {
+  const modal = document.getElementById('modal-adtech-sponsor');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function handleAdInquirySubmit(event) {
+  event.preventDefault();
+  const company = document.getElementById('adinq-company')?.value || "";
+  const email = document.getElementById('adinq-email')?.value || "";
+  const tier = document.getElementById('adinq-tier')?.value || "Top Leaderboard Banner";
+  const budget = document.getElementById('adinq-budget')?.value || "$2,500 - $5,000";
+
+  const inquiry = {
+    id: "inq_" + Date.now().toString(36),
+    company,
+    email,
+    tier,
+    budget,
+    createdAt: new Date().toISOString()
+  };
+
+  // Sync to Firestore
+  if (window.firebaseDb && window.firebaseOps && window.firebaseOps.setDoc) {
+    try {
+      const docRef = window.firebaseOps.doc(window.firebaseDb, "ad_inquiries", inquiry.id);
+      window.firebaseOps.setDoc(docRef, inquiry);
+    } catch (e) {}
+  }
+
+  closeAdTechSponsorModal();
+  if (typeof triggerConfetti === 'function') {
+    try { triggerConfetti(); } catch (e) {}
+  }
+  if (typeof showToast === 'function') {
+    showToast(`🚀 Sponsorship Inquiry Submitted for ${company}! Our Ad-Tech team will reach out within 2 hours.`);
+  }
+}
+
+/* ==========================================================================
+   E-COMMERCE LEARNING CENTER CART DRAWER ENGINE
+   ========================================================================== */
+let courseCartItems = [
+  {
+    id: "cart-dsa-master",
+    title: "DSA & System Architecture Cohort",
+    type: "Course",
+    rawPrice: 14999,
+    hours: "180 hrs",
+    badge: "Scaler Academy"
+  }
+];
+
+function openCourseCartDrawer() {
+  renderCourseCartItems();
+  const drawer = document.getElementById('drawer-course-cart');
+  if (drawer) {
+    drawer.classList.remove('hidden');
+    drawer.classList.add('flex');
+  }
+}
+
+function closeCourseCartDrawer() {
+  const drawer = document.getElementById('drawer-course-cart');
+  if (drawer) {
+    drawer.classList.add('hidden');
+    drawer.classList.remove('flex');
+  }
+}
+
+function addCourseToCart(courseId) {
+  const c = (typeof expandedCoursesData !== 'undefined' ? expandedCoursesData.find(x => x.id === courseId) : null);
+  if (!c) {
+    showToast("Added item to E-Commerce Cart!");
+    openCourseCartDrawer();
+    return;
+  }
+
+  if (!courseCartItems.some(item => item.id === c.id)) {
+    courseCartItems.push({
+      id: c.id,
+      title: c.title,
+      type: "Masterclass",
+      rawPrice: c.rawPrice || 14999,
+      hours: c.duration,
+      badge: c.platformBadge
+    });
+  }
+
+  updateCartCounter();
+  renderCourseCartItems();
+  openCourseCartDrawer();
+
+  if (typeof showToast === 'function') {
+    showToast(`🛍️ Added "${c.title}" to Cart!`);
+  }
+}
+
+function removeCourseFromCart(id) {
+  courseCartItems = courseCartItems.filter(item => item.id !== id);
+  updateCartCounter();
+  renderCourseCartItems();
+}
+
+function updateCartCounter() {
+  const badges = document.querySelectorAll('.cart-count-badge');
+  badges.forEach(b => {
+    b.textContent = courseCartItems.length;
+    b.style.display = courseCartItems.length > 0 ? 'inline-flex' : 'none';
+  });
+}
+
+function renderCourseCartItems() {
+  const container = document.getElementById('course-cart-items-list');
+  const subtotalEl = document.getElementById('cart-subtotal-amount');
+  const totalEl = document.getElementById('cart-total-amount');
+  if (!container) return;
+
+  if (courseCartItems.length === 0) {
+    container.innerHTML = `
+      <div class="p-8 text-center text-slate-400 space-y-2">
+        <span class="material-symbols-outlined text-[40px] text-slate-300">shopping_bag</span>
+        <div class="font-bold text-slate-700 text-sm">Your Cart is Empty</div>
+        <p class="text-xs text-slate-500">Explore our accredited academies and add a curriculum to checkout.</p>
+      </div>
+    `;
+    if (subtotalEl) subtotalEl.textContent = formatCurrency(0);
+    if (totalEl) totalEl.textContent = formatCurrency(0);
+    return;
+  }
+
+  let totalRaw = 0;
+  container.innerHTML = courseCartItems.map(item => {
+    totalRaw += item.rawPrice;
+    return `
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <span class="px-2 py-0.2 rounded-full bg-blue-100 text-blue-800 text-[9px] font-bold uppercase">${item.badge}</span>
+          <h5 class="font-bold text-slate-900 text-xs truncate mt-0.5">${item.title}</h5>
+          <span class="text-[11px] font-mono font-bold text-emerald-700">${formatCurrency(item.rawPrice)}</span>
+        </div>
+        <button type="button" onclick="removeCourseFromCart('${item.id}')" class="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">delete</span>
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  if (subtotalEl) subtotalEl.textContent = formatCurrency(totalRaw);
+  if (totalEl) totalEl.textContent = formatCurrency(totalRaw);
+}
+
+function checkoutCartRazorpay() {
+  if (courseCartItems.length === 0) {
+    showToast("Cart is empty! Add a course to proceed.");
+    return;
+  }
+  closeCourseCartDrawer();
+  const firstItem = courseCartItems[0];
+  openCoursePaymentModal('course', firstItem.id);
+}
+
+/* ==========================================================================
+   EXECUTIVE PORTFOLIO ENGINE (Alex Chen)
+   ========================================================================== */
+function initPortfolioView() {
+  // Safe icon refresh
+  if (typeof safeCreateIcons === 'function') safeCreateIcons();
 }

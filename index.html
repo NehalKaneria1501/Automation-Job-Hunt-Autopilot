@@ -388,6 +388,163 @@
         transform: translateY(0) scale(1);
       }
     }
+  
+    /* ========================================================================= */
+    /* WORDPRESS & EDTECH MULTI-THEME PRESETS (Education, Blog, Portfolio, etc) */
+    /* ========================================================================= */
+    :root {
+      --theme-primary: #4648D4;
+      --theme-primary-hover: #3739B8;
+      --theme-accent: #00885D;
+      --theme-bg: #F8F9FF;
+      --theme-card-bg: #FFFFFF;
+      --theme-text-main: #0B1C30;
+      --theme-border: #E2E8F0;
+    }
+
+    /* 1. Edu-Tech Academy Theme (Blue Tidalwave / EduPress) */
+    body.theme-edutech {
+      --theme-primary: #4648D4;
+      --theme-primary-hover: #3739B8;
+      --theme-accent: #00885D;
+      --theme-bg: #F8F9FF;
+      --theme-card-bg: #FFFFFF;
+      --theme-text-main: #0B1C30;
+      --theme-border: #E2E8F0;
+      background-color: #F8F9FF !important;
+    }
+
+    /* 2. E-Commerce & Digital Academy Store Theme (WooCommerce / CourseCart) */
+    body.theme-ecommerce {
+      --theme-primary: #059669;
+      --theme-primary-hover: #047857;
+      --theme-accent: #D97706;
+      --theme-bg: #F0FDF4;
+      --theme-card-bg: #FFFFFF;
+      --theme-text-main: #064E3B;
+      --theme-border: #BBF7D0;
+      background-color: #F0FDF4 !important;
+    }
+
+    /* 3. Ad-Tech & Publisher Network Theme (Carbon / Programmatic AdSense) */
+    body.theme-adtech {
+      --theme-primary: #0284C7;
+      --theme-primary-hover: #0369A1;
+      --theme-accent: #8B5CF6;
+      --theme-bg: #F0F9FF;
+      --theme-card-bg: #FFFFFF;
+      --theme-text-main: #082F49;
+      --theme-border: #BAE6FD;
+      background-color: #F0F9FF !important;
+    }
+
+    /* 4. Editorial Blog & Tech Journalism Theme (Gutenberg Chronicle / DevJournal) */
+    body.theme-blog {
+      --theme-primary: #DC2626;
+      --theme-primary-hover: #B91C1C;
+      --theme-accent: #2563EB;
+      --theme-bg: #FDFBF7;
+      --theme-card-bg: #FFFFFF;
+      --theme-text-main: #1C1917;
+      --theme-border: #E7E5E4;
+      background-color: #FDFBF7 !important;
+    }
+    body.theme-blog h1, body.theme-blog h2, body.theme-blog h3 {
+      font-family: 'Plus Jakarta Sans', serif !important;
+    }
+
+    /* 5. Executive Bento Portfolio Theme (Dark Neon / Neve Portfolio) */
+    body.theme-portfolio {
+      --theme-primary: #6366F1;
+      --theme-primary-hover: #4F46E5;
+      --theme-accent: #06B6D4;
+      --theme-bg: #0B0F19;
+      --theme-card-bg: #111827;
+      --theme-text-main: #F9FAFB;
+      --theme-border: #1F2937;
+      background-color: #0B0F19 !important;
+      color: #F9FAFB !important;
+    }
+    body.theme-portfolio .bg-white {
+      background-color: #111827 !important;
+      color: #F9FAFB !important;
+      border-color: #1F2937 !important;
+    }
+    body.theme-portfolio .text-slate-900 {
+      color: #F9FAFB !important;
+    }
+    body.theme-portfolio .text-slate-800 {
+      color: #E5E7EB !important;
+    }
+    body.theme-portfolio .text-slate-700, body.theme-portfolio .text-slate-600 {
+      color: #9CA3AF !important;
+    }
+    body.theme-portfolio .bg-slate-50 {
+      background-color: #1A2234 !important;
+      border-color: #2D3748 !important;
+    }
+    body.theme-portfolio .border-slate-200, body.theme-portfolio .border-slate-100 {
+      border-color: #1F2937 !important;
+    }
+
+    /* 6. Newsletter & Substack Dispatch Theme */
+    body.theme-newsletter {
+      --theme-primary: #FF6600;
+      --theme-primary-hover: #E65C00;
+      --theme-accent: #15803D;
+      --theme-bg: #FAF8F5;
+      --theme-card-bg: #FFFFFF;
+      --theme-text-main: #18181B;
+      --theme-border: #E4E4E7;
+      background-color: #FAF8F5 !important;
+    }
+
+    /* 7. Audio Engineering & Podcast Studio Theme */
+    body.theme-podcast {
+      --theme-primary: #A855F7;
+      --theme-primary-hover: #9333EA;
+      --theme-accent: #EC4899;
+      --theme-bg: #0F0C20;
+      --theme-card-bg: #181432;
+      --theme-text-main: #FAF5FF;
+      --theme-border: #2D2350;
+      background-color: #0F0C20 !important;
+      color: #FAF5FF !important;
+    }
+    body.theme-podcast .bg-white {
+      background-color: #181432 !important;
+      color: #FAF5FF !important;
+      border-color: #2D2350 !important;
+    }
+    body.theme-podcast .text-slate-900, body.theme-podcast .text-slate-800 {
+      color: #FAF5FF !important;
+    }
+    body.theme-podcast .text-slate-600, body.theme-podcast .text-slate-500 {
+      color: #C084FC !important;
+    }
+    body.theme-podcast .bg-slate-50 {
+      background-color: #221C46 !important;
+      border-color: #3B2D6C !important;
+    }
+
+    /* Audio Equalizer Waveform Bars Animation */
+    @keyframes soundwave {
+      0%, 100% { height: 4px; }
+      50% { height: 18px; }
+    }
+    .equalizer-bar {
+      display: inline-block;
+      width: 3px;
+      height: 12px;
+      background: currentColor;
+      border-radius: 9999px;
+      animation: soundwave 1.2s ease-in-out infinite;
+    }
+    .equalizer-bar:nth-child(2) { animation-delay: 0.2s; }
+    .equalizer-bar:nth-child(3) { animation-delay: 0.4s; }
+    .equalizer-bar:nth-child(4) { animation-delay: 0.1s; }
+    .equalizer-bar:nth-child(5) { animation-delay: 0.3s; }
+
   </style>
 </head>
 <body class="bg-cockpit-surface text-cockpit-onSurface antialiased min-h-screen flex flex-col">
@@ -833,7 +990,31 @@
           </div>
         </div>
 
-                <!-- ED-TECH GAMIFICATION & STUDY STREAK WIDGET -->
+                        <!-- WORDPRESS & EDTECH THEME SWITCHER BUTTON -->
+        <button 
+          type="button" 
+          onclick="openThemeBrowserModal()" 
+          title="Browse WordPress & EdTech Themes (Blue Tidalwave, EduPress, E-Commerce, Ad-Tech, Podcast, Portfolio)"
+          class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-indigo-200/80 hover:border-indigo-400 text-slate-800 text-xs font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer active:scale-95"
+        >
+          <span class="text-base">🎨</span>
+          <span class="font-extrabold text-indigo-950">Themes</span>
+          <span class="active-theme-badge px-1.5 py-0.2 rounded-md bg-indigo-600 text-white font-mono text-[9px] font-bold">EduTech</span>
+        </button>
+
+        <!-- E-COMMERCE CART BUTTON -->
+        <button 
+          type="button" 
+          onclick="openCourseCartDrawer()" 
+          id="btn-header-cart"
+          title="Learning Center Cart & Checkout"
+          class="flex items-center gap-1 p-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer relative"
+        >
+          <span class="material-symbols-outlined text-[19px]">shopping_bag</span>
+          <span class="cart-count-badge absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 text-white font-bold text-[9px] flex items-center justify-center shadow-xs">1</span>
+        </button>
+
+        <!-- ED-TECH GAMIFICATION & STUDY STREAK WIDGET -->
         <div class="hidden xl:flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-2xl border border-slate-200/80 shadow-2xs">
           <div class="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white shadow-2xs cursor-pointer hover:bg-amber-50/50 transition-colors" id="edtech-streak-btn" onclick="openStreakModal()" title="14-Day Study Streak Active!">
             <span class="text-amber-500 font-bold text-xs">🔥</span>
@@ -1126,7 +1307,19 @@
             <span>Courses &amp; Mentors</span>
           </button>
 
-                    <button id="tab-meetups" type="button" onclick="switchView('meetups')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all whitespace-nowrap shrink-0">
+                              <button id="tab-podcast" type="button" onclick="switchView('podcast')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all whitespace-nowrap shrink-0">
+            <span class="material-symbols-outlined text-[17px] text-purple-600">headphones</span>
+            <span>Audio &amp; Podcast</span>
+            <span class="px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 text-[9px] font-bold">6 Eps</span>
+          </button>
+
+          <button id="tab-portfolio" type="button" onclick="switchView('portfolio')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all whitespace-nowrap shrink-0">
+            <span class="material-symbols-outlined text-[17px] text-cyan-600">folder_special</span>
+            <span>Bento Portfolio</span>
+            <span class="px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 text-[9px] font-bold">Live</span>
+          </button>
+
+          <button id="tab-meetups" type="button" onclick="switchView('meetups')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all whitespace-nowrap shrink-0">
             <span class="material-symbols-outlined text-[17px] text-pink-600">groups</span>
             <span>Meetup Communities</span>
             <span class="px-1.5 py-0.2 rounded bg-pink-100 text-pink-800 text-[9px] font-bold">18 Active</span>
@@ -1522,6 +1715,31 @@
       </section>
 
       <!-- VIEW 1: OVERVIEW & PIPELINE MATRIX (KANBAN & LIST MODE) -->
+            <!-- ===================================================================== -->
+      <!-- AD-TECH SPONSORED LEADERBOARD BANNER (728x90 Programmatic Placement)    -->
+      <!-- ===================================================================== -->
+      <div id="ad-slot-leaderboard" class="w-full max-w-7xl mx-auto px-4 sm:px-6 mb-4">
+        <div class="p-3 bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white rounded-2xl border border-indigo-800/40 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-3">
+            <span class="px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 font-mono font-bold text-[9px] uppercase tracking-wider border border-cyan-500/30">
+              Sponsored Partner
+            </span>
+            <div class="space-y-0.5">
+              <span class="font-extrabold text-white">Google Cloud &amp; Datadog: Global Production AI Summit 2026</span>
+              <span class="text-[11px] text-slate-300 hidden md:inline"> • Free Registration &bull; $500 Vertex AI &amp; Cloud Run Credits</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" onclick="window.open('https://cloud.google.com/vertex-ai', '_blank')" class="px-3 py-1 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-black text-[11px] transition-all cursor-pointer">
+              Claim Pass ↗
+            </button>
+            <button type="button" onclick="openAdTechSponsorModal()" title="Advertise on Job Hunt Autopilot" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[10px] font-semibold cursor-pointer">
+              Advertise Here
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div id="view-kanban" class="flex flex-col gap-4">
         <!-- Sub-header Toolbar from Stitch Screen 53491d69f61f40c19d01b0d535d477fd -->
         <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm">
@@ -5111,6 +5329,206 @@
 
       </div>
 
+          <!-- ========================================================================= -->
+      <!-- VIEW: AUDIO ENGINEERING & PODCAST STUDIO (#view-podcast)                  -->
+      <!-- ========================================================================= -->
+      <div id="view-podcast" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Podcast Hero Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-slate-950 via-purple-950 to-indigo-950 text-white p-6 sm:p-8 rounded-3xl shadow-xl border border-purple-800/40">
+          <div class="space-y-3 max-w-3xl">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+                <span>The System Design &amp; FAANG Career Show</span>
+              </span>
+              <span class="text-[10px] font-semibold text-purple-200 bg-white/10 px-2 py-0.5 rounded-md">12,500+ Weekly Engineer Listeners</span>
+            </div>
+            <h2 class="font-display font-black text-2xl sm:text-3xl text-white tracking-tight">
+              Job Hunt Autopilot Audio Studio 🎙️
+            </h2>
+            <p class="text-xs sm:text-sm text-purple-200 leading-relaxed">
+              Unfiltered technical conversations with Staff &amp; Principal Engineers from Google, Stripe, Meta, and Netflix on distributed systems, compensation negotiation, and autonomous AI agents.
+            </p>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row md:flex-col gap-2 shrink-0">
+            <button type="button" onclick="playPodcastEpisode('ep-42')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+              <span class="material-symbols-outlined text-[18px]">play_circle</span>
+              <span>Play Latest (Ep 42)</span>
+            </button>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="window.open('https://open.spotify.com', '_blank')" class="flex-1 px-3 py-2 rounded-xl bg-[#1DB954] hover:bg-[#1AA34A] text-white font-bold text-[11px] shadow-xs flex items-center justify-center gap-1 cursor-pointer">
+                <span>Spotify</span>
+              </button>
+              <button type="button" onclick="window.open('https://podcasts.apple.com', '_blank')" class="flex-1 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-[11px] shadow-xs flex items-center justify-center gap-1 cursor-pointer">
+                <span>Apple Podcasts</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Episodes Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="podcast-episodes-grid">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW: EXECUTIVE BENTO PORTFOLIO & REPOSITORY SHOWCASE (#view-portfolio)   -->
+      <!-- ========================================================================= -->
+      <div id="view-portfolio" class="hidden flex-col gap-6 w-full max-w-7xl mx-auto py-6 px-4 sm:px-6 animate-in fade-in duration-200">
+        
+        <!-- Portfolio Hero Banner -->
+        <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500 to-cyan-400 text-white font-black text-2xl flex items-center justify-center shadow-lg shrink-0">
+              AC
+            </div>
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <h2 class="font-display font-black text-xl sm:text-2xl text-white">Alex Chen</h2>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">Verified Staff Architect</span>
+              </div>
+              <p class="text-xs text-slate-300">High-Throughput Distributed Systems &bull; Autonomous AI Agent Architecture &bull; Cloud Native</p>
+              <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-400 font-mono pt-1">
+                <span>📍 San Francisco &amp; Remote</span>
+                <span>•</span>
+                <span class="text-emerald-400">Target TC: $280k - $360k</span>
+                <span>•</span>
+                <span class="text-cyan-400">Available Q4 2026</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" onclick="downloadCourseSyllabusPdf()" class="px-4 py-2.5 rounded-xl bg-white text-slate-900 font-bold text-xs shadow-md hover:bg-slate-100 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">download</span>
+              <span>Executive CV (PDF)</span>
+            </button>
+            <button type="button" onclick="openApplyJobModal('Alex Chen Candidate Intro', 'Staff Distributed Systems Architect', '$320,000', 'San Francisco / Remote')" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">mail</span>
+              <span>Schedule Technical Intro</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bento Grid: Flagship Repositories & Architecture Blueprints -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          
+          <!-- Bento Box 1: Core Engine -->
+          <div class="md:col-span-2 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between gap-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-bold uppercase tracking-wider">
+                  Flagship Open-Source
+                </span>
+                <div class="flex items-center gap-3 text-xs text-slate-500 font-mono">
+                  <span>★ 1,480 Stars</span>
+                  <span>⑂ 240 Forks</span>
+                </div>
+              </div>
+              <h3 class="font-display font-black text-lg text-slate-900">Job Hunt Autopilot Autonomous AI Pair Programmer Engine</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Autonomous browser crawler and asynchronous multi-agent coordination protocol built on Gemini 2.5 and Model Context Protocol (MCP). Implements durable background state, zero-trust authentication, and automatic heuristic scam quarantining.
+              </p>
+              <div class="flex flex-wrap gap-1.5 pt-1">
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px]">TypeScript</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px]">Python</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px]">Firebase Firestore</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px]">Model Context Protocol</span>
+              </div>
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[11px] text-slate-400 font-mono">MIT Licensed &bull; Production Ready</span>
+              <a href="https://github.com/NehalKaneria1501/Automation-Job-Hunt-Autopilot" target="_blank" rel="noopener" class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-1.5">
+                <span>View GitHub Repo ↗</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Bento Box 2: Verified Metrics -->
+          <div class="bg-gradient-to-br from-indigo-950 via-slate-950 to-blue-950 text-white p-6 rounded-3xl border border-indigo-900/50 shadow-xs flex flex-col justify-between gap-4">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-indigo-300 font-mono">Production Telemetry</span>
+              <h4 class="font-display font-black text-xl text-white mt-1">Architecture Impact</h4>
+            </div>
+            <div class="space-y-3 font-mono">
+              <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+                <div class="text-[10px] text-slate-400 uppercase">Throughput Peak</div>
+                <div class="text-lg font-black text-emerald-400">120k RPS</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+                <div class="text-[10px] text-slate-400 uppercase">P99 Latency SLA</div>
+                <div class="text-lg font-black text-cyan-400">4.8 ms</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+                <div class="text-[10px] text-slate-400 uppercase">Cloud Infra Cost Savings</div>
+                <div class="text-lg font-black text-amber-400">42% Annual</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bento Box 3: Raft-KV Distributed Consensus Engine -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between gap-4">
+            <div class="space-y-2">
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">Systems / Rust</span>
+              <h4 class="font-display font-black text-base text-slate-900">Raft-KV Memory-Safe Consensus Store</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Zero-allocation key-value kernel with distributed consensus, linearizable reads, and lock-free async Tokio pipelines.
+              </p>
+            </div>
+            <div class="flex items-center justify-between text-xs font-mono text-slate-500 pt-2 border-t border-slate-100">
+              <span>Rust 2024 Edition</span>
+              <span class="text-emerald-700 font-bold">99.999% SLA</span>
+            </div>
+          </div>
+
+          <!-- Bento Box 4: Multimodal Vertex AI Pipeline -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between gap-4">
+            <div class="space-y-2">
+              <span class="px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 text-[10px] font-bold">AI / RAG</span>
+              <h4 class="font-display font-black text-base text-slate-900">Multimodal Agentic Grounding Harness</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Enterprise RAG evaluation pipeline with hybrid BM25 + dense vector embeddings and real-time hallucination scoring.
+              </p>
+            </div>
+            <div class="flex items-center justify-between text-xs font-mono text-slate-500 pt-2 border-t border-slate-100">
+              <span>Gemini 2.5 Flash</span>
+              <span class="text-indigo-700 font-bold">Sub-80ms TTFT</span>
+            </div>
+          </div>
+
+          <!-- Bento Box 5: Certifications & FAANG Endorsements -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between gap-4">
+            <div class="space-y-2">
+              <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold">Credentials</span>
+              <h4 class="font-display font-black text-base text-slate-900">Verified Certifications</h4>
+              <div class="space-y-1.5 text-xs text-slate-700">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px] text-amber-500">verified</span>
+                  <span>Google Cloud Professional Cloud Architect</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px] text-amber-500">verified</span>
+                  <span>AWS Certified Solutions Architect (Professional)</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px] text-amber-500">verified</span>
+                  <span>Certified Kubernetes Administrator (CKA)</span>
+                </div>
+              </div>
+            </div>
+            <button type="button" onclick="openCertificatePreviewModal()" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors cursor-pointer">
+              View Verified Certificate ↗
+            </button>
+          </div>
+
+        </div>
+      </div>
+
     </main>
 
     <!-- ========================================================================= -->
@@ -7932,6 +8350,185 @@
   </div>
 
     <!-- ========================================================================= -->
+    <!-- ========================================================================= -->
+  <!-- MODAL: WORDPRESS & EDTECH THEME BROWSER SHOWCASE (#modal-theme-browser)   -->
+  <!-- ========================================================================= -->
+  <div id="modal-theme-browser" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-slate-100 bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 text-white flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold text-[10px] uppercase tracking-wider border border-blue-500/30">
+              WordPress.com Theme Architecture &bull; Blue Tidalwave Cycle
+            </span>
+          </div>
+          <h3 class="font-display font-black text-xl text-white mt-1">Website Themes &amp; Design Studio</h3>
+          <p class="text-xs text-indigo-200">Switch instantly between Edu-Tech, E-Commerce, Ad-Tech, Blog, Portfolio, Newsletter, and Podcast aesthetics.</p>
+        </div>
+        <button type="button" onclick="closeThemeBrowserModal()" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white cursor-pointer transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="px-6 py-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-2">
+        <button type="button" onclick="filterThemeBrowser('all')" data-theme-cat="all" class="theme-filter-pill px-3 py-1 rounded-xl bg-slate-900 text-white font-bold text-xs cursor-pointer shadow-xs">
+          All Themes (7)
+        </button>
+        <button type="button" onclick="filterThemeBrowser('education')" data-theme-cat="education" class="theme-filter-pill px-3 py-1 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold text-xs cursor-pointer">
+          🎓 Education &amp; LMS
+        </button>
+        <button type="button" onclick="filterThemeBrowser('ecommerce')" data-theme-cat="ecommerce" class="theme-filter-pill px-3 py-1 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold text-xs cursor-pointer">
+          🛍️ E-Commerce &amp; Store
+        </button>
+        <button type="button" onclick="filterThemeBrowser('adtech')" data-theme-cat="adtech" class="theme-filter-pill px-3 py-1 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold text-xs cursor-pointer">
+          📊 Ad-Tech &amp; Media
+        </button>
+        <button type="button" onclick="filterThemeBrowser('blog')" data-theme-cat="blog" class="theme-filter-pill px-3 py-1 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold text-xs cursor-pointer">
+          📰 Editorial &amp; Blog
+        </button>
+        <button type="button" onclick="filterThemeBrowser('portfolio')" data-theme-cat="portfolio" class="theme-filter-pill px-3 py-1 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold text-xs cursor-pointer">
+          💼 Bento Portfolio
+        </button>
+        <button type="button" onclick="filterThemeBrowser('newsletter')" data-theme-cat="newsletter" class="theme-filter-pill px-3 py-1 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold text-xs cursor-pointer">
+          ✉️ Newsletter Hub
+        </button>
+        <button type="button" onclick="filterThemeBrowser('podcast')" data-theme-cat="podcast" class="theme-filter-pill px-3 py-1 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold text-xs cursor-pointer">
+          🎙️ Podcast Studio
+        </button>
+      </div>
+
+      <!-- Theme Cards Grid -->
+      <div class="p-6 overflow-y-auto custom-scrollbar">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="theme-browser-cards-grid">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- DRAWER: E-COMMERCE LEARNING CENTER CART & CHECKOUT (#drawer-course-cart)  -->
+  <!-- ========================================================================= -->
+  <div id="drawer-course-cart" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex justify-end">
+    <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between overflow-hidden animate-in slide-in-from-right duration-200">
+      
+      <!-- Drawer Header -->
+      <div class="p-5 border-b border-slate-100 bg-gradient-to-r from-emerald-950 to-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-400 text-[22px]">shopping_cart</span>
+          <div>
+            <h3 class="font-display font-black text-base text-white">Academy Learning Cart</h3>
+            <span class="text-[11px] text-emerald-200">Instant PDF Access &bull; Razorpay Secured</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeCourseCartDrawer()" class="p-1 rounded-lg text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Cart Items List -->
+      <div class="p-5 flex-1 overflow-y-auto space-y-3 custom-scrollbar" id="course-cart-items-list">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Cart Footer & Checkout -->
+      <div class="p-5 bg-slate-50 border-t border-slate-200 space-y-3">
+        <div class="flex items-center justify-between text-xs text-slate-500">
+          <span>Subtotal</span>
+          <span class="font-mono font-bold text-slate-800" id="cart-subtotal-amount">₹14,999</span>
+        </div>
+        <div class="flex items-center justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
+          <span>Total (Incl. Taxes)</span>
+          <span class="font-mono text-emerald-700 text-base" id="cart-total-amount">₹14,999</span>
+        </div>
+
+        <button type="button" onclick="checkoutCartRazorpay()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs shadow-md shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">lock</span>
+          <span>Proceed to Razorpay Checkout ⚡</span>
+        </button>
+
+        <p class="text-[10px] text-slate-400 text-center font-mono">
+          ✓ 100% Money-Back Guarantee &bull; Multi-Currency Supported
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: AD-TECH SPONSORSHIP & MEDIA KIT BOOKING (#modal-adtech-sponsor)    -->
+  <!-- ========================================================================= -->
+  <div id="modal-adtech-sponsor" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <div class="p-5 border-b border-slate-100 bg-gradient-to-r from-slate-950 via-cyan-950 to-slate-900 text-white flex items-center justify-between">
+        <div>
+          <span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold text-[10px] uppercase tracking-wider border border-cyan-500/30">
+            Ad-Tech Programmatic Media Kit
+          </span>
+          <h3 class="font-display font-black text-lg text-white mt-1">Advertise on Job Hunt Autopilot</h3>
+        </div>
+        <button type="button" onclick="closeAdTechSponsorModal()" class="p-1 rounded-lg text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form onsubmit="handleAdInquirySubmit(event)" class="p-5 space-y-3.5 text-xs">
+        <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+          <div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">Monthly Reach</div>
+            <div class="font-bold text-indigo-700 text-xs">120k+ Senior Devs</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">Average CTR</div>
+            <div class="font-bold text-emerald-700 text-xs">3.82% Benchmark</div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Company / Brand Name *</label>
+          <input type="text" id="adinq-company" required placeholder="e.g. Datadog / Google Cloud / Retool" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Work Email *</label>
+          <input type="email" id="adinq-email" required placeholder="partner@company.com" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Sponsorship Placement</label>
+            <select id="adinq-tier" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none">
+              <option value="Top Leaderboard Banner">Top Leaderboard Banner (728x90)</option>
+              <option value="In-Feed Sponsored Requisition">In-Feed Sponsored Job Requisition</option>
+              <option value="Audio Podcast Episode Sponsor">Audio Podcast Title Sponsor</option>
+              <option value="Dedicated Newsletter Blast">Dedicated Newsletter Blast (18k+)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Budget Allocation</label>
+            <select id="adinq-budget" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none">
+              <option value="$1,000 - $2,500">$1,000 - $2,500 / month</option>
+              <option value="$2,500 - $5,000">$2,500 - $5,000 / month</option>
+              <option value="$5,000+">$5,000+ / Custom Tier</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeAdTechSponsorModal()" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold text-xs shadow-md shadow-cyan-600/30 transition-all cursor-pointer">
+            Submit Media Request 🚀
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL: UNIVERSAL 1-CLICK JOB APPLICATION & AUTOPILOT DISPATCH MODAL -->
   <!-- ========================================================================= -->
   <div id="modal-job-apply" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -8396,6 +8993,68 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- PERSISTENT GLOBAL AUDIO PLAYER DOCK (Sticky Bottom Engineering Podcast)   -->
+  <!-- ========================================================================= -->
+  <div id="global-audio-player" class="hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-md border-t border-purple-900/60 text-white px-4 py-3 shadow-2xl items-center justify-between gap-4 animate-in slide-in-from-bottom duration-200">
+    <audio id="global-audio-element" class="hidden"></audio>
+
+    <div class="flex items-center gap-3 min-w-0 max-w-md">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center shrink-0 shadow-md">
+        <span class="material-symbols-outlined text-[20px]">podcasts</span>
+      </div>
+      <div class="min-w-0">
+        <div class="font-bold text-xs text-white truncate" id="audio-dock-title">Ep 42: Scaling Distributed Databases to 100k TPS</div>
+        <div class="text-[10px] text-purple-300 truncate" id="audio-dock-guest">Vikram Malhotra • Ex-Stripe</div>
+      </div>
+    </div>
+
+    <!-- Playback Controls -->
+    <div class="flex items-center gap-3">
+      <button type="button" onclick="toggleAudioPlayback()" class="w-10 h-10 rounded-full bg-white text-slate-950 hover:bg-purple-100 flex items-center justify-center shadow-md active:scale-95 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[24px]" id="audio-dock-play-icon">play_arrow</span>
+      </button>
+
+      <div class="hidden sm:flex items-center gap-1.5" id="audio-dock-equalizer">
+        <span class="equalizer-bar text-purple-400"></span>
+        <span class="equalizer-bar text-purple-400"></span>
+        <span class="equalizer-bar text-purple-400"></span>
+        <span class="equalizer-bar text-purple-400"></span>
+        <span class="equalizer-bar text-purple-400"></span>
+      </div>
+
+      <button type="button" onclick="cyclePlaybackSpeed()" id="audio-speed-btn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono text-[11px] font-bold cursor-pointer">
+        1x
+      </button>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="flex items-center gap-2">
+      <button type="button" onclick="switchView('podcast')" class="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs hidden md:flex items-center gap-1 cursor-pointer">
+        <span>View Show Notes</span>
+      </button>
+      <button type="button" onclick="closeAudioPlayerDock()" class="p-1 rounded-lg text-slate-400 hover:text-white cursor-pointer">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- FLOATING THEME SELECTOR PILL (Bottom Right)                               -->
+  <!-- ========================================================================= -->
+  <div class="fixed bottom-6 right-6 z-40 hidden sm:flex items-center shadow-xl">
+    <button 
+      type="button" 
+      onclick="openThemeBrowserModal()" 
+      title="Switch Theme (EduTech, E-Commerce, Ad-Tech, Blog, Portfolio, Newsletter, Podcast)"
+      class="px-4 py-2.5 rounded-full bg-slate-900/90 hover:bg-slate-900 text-white backdrop-blur-md border border-white/20 font-bold text-xs flex items-center gap-2 shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+    >
+      <span class="text-base group-hover:rotate-45 transition-transform">🎨</span>
+      <span class="active-theme-label">Edu-Tech Academy Prime</span>
+      <span class="material-symbols-outlined text-[16px] text-slate-400">expand_less</span>
+    </button>
   </div>
 
 </body>
