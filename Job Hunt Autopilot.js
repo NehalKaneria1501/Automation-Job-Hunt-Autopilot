@@ -12216,7 +12216,7 @@ function renderThemeBrowserGrid() {
   grid.innerHTML = themes.map(t => {
     const isActive = activeThemePreset === t.id;
     return `
-      <div class="p-5 rounded-3xl border transition-all flex flex-col justify-between gap-4 ${
+      <div class="p-5 rounded-3xl border hover-lift transition-all flex flex-col justify-between gap-4 ${
         isActive 
           ? 'bg-gradient-to-b from-indigo-50/50 to-white border-indigo-400 shadow-md ring-2 ring-indigo-400/20' 
           : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-lg'
@@ -12375,7 +12375,7 @@ function renderPodcastEpisodesGrid() {
   container.innerHTML = PODCAST_EPISODES_DATA.map(ep => {
     const isThisPlaying = currentPlayingEpisode && currentPlayingEpisode.id === ep.id && isAudioPlaying;
     return `
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs hover:shadow-xl hover:border-purple-300 transition-all flex flex-col justify-between gap-4 group">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs hover:shadow-xl hover:border-purple-300 hover-lift transition-all flex flex-col justify-between gap-4 group">
         <div class="space-y-3">
           <!-- Top Row: Episode Badge & Duration -->
           <div class="flex items-center justify-between gap-2">
